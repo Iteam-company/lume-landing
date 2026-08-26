@@ -231,7 +231,9 @@ button{font:inherit;color:inherit;cursor:pointer}
    ТАРИФИ
    ============================================================ */
 .pricing{padding:100px 0 110px}
-.pricing__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;align-items:stretch}
+.pricing__lead{margin:-22px 0 34px;font-size:17px;color:rgba(107,14,20,.75)}
+.pricing__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+.pricing__grid > .reveal{display:flex}
 .plan{
   position:relative;display:flex;flex-direction:column;
   padding:36px 28px 30px;border:1.6px solid var(--maroon);border-radius:var(--radius);
@@ -252,7 +254,27 @@ button{font:inherit;color:inherit;cursor:pointer}
   font-family:var(--font-roboto),sans-serif;font-weight:900;text-transform:uppercase;
   font-size:26px;letter-spacing:-.3px;margin:0;color:var(--maroon-text);
 }
-.plan__dur{font-size:28px;margin:2px 0 18px;color:var(--maroon-text)}
+.plan{width:100%}
+.plan__tagline{margin:6px 0 20px;font-size:15px;line-height:1.4;color:rgba(107,14,20,.72)}
+.plan--featured .plan__tagline{color:rgba(255,255,255,.72)}
+
+/* перемикач хронометражу */
+.plan__opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.opt{
+  padding:9px 15px;border-radius:999px;background:transparent;
+  border:1.4px solid rgba(107,14,20,.35);color:var(--maroon-text);
+  font-size:14px;font-weight:500;line-height:1;
+  transition:background .25s,border-color .25s,color .25s;
+}
+.opt:hover{border-color:var(--maroon)}
+.opt.is-active{background:var(--maroon);border-color:var(--maroon);color:var(--cream)}
+.plan--featured .opt{border-color:rgba(255,255,255,.4);color:var(--cream)}
+.plan--featured .opt:hover{border-color:var(--cream)}
+.plan--featured .opt.is-active{background:var(--cream);border-color:var(--cream);color:var(--maroon-text)}
+
+/* ціна за хвилину */
+.plan__per{font-size:15px;color:rgba(107,14,20,.72)}
+.plan--featured .plan__per{color:rgba(255,255,255,.78)}
 .plan__price{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:22px}
 .plan__now{
   font-family:var(--font-roboto),sans-serif;font-weight:900;font-size:44px;line-height:1;
@@ -447,6 +469,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   .star--sep{justify-self:center;margin:2px 0}
   .reactions__grid{grid-template-columns:repeat(2,1fr);gap:24px}
   .pricing__grid{grid-template-columns:repeat(2,1fr);gap:28px 20px}
+  .pricing__lead{margin:-14px 0 28px}
   .audience{padding:70px 0}
   .audience__grid{grid-template-columns:1fr;gap:34px}
   .process__track{grid-template-columns:repeat(2,1fr);gap:40px 24px;padding-top:20px}

@@ -1,5 +1,5 @@
 import { FAQ } from "../faq";
-import { discount, PLANS } from "../pricing";
+import { ALL_OPTIONS, discount, finalPrice, minutesLabel, perMinute } from "../pricing";
 import { ORDER_EMAIL } from "../config";
 import { BRAND, CITIES, DESCRIPTION, SITE_URL, TAGLINE } from "../site";
 
@@ -12,21 +12,29 @@ import { BRAND, CITIES, DESCRIPTION, SITE_URL, TAGLINE } from "../site";
    ============================================================ */
 
 export default function StructuredData() {
-  const offers = PLANS.map((plan) => {
-    const off = discount(plan);
+  const offers = ALL_OPTIONS.map(({ tier, option }) => {
+    const off = discount(option);
     return {
       "@type": "Offer",
-      name: `${BRAND} ${plan.name} — мультфільм ${plan.duration}`,
-      description: `Персональний мультфільм за вашою історією, хронометраж ${plan.duration}.`,
-      price: String(plan.sale ?? plan.base),
+      name: `${BRAND} ${tier.name} — мультфільм ${minutesLabel(option.minutes)}`,
+      description:
+        `Персональний мультфільм за вашою історією, хронометраж ${minutesLabel(option.minutes)}. ` +
+        `Це ${perMinute(option)} доларів за хвилину.`,
+      price: String(finalPrice(option)),
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/#pricing`,
-      ...(plan.sale && off
+      eligibleQuantity: {
+        "@type": "QuantitativeValue",
+        value: option.minutes,
+        unitCode: "MIN",
+        unitText: "хвилин мультфільму",
+      },
+      ...(option.sale && off
         ? {
             priceSpecification: {
               "@type": "PriceSpecification",
-              price: String(plan.base),
+              price: String(option.base),
               priceCurrency: "USD",
               valueAddedTaxIncluded: true,
             },
@@ -35,7 +43,7 @@ export default function StructuredData() {
     };
   });
 
-  const prices = PLANS.map((p) => p.sale ?? p.base);
+  const prices = ALL_OPTIONS.map(({ option }) => finalPrice(option));
 
   const graph = [
     {
@@ -89,7 +97,7 @@ export default function StructuredData() {
         priceCurrency: "USD",
         lowPrice: String(Math.min(...prices)),
         highPrice: String(Math.max(...prices)),
-        offerCount: String(PLANS.length),
+        offerCount: String(offers.length),
         offers,
       },
     },

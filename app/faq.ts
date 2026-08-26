@@ -4,17 +4,21 @@
    Питання сформульовані так, як їх реально ставлять у пошуку.
    ============================================================ */
 
-import { PLANS, price } from "./pricing";
+import { bestPerMinute, finalPrice, minutesLabelAcc, price, TIERS } from "./pricing";
 
 export type QA = { q: string; a: string };
 
 /** Відповідь про ціни збирається з тарифів, щоб не розʼїхатися з секцією «Вартість». */
-const PRICE_ANSWER =
-  PLANS.map(
-    (p) =>
-      `${p.name} — ${p.duration}, ${price(p.sale ?? p.base)}` +
-      (p.sale ? ` замість ${price(p.base)}` : "")
-  ).join("; ") + ".";
+const PRICE_ANSWER = TIERS.map((tier) => {
+  const cheapest = tier.options[0];
+  const priciest = tier.options[tier.options.length - 1];
+  const range =
+    tier.options.length > 1
+      ? `від ${price(finalPrice(cheapest))} за ${minutesLabelAcc(cheapest.minutes)} ` +
+        `до ${price(finalPrice(priciest))} за ${minutesLabelAcc(priciest.minutes)}`
+      : `${price(finalPrice(cheapest))} за ${minutesLabelAcc(cheapest.minutes)}`;
+  return `${tier.name} — ${range}, від ${price(bestPerMinute(tier))} за хвилину`;
+}).join("; ") + ".";
 
 export const FAQ: QA[] = [
   {
