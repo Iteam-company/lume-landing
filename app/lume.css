@@ -203,11 +203,15 @@ button{font:inherit;color:inherit;cursor:pointer}
   position:absolute;border:2px dashed rgba(255,255,255,.55);border-bottom:0;
   border-radius:220px 220px 0 0;pointer-events:none;z-index:1;
 }
-.arch--1{left:12.5%;width:25%;top:120px;height:300px}
-.arch--2{left:37.5%;width:25%;top:330px;height:300px}
-.arch--3{left:62.5%;width:25%;top:120px;height:300px}
+/* Ніжки дуг прив'язані до низу доріжки (bottom), а не задані фіксованою
+   висотою: так пунктир завжди закінчується всередині секції, ніколи не
+   перетинає перфорацію на краях і всі лінії сходяться на одній базовій лінії.
+   Різна висота дуг задається тільки через top. */
+.arch--1{left:12.5%;width:25%;top:120px;bottom:24px}
+.arch--2{left:37.5%;width:25%;top:330px;bottom:24px}
+.arch--3{left:62.5%;width:25%;top:120px;bottom:24px}
 .arch-tail{
-  position:absolute;left:12.5%;top:120px;bottom:-10px;width:0;
+  position:absolute;left:12.5%;top:120px;bottom:24px;width:0;
   border-left:2px dashed rgba(255,255,255,.55);
 }
 
