@@ -2,6 +2,9 @@ import { TIERS } from "../pricing";
 import PlanCard from "./PlanCard";
 import Reveal from "./Reveal";
 
+/** Те, що входить у будь-який тариф. */
+const COMMON = ["Готово за 1 день", "Full HD для телефона та соцмереж", "Особистий куратор"];
+
 export default function Pricing() {
   return (
     <section className="pricing" id="pricing">
@@ -21,6 +24,9 @@ export default function Pricing() {
           ))}
         </div>
 
+        <Reveal as="p" className="pricing__common">
+          У кожному тарифі: {COMMON.join(" · ")}
+        </Reveal>
         <Reveal as="p" className="pricing__note">
           Ціни вказані в доларах США. Точну вартість куратор підтвердить після брифу.
         </Reveal>

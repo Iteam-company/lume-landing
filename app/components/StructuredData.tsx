@@ -1,5 +1,12 @@
 import { FAQ } from "../faq";
-import { ALL_OPTIONS, discount, finalPrice, minutesLabel, perMinute } from "../pricing";
+import {
+  ALL_OPTIONS,
+  discount,
+  finalPrice,
+  LAUNCH_UNTIL,
+  minutesLabel,
+  perMinute,
+} from "../pricing";
 import { ORDER_EMAIL } from "../config";
 import { BRAND, CITIES, DESCRIPTION, SITE_URL, TAGLINE } from "../site";
 
@@ -30,6 +37,7 @@ export default function StructuredData() {
         unitCode: "MIN",
         unitText: "хвилин мультфільму",
       },
+      ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
       ...(option.sale && off
         ? {
             priceSpecification: {

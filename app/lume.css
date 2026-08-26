@@ -255,7 +255,9 @@ button{font:inherit;color:inherit;cursor:pointer}
   font-size:26px;letter-spacing:-.3px;margin:0;color:var(--maroon-text);
 }
 .plan{width:100%}
-.plan__tagline{margin:6px 0 20px;font-size:15px;line-height:1.4;color:rgba(107,14,20,.72)}
+/* min-height тримає перемикач і ціну на одній лінії в усіх картках,
+   навіть коли підзаголовок займає два рядки */
+.plan__tagline{margin:6px 0 20px;font-size:15px;line-height:1.4;min-height:2.8em;color:rgba(107,14,20,.72)}
 .plan--featured .plan__tagline{color:rgba(255,255,255,.72)}
 
 /* перемикач хронометражу */
@@ -274,6 +276,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* ціна за хвилину */
 .plan__per{font-size:15px;color:rgba(107,14,20,.72)}
+.plan__launch{font-size:13px;color:rgba(107,14,20,.6)}
+.plan--featured .plan__launch{color:rgba(255,255,255,.65)}
 .plan--featured .plan__per{color:rgba(255,255,255,.78)}
 .plan__price{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:22px}
 .plan__now{
@@ -287,11 +291,15 @@ button{font:inherit;color:inherit;cursor:pointer}
   font-size:13px;font-weight:600;font-style:normal;
 }
 .plan__list{list-style:none;margin:0 0 26px;padding:0;display:grid;gap:9px}
-.plan__list li{display:flex;align-items:center;gap:9px;font-size:15px;line-height:1.4}
+.plan__list li{display:flex;align-items:flex-start;gap:9px;font-size:15px;line-height:1.45}
+.plan__list .star{margin-top:5px}
 .plan__list .star{width:13px;height:13px}
 .plan__cta{margin-top:auto;width:100%;padding:16px 24px;font-size:15px}
+.pricing__common{
+  margin:34px 0 0;text-align:center;font-size:15px;font-weight:500;color:var(--maroon-text);
+}
 .pricing__note{
-  margin:34px 0 0;text-align:center;font-size:14px;color:rgba(107,14,20,.65);
+  margin:10px 0 0;text-align:center;font-size:14px;color:rgba(107,14,20,.65);
 }
 
 /* ============================================================
