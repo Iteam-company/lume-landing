@@ -4,6 +4,7 @@ import Faq from "./components/Faq";
 import FilmEdge from "./components/FilmEdge";
 import { Icon, IconSprite } from "./components/Icons";
 import OrderForm from "./components/OrderForm";
+import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
 import SiteFooter from "./components/SiteFooter";
 import VideoBox from "./components/VideoBox";
@@ -206,6 +207,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============ ТАРИФИ ============ */}
+      <Pricing />
 
       {/* ============ ЦИФРИ ============ */}
       <section className="numbers" id="numbers">
