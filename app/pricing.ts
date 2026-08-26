@@ -35,7 +35,7 @@ export type Tier = {
 /* Ціна в кожному тарифі лінійна: постановча частина + ставка за хвилину.
    Тому 1, 2 і 5 хвилин — це точне продовження ряду 3 і 4 хвилини, а не
    окремо придумані цифри. `defaultOption` вирішує, який варіант видно
-   одразу: у STORY це 1 хвилина, щоб перше число не відлякувало. */
+   одразу: скрізь 1 хвилина, щоб перше число не відлякувало. */
 export const TIERS: Tier[] = [
   {
     name: "STORY",
@@ -69,7 +69,7 @@ export const TIERS: Tier[] = [
       { minutes: 4, base: 669, sale: 569 },
       { minutes: 5, base: 809, sale: 689 },
     ],
-    defaultOption: 2,
+    defaultOption: 0,
     features: [
       "Глибше опрацювання історії",
       "Сценарист і розкадровка",
@@ -93,7 +93,7 @@ export const TIERS: Tier[] = [
       { minutes: 4, base: 1139, sale: 949 },
       { minutes: 5, base: 1379, sale: 1149 },
     ],
-    defaultOption: 2,
+    defaultOption: 0,
     features: [
       "Індивідуальний арт-дирекшн",
       "Максимальна схожість персонажів",
