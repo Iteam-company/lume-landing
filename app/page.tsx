@@ -1,69 +1,257 @@
-import Image from "next/image";
+import Link from "next/link";
+import Counter from "./components/Counter";
+import Faq from "./components/Faq";
+import FilmEdge from "./components/FilmEdge";
+import { Icon, IconSprite } from "./components/Icons";
+import OrderForm from "./components/OrderForm";
+import Reveal from "./components/Reveal";
+import SiteFooter from "./components/SiteFooter";
+import VideoBox from "./components/VideoBox";
+import WhatsAppFloat from "./components/WhatsAppFloat";
+
+/* Щоб додати відео — покладіть файл у public/video/
+   і впишіть шлях, напр. src="/video/work-1.mp4" */
+
+const REACTIONS = [
+  { caption: "Любов" },
+  { caption: "День народження" },
+  { caption: "День народження" },
+  { caption: "Гендер паті" },
+] as const;
+
+const STEPS = [
+  {
+    num: "01",
+    title: ["Бриф"],
+    text: "Ви проходите коротке опитування: розповідаєте історію, ділитеся деталями та важливими моментами",
+    dot: true,
+  },
+  {
+    num: "02",
+    title: ["Фото та", "персонажі"],
+    text: "Ви надсилаєте фотографії — ми малюємо персонажів, максимально схожих на вас",
+  },
+  {
+    num: "03",
+    title: ["Сценарій і", "розкадровка"],
+    text: "Опрацьовуємо сюжет, ритм і драматургію — щоб історія виглядала цілісно та зворушливо",
+  },
+  {
+    num: "04",
+    title: ["Монтаж і", "мультфільм"],
+    text: "Поєднуємо все разом: рухи, ефекти, атмосферу. За бажанням — озвучення або ваша улюблена пісня",
+  },
+] as const;
+
+const NUMBERS = [
+  { to: 5000, suffix: "+", label: "створених мультфільмів" },
+  { to: 4000, suffix: "+", label: "щасливих клієнтів" },
+  { to: 5000, suffix: "+", label: "збережених моментів" },
+  { text: "1 день", label: "термін виготовлення" },
+] as const;
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <IconSprite />
+
+      {/* ============ HERO ============ */}
+      <header className="hero">
+        <div className="container hero__inner">
+          <Reveal className="hero__left">
+            <Link href="/#form" className="logo" aria-label="LUME">
+              <span className="logo__text">LUME</span>
+            </Link>
+            <h1 className="hero__title">
+              Подаруй близькій людині
+              <br />
+              мультфільм
+              <br />
+              за вашою історією
+            </h1>
+            <p className="hero__sub">Для пар, батьків, дітей, друзів і близьких</p>
+            <ul className="hero__bullets">
+              <li>
+                <Icon name="i-star" className="star" />
+                5000+ створених мультфільмів
+              </li>
+              <li>
+                <Icon name="i-star" className="star" />
+                Термін створення — 1 день
+              </li>
+              <li>
+                <Icon name="i-star" className="star" />
+                Особистий куратор
+              </li>
+            </ul>
+            <Link href="/#form" className="btn btn--dark">
+              Замовити мультфільм
+            </Link>
+          </Reveal>
+
+          <Reveal className="hero__right" delay={1}>
+            <span className="script-badge">
+              Personal
+              <br />
+              Stories
+            </span>
+            <VideoBox variant="wide" />
+          </Reveal>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* ============ НАШІ РОБОТИ ============ */}
+      <section className="works section--dark" id="works">
+        <FilmEdge side="top" />
+        <FilmEdge side="bottom" />
+        <div className="container">
+          <Reveal className="works__head">
+            <svg className="heart-doodle" viewBox="0 0 220 90" fill="none" aria-hidden="true">
+              <path
+                d="M62 46c-14 14-31 3-31-12C31 22 41 14 52 16c8 1.5 12 8 12 15 0 14-13 26-27 33 44 14 106 13 160-1"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M62 46c9-9 18-19 18-29 0-8-6-13-13-12"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <h2 className="h2">Наші роботи</h2>
+          </Reveal>
+
+          <div className="works__grid">
+            <Reveal>
+              <VideoBox variant="16x9" />
+            </Reveal>
+            <Icon name="i-star" className="star star--sep" />
+            <Reveal delay={1}>
+              <VideoBox variant="16x9" />
+            </Reveal>
+            <Icon name="i-star" className="star star--sep" />
+            <Reveal delay={2}>
+              <VideoBox variant="16x9" />
+            </Reveal>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* ============ РЕАКЦІЇ КЛІЄНТІВ ============ */}
+      <section className="reactions" id="reactions">
+        <div className="container">
+          <Reveal as="h2" className="h2 h2--dark">
+            Реакції клієнтів:
+          </Reveal>
+          <div className="reactions__grid">
+            {REACTIONS.map((r, i) => (
+              <Reveal
+                key={`${r.caption}-${i}`}
+                as="figure"
+                className="reaction"
+                delay={(i % 4) as 0 | 1 | 2 | 3}
+              >
+                <VideoBox variant="9x16" />
+                <figcaption className="script">{r.caption}</figcaption>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ ПРОЦЕС ============ */}
+      <section className="process section--dark" id="process">
+        <FilmEdge side="top" speed={0.5} />
+        <FilmEdge side="bottom" speed={0.5} />
+        <div className="container">
+          <Reveal className="process__head">
+            <h2 className="h2 h2--left">
+              Мультфільм за <span className="script script--xl">1 день</span>
+            </h2>
+            <Link href="/#form" className="btn btn--light">
+              Замовити мультфільм
+            </Link>
+          </Reveal>
+
+          <div className="process__track">
+            <div className="arch arch--1" aria-hidden="true" />
+            <div className="arch arch--2" aria-hidden="true" />
+            <div className="arch arch--3" aria-hidden="true" />
+            <span className="arch-tail" aria-hidden="true" />
+
+            {STEPS.map((step, i) => (
+              <Reveal
+                key={step.num}
+                as="article"
+                className={`step step--${i % 2 === 0 ? "up" : "down"}`}
+                delay={i as 0 | 1 | 2 | 3}
+              >
+                <span className="step__num">{step.num}</span>
+                <h3 className="script step__title">
+                  {step.title.map((line, k) => (
+                    <span key={line}>
+                      {line}
+                      {k < step.title.length - 1 ? <br /> : null}
+                    </span>
+                  ))}
+                </h3>
+                <p>
+                  {"dot" in step && step.dot ? <span className="dot" /> : null}
+                  {step.text}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ ЦИФРИ ============ */}
+      <section className="numbers" id="numbers">
+        <div className="container">
+          <Reveal as="h2" className="h2 h2--dark">
+            Цифри:
+          </Reveal>
+          <div className="numbers__grid">
+            {NUMBERS.map((n, i) => (
+              <Reveal key={n.label} className="num" delay={i as 0 | 1 | 2 | 3}>
+                <Icon name="i-star" className="star star--num" />
+                {"to" in n ? (
+                  <Counter to={n.to} suffix={n.suffix} />
+                ) : (
+                  <span className="num__val">{n.text}</span>
+                )}
+                <span className="num__label script">{n.label}</span>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FAQ ============ */}
+      <section className="faq section--dark" id="faq">
+        <div className="container container--narrow">
+          <Reveal as="h2" className="h2 h2--sm">
+            FAQ:
+          </Reveal>
+          <Reveal>
+            <Faq />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ============ ФОРМА ============ */}
+      <section className="formsec" id="form">
+        <div className="container container--form">
+          <Reveal>
+            <OrderForm />
+          </Reveal>
+        </div>
+      </section>
+
+      <SiteFooter />
+      <WhatsAppFloat />
+    </>
   );
 }
