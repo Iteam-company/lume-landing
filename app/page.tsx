@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Audience from "./components/Audience";
 import Counter from "./components/Counter";
 import Faq from "./components/Faq";
 import FilmEdge from "./components/FilmEdge";
@@ -6,6 +7,7 @@ import { Icon, IconSprite } from "./components/Icons";
 import OrderForm from "./components/OrderForm";
 import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
+import StructuredData from "./components/StructuredData";
 import SiteFooter from "./components/SiteFooter";
 import VideoBox from "./components/VideoBox";
 import WhatsAppFloat from "./components/WhatsAppFloat";
@@ -54,6 +56,7 @@ const NUMBERS = [
 export default function Home() {
   return (
     <>
+      <StructuredData />
       <IconSprite />
 
       {/* ============ HERO ============ */}
@@ -232,6 +235,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============ КОМУ ПІДІЙДЕ ============ */}
+      <Audience />
 
       {/* ============ FAQ ============ */}
       <section className="faq section--dark" id="faq">

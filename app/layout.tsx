@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Jost, Roboto, Marck_Script, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import "./lume.css";
+import { BRAND, DESCRIPTION, KEYWORDS, SITE_URL, TAGLINE } from "./site";
 
 const jost = Jost({
   variable: "--font-jost",
@@ -28,15 +29,42 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "LUME — мультфільм за вашою історією",
-  description:
-    "Подаруйте близькій людині персональний мультфільм за вашою історією. Виготовлення за 1 день. Для пар, батьків, дітей, друзів і близьких.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${BRAND} — ${TAGLINE.toLowerCase()}`,
+    template: `%s — ${BRAND}`,
+  },
+  description: DESCRIPTION,
+  keywords: KEYWORDS,
+  applicationName: BRAND,
+  category: "Подарунки та персональна анімація",
+  alternates: {
+    canonical: "/",
+    languages: { "uk-UA": "/" },
+  },
   openGraph: {
-    title: "LUME — мультфільм за вашою історією",
-    description:
-      "Персональний мультфільм за вашою історією. Термін виготовлення — 1 день.",
     type: "website",
     locale: "uk_UA",
+    siteName: BRAND,
+    url: "/",
+    title: `${BRAND} — ${TAGLINE.toLowerCase()}`,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND} — ${TAGLINE.toLowerCase()}`,
+    description: DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 

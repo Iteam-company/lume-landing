@@ -269,6 +269,27 @@ button{font:inherit;color:inherit;cursor:pointer}
 }
 
 /* ============================================================
+   КОМУ ПІДІЙДЕ
+   ============================================================ */
+.audience{padding:100px 0}
+.audience__grid{display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:start}
+.audience__lead{font-size:22px;line-height:1.45;font-weight:500;margin:0 0 18px}
+.audience__text p{margin:0 0 16px;font-size:17px;line-height:1.65;max-width:70ch}
+.audience__cards{display:grid;gap:16px}
+.who{padding:22px 24px;border:1.4px solid rgba(107,14,20,.35);border-radius:18px;transition:border-color .3s,transform .35s var(--ease)}
+.who:hover{border-color:var(--maroon);transform:translateY(-3px)}
+.who__title{font-size:19px;font-weight:600;margin:0 0 6px}
+.who__text{margin:0;font-size:15px;line-height:1.5;color:rgba(107,14,20,.8)}
+.audience__occasions{margin-top:56px}
+.audience__sub{font-size:20px;font-weight:600;margin:0 0 18px}
+.chips{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0}
+.chip{
+  padding:10px 20px;border-radius:999px;border:1.4px solid rgba(107,14,20,.35);
+  font-size:15px;transition:background .25s,color .25s,border-color .25s;
+}
+.chip:hover{background:var(--maroon);border-color:var(--maroon);color:var(--cream)}
+
+/* ============================================================
    FAQ
    ============================================================ */
 .faq{padding:86px 0 96px}
@@ -422,6 +443,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   .star--sep{justify-self:center;margin:2px 0}
   .reactions__grid{grid-template-columns:repeat(2,1fr);gap:24px}
   .pricing__grid{grid-template-columns:repeat(2,1fr);gap:28px 20px}
+  .audience{padding:70px 0}
+  .audience__grid{grid-template-columns:1fr;gap:34px}
   .process__track{grid-template-columns:repeat(2,1fr);gap:40px 24px;padding-top:20px}
   .step--down{margin-top:0}
   .step{max-width:none}
@@ -442,6 +465,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   .reactions__grid{grid-template-columns:1fr}
   .pricing{padding:70px 0}
   .pricing__grid{grid-template-columns:1fr;gap:26px}
+  .audience__lead{font-size:19px}
+  .audience__text p{font-size:16px}
   .plan__now{font-size:38px}
   .reaction figcaption{font-size:26px}
   .faq__a p{max-width:100%}
