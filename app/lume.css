@@ -260,12 +260,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 .plan__tagline{margin:6px 0 20px;font-size:15px;line-height:1.4;min-height:2.8em;color:rgba(107,14,20,.72)}
 .plan--featured .plan__tagline{color:rgba(255,255,255,.72)}
 
-/* перемикач хронометражу */
-.plan__opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+/* перемикач хронометражу: п'ять варіантів мають вміщатися в один рядок
+   навіть у вузькій картці на десктопі */
+.plan__opts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
 .opt{
-  padding:9px 15px;border-radius:999px;background:transparent;
+  flex:1 1 auto;padding:9px 6px;border-radius:999px;background:transparent;
   border:1.4px solid rgba(107,14,20,.35);color:var(--maroon-text);
-  font-size:14px;font-weight:500;line-height:1;
+  font-size:13px;font-weight:500;line-height:1;white-space:nowrap;
   transition:background .25s,border-color .25s,color .25s;
 }
 .opt:hover{border-color:var(--maroon)}

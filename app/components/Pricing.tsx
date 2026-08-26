@@ -13,7 +13,7 @@ export default function Pricing() {
           Вартість:
         </Reveal>
         <Reveal as="p" className="pricing__lead">
-          Оберіть хронометраж — вартість перерахується разом із ціною за хвилину.
+          Від 1 до 5 хвилин у кожному тарифі — оберіть хронометраж, і вартість перерахується разом із ціною за хвилину.
         </Reveal>
 
         <div className="pricing__grid">
