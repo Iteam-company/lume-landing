@@ -47,9 +47,9 @@ const STEPS = [
 ] as const;
 
 const NUMBERS = [
-  { to: 5000, suffix: "+", label: "створених мультфільмів" },
-  { to: 4000, suffix: "+", label: "щасливих клієнтів" },
-  { to: 5000, suffix: "+", label: "збережених моментів" },
+  { to: 200, suffix: "+", label: "створених мультфільмів" },
+  { to: 100, suffix: "+", label: "щасливих клієнтів" },
+  { text: "15 хв", label: "відповідь куратора" },
   { text: "1 день", label: "термін виготовлення" },
 ] as const;
 
@@ -77,7 +77,7 @@ export default function Home() {
             <ul className="hero__bullets">
               <li>
                 <Icon name="i-star" className="star" />
-                5000+ створених мультфільмів
+                200+ створених мультфільмів
               </li>
               <li>
                 <Icon name="i-star" className="star" />
