@@ -243,7 +243,7 @@ export default function OrderForm() {
         </p>
       )}
 
-      <button className="btn btn--green" type="submit">
+      <button className="btn btn--cta" type="submit">
         {selection && paddle && selection.priceId
           ? "Перейти до оплати"
           : "Замовити мультфільм"}

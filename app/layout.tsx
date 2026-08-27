@@ -1,31 +1,30 @@
 import type { Metadata } from "next";
-import { Jost, Roboto, Marck_Script, Playfair_Display } from "next/font/google";
+import { Abhaya_Libre, Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import "./lume.css";
 import { BRAND, DESCRIPTION, KEYWORDS, SITE_URL, TAGLINE } from "./site";
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["cyrillic", "latin"],
-  weight: ["300", "400", "500", "600", "700"],
+/* Типографіка за брендбуком:
+   - Abhaya Libre SemiBold — тільки wordmark LUME (кирилиці у шрифті немає);
+   - Cormorant Garamond Bold Italic — короткі емоційні акценти;
+   - нейтральний sans — функціональний шар: тексти, меню, форми, ціни. */
+
+const abhaya = Abhaya_Libre({
+  variable: "--font-abhaya",
+  subsets: ["latin"],
+  weight: "600",
 });
 
-const roboto = Roboto({
-  variable: "--font-roboto",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["cyrillic", "latin"],
-  weight: ["400", "700", "900"],
+  weight: "700",
+  style: "italic",
 });
 
-const marck = Marck_Script({
-  variable: "--font-marck",
+const sans = Inter({
+  variable: "--font-sans",
   subsets: ["cyrillic", "latin"],
-  weight: "400",
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["cyrillic", "latin"],
-  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -72,7 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="uk"
-      className={`${jost.variable} ${roboto.variable} ${marck.variable} ${playfair.variable}`}
+      className={`${sans.variable} ${cormorant.variable} ${abhaya.variable}`}
     >
       <body>{children}</body>
     </html>
