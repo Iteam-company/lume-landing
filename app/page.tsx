@@ -129,7 +129,11 @@ export default function Home() {
 
           <div className="works__grid">
             <Reveal>
-              <VideoBox variant="16x9" />
+              <VideoBox
+                variant="16x9"
+                src="/video/work-example-one.mp4"
+                poster="/video/work-example-one-poster.jpg"
+              />
             </Reveal>
             <Icon name="i-star" className="star star--sep" />
             <Reveal delay={1}>
