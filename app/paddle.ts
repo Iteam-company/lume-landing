@@ -13,27 +13,34 @@ export type CheckoutCustomData = {
   minutes: Minutes;
 };
 
+/**
+ * tier + minutes -> Paddle Sandbox price_id (one-time, USD, qty 1/1).
+ *
+ * Єдине джерело price_id. Суми тут НЕ дублюємо — вони живуть у
+ * app/pricing.ts (`finalPrice(option)`). Ці sandbox-ціни синхронізовані
+ * саме з тими сумами; попередній набір заархівовано в Paddle.
+ */
 const SANDBOX_PRICE_IDS: Record<TierSlug, Record<Minutes, string>> = {
   story: {
-    1: "pri_01m1170yag9wkc0rrkd3dc69jh",
-    2: "pri_01m1170yea3y1dj8v3dyjfe6a6",
-    3: "pri_01m1170yh1k64ggjzzdgqg5pgz",
-    4: "pri_01m1170yncvvjtbxj6v0an1jyx",
-    5: "pri_01m1170yr3gttbpfjnbxee7p54",
+    1: "pri_01m11nrkhc8vnzfjrafrtf057g",
+    2: "pri_01m11nrkp0nvet0dxwab6njnvx",
+    3: "pri_01m11nrkvdtf90znfxnytw7p19",
+    4: "pri_01m11nrkzsn4nbbt9cmza1pvvv",
+    5: "pri_01m11nrm46hcspwxdwhdnxfba8",
   },
   signature: {
-    1: "pri_01m1170yx192nm9j11ka33b7jr",
-    2: "pri_01m1170yz62eaw89fz4v650c3x",
-    3: "pri_01m1170z1hkx7ectx26nz1ev88",
-    4: "pri_01m1170z3m74ksxg9g3vae6ed8",
-    5: "pri_01m1170z7j0fp5hc3ze2s4yt8m",
+    1: "pri_01m11nrm8a3anqbhtc8fnygyds",
+    2: "pri_01m11nrmcjyr8ce7760jaccjch",
+    3: "pri_01m11nrmsxqxpcwn15sarbjgxr",
+    4: "pri_01m11nrmy2m8s6zdbznyjm6074",
+    5: "pri_01m11nrn2w5z35stkb0ech2s4k",
   },
   cinema: {
-    1: "pri_01m1170zcxn2zkcgyfzc62b06q",
-    2: "pri_01m1170zf7tkn5vx9ppbxtdf1a",
-    3: "pri_01m1170zhq2vt3jgzbfs1n4g1c",
-    4: "pri_01m1170zke3njgq04fzjx7aq5n",
-    5: "pri_01m1170znb8vfh05t4341c70ka",
+    1: "pri_01m11nrn9xee5byk261z2nrbkd",
+    2: "pri_01m11nrnfq3mz05fgtfxd08p8g",
+    3: "pri_01m11nrnmthzq85kyh05r73bwk",
+    4: "pri_01m11nrns9tkt3jzqqk2vvna7h",
+    5: "pri_01m11nrnxvywaezndx6738qtfm",
   },
 };
 
