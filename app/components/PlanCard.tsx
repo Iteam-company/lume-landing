@@ -71,7 +71,7 @@ export default function PlanCard({ tier }: { tier: Tier }) {
       </ul>
 
       <Link
-        href="/#form"
+        href={`/?tier=${tier.slug}&minutes=${option.minutes}#form`}
         className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
       >
         Замовити

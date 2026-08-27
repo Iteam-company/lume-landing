@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Audience from "./components/Audience";
 import Counter from "./components/Counter";
@@ -5,6 +6,7 @@ import Faq from "./components/Faq";
 import FilmEdge from "./components/FilmEdge";
 import { Icon, IconSprite } from "./components/Icons";
 import OrderForm from "./components/OrderForm";
+import PaddleProvider from "./components/PaddleProvider";
 import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
 import StructuredData from "./components/StructuredData";
@@ -259,7 +261,11 @@ export default function Home() {
       <section className="formsec" id="form">
         <div className="container container--form">
           <Reveal>
-            <OrderForm />
+            <PaddleProvider>
+              <Suspense fallback={null}>
+                <OrderForm />
+              </Suspense>
+            </PaddleProvider>
           </Reveal>
         </div>
       </section>

@@ -20,8 +20,11 @@ export type PlanOption = {
   sale?: number;
 };
 
+export type TierSlug = "story" | "signature" | "cinema";
+
 export type Tier = {
   name: string;
+  slug: TierSlug;
   tagline: string;
   options: PlanOption[];
   /** Який варіант показати одразу (індекс у options) */
@@ -39,6 +42,7 @@ export type Tier = {
 export const TIERS: Tier[] = [
   {
     name: "STORY",
+    slug: "story",
     tagline: "Доступний спосіб перетворити свою історію на фільм",
     // Стартова ціна: 59 + 80 за кожну хвилину. Звичайна — та сама формула
     // зі збереженням знижки ~14%. Дані для 3 хвилин — ваші, решта продовжує ряд.
@@ -60,6 +64,7 @@ export const TIERS: Tier[] = [
   },
   {
     name: "SIGNATURE",
+    slug: "signature",
     tagline: "Персональний міні-фільм, а не просто відео",
     // Стартова ціна: 89 + 120 за кожну хвилину, знижка ~15%.
     options: [
@@ -84,6 +89,7 @@ export const TIERS: Tier[] = [
   },
   {
     name: "CINEMA",
+    slug: "cinema",
     tagline: "Максимум режисури, деталей і звуку",
     // Стартова ціна: 149 + 200 за кожну хвилину, знижка ~17%.
     options: [

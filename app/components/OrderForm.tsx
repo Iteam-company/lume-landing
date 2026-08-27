@@ -1,13 +1,21 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { FORM_ENDPOINT, ORDER_EMAIL } from "../config";
+import { finalPrice, minutesLabel, price, TIERS } from "../pricing";
+import {
+  isMinutes,
+  isTierSlug,
+  resolvePaddlePriceId,
+  type CheckoutCustomData,
+} from "../paddle";
+import { usePaddle } from "./PaddleProvider";
 import { Icon } from "./Icons";
 
 type Errors = Partial<Record<"name" | "phone" | "telegram" | "email", boolean>>;
 
-/** Маска українського номера: +380 (XX) XXX-XX-XX */
 function maskPhone(raw: string) {
   let d = raw.replace(/\D/g, "");
   if (d.startsWith("380")) d = d.slice(3);
@@ -40,6 +48,29 @@ export default function OrderForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState(false);
 
+  const { paddle, checkoutPhase, resetCheckout } = usePaddle();
+  const searchParams = useSearchParams();
+
+  const selection = useMemo(() => {
+    const tierParam = searchParams.get("tier");
+    const minutesParam = Number(searchParams.get("minutes"));
+    if (!isTierSlug(tierParam) || !isMinutes(minutesParam)) return null;
+
+    const tier = TIERS.find((t) => t.slug === tierParam);
+    const option = tier?.options.find((o) => o.minutes === minutesParam);
+    if (!tier || !option) return null;
+
+    return {
+      slug: tierParam,
+      minutes: minutesParam,
+      tierName: tier.name,
+      amount: finalPrice(option),
+      priceId: resolvePaddlePriceId(tierParam, minutesParam),
+    };
+  }, [searchParams]);
+
+  const [checkoutRequested, setCheckoutRequested] = useState(false);
+
   const set = (field: keyof typeof values, value: string) => {
     setValues((v) => ({ ...v, [field]: value }));
     setErrors((e) => ({ ...e, [field]: false }));
@@ -55,8 +86,18 @@ export default function OrderForm() {
     setErrors(next);
     if (Object.keys(next).length) return;
 
-    const payload = { ...values, page: window.location.href };
+    const priceId = selection?.priceId ?? null;
+    const willOpenCheckout = Boolean(paddle && priceId);
 
+    const payload = {
+      ...values,
+      page: window.location.href,
+      ...(selection
+        ? { tier: selection.slug, minutes: selection.minutes }
+        : {}),
+    };
+
+    // 1. Спершу — існуюча відправка заявки (лід зберігаємо в будь-якому разі).
     if (FORM_ENDPOINT) {
       try {
         await fetch(FORM_ENDPOINT, {
@@ -67,12 +108,16 @@ export default function OrderForm() {
       } catch {
         /* заявку показуємо як надіслану, щоб не втратити користувача */
       }
-    } else if (ORDER_EMAIL) {
+    } else if (ORDER_EMAIL && !willOpenCheckout) {
+      // mailto повністю забирає сторінку — робимо його лише коли checkout не відкриваємо.
       const body =
         `Імʼя: ${payload.name}\n` +
         `Телефон (WhatsApp): ${payload.phone}\n` +
         `Telegram: ${payload.telegram || "—"}\n` +
         `E-mail: ${payload.email}\n` +
+        (selection
+          ? `Тариф: ${selection.tierName} · ${selection.minutes} хв\n`
+          : "") +
         `Сторінка: ${payload.page}`;
       window.location.href =
         `mailto:${ORDER_EMAIL}` +
@@ -81,6 +126,21 @@ export default function OrderForm() {
     }
 
     setSent(true);
+
+    // 2. Після заявки — відкриваємо Paddle Sandbox overlay checkout.
+    if (paddle && priceId && selection) {
+      resetCheckout();
+      setCheckoutRequested(true);
+      paddle.Checkout.open({
+        items: [{ priceId, quantity: 1 }],
+        customer: { email: values.email.trim() },
+        customData: {
+          tier: selection.slug,
+          minutes: selection.minutes,
+        } satisfies CheckoutCustomData,
+        settings: { variant: "one-page" },
+      });
+    }
   };
 
   return (
@@ -173,8 +233,20 @@ export default function OrderForm() {
         <span className="field__err">Введіть коректний e-mail</span>
       </label>
 
+      {selection && (
+        <p className="form__selection">
+          <span className="form__selection-tier">{selection.tierName}</span>
+          {" · "}
+          {minutesLabel(selection.minutes)}
+          {" · "}
+          <b>{price(selection.amount)}</b>
+        </p>
+      )}
+
       <button className="btn btn--green" type="submit">
-        Замовити мультфільм
+        {selection && paddle && selection.priceId
+          ? "Перейти до оплати"
+          : "Замовити мультфільм"}
       </button>
 
       <p className="form__note">
@@ -184,8 +256,30 @@ export default function OrderForm() {
 
       {sent && (
         <div className="form__ok">
-          <strong>Дякуємо! Заявку надіслано.</strong>
-          <span>Куратор звʼяжеться з вами протягом 15 хвилин.</span>
+          {checkoutRequested && checkoutPhase === "completed" ? (
+            <>
+              <strong>Оплату отримано. Дякуємо!</strong>
+              <span>Куратор підтвердить замовлення та звʼяжеться з вами.</span>
+            </>
+          ) : checkoutRequested && checkoutPhase === "closed" ? (
+            <>
+              <strong>Дякуємо! Заявку надіслано.</strong>
+              <span>
+                Оплату не завершено — куратор звʼяжеться з вами протягом 15
+                хвилин.
+              </span>
+            </>
+          ) : checkoutRequested ? (
+            <>
+              <strong>Заявку надіслано. Відкриваємо оплату…</strong>
+              <span>Завершіть оплату у вікні Paddle, що зʼявилося.</span>
+            </>
+          ) : (
+            <>
+              <strong>Дякуємо! Заявку надіслано.</strong>
+              <span>Куратор звʼяжеться з вами протягом 15 хвилин.</span>
+            </>
+          )}
         </div>
       )}
     </form>

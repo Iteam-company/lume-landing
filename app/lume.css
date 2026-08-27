@@ -387,6 +387,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .field.is-error .field__err{display:block}
 .form__note{text-align:center;font-size:13px;color:rgba(107,14,20,.65);margin:14px 0 0}
 .form__note a{text-decoration:underline}
+.form__selection{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;justify-content:center;
+  padding:14px 22px;border-radius:999px;border:1.6px solid var(--maroon);
+  font-size:17px;color:var(--maroon-text);text-align:center;
+}
+.form__selection-tier{font-weight:600;letter-spacing:.04em}
+.form__selection b{font-weight:700}
+.form.is-sent .form__selection{display:none}
 [hidden]{display:none!important}
 .form__ok{
   display:grid;gap:6px;justify-items:center;text-align:center;
