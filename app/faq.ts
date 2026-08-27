@@ -4,7 +4,7 @@
    Питання сформульовані так, як їх реально ставлять у пошуку.
    ============================================================ */
 
-import { bestPerMinute, finalPrice, minutesLabelAcc, price, TIERS } from "./pricing";
+import { bestPerMinute, finalPrice, minutesLabelAcc, perMinute, price, TIERS } from "./pricing";
 
 export type QA = { q: string; a: string };
 
@@ -17,7 +17,12 @@ const PRICE_ANSWER = TIERS.map((tier) => {
       ? `від ${price(finalPrice(cheapest))} за ${minutesLabelAcc(cheapest.minutes)} ` +
         `до ${price(finalPrice(priciest))} за ${minutesLabelAcc(priciest.minutes)}`
       : `${price(finalPrice(cheapest))} за ${minutesLabelAcc(cheapest.minutes)}`;
-  return `${tier.name} — ${range}, від ${price(bestPerMinute(tier))} за хвилину`;
+  const rates = tier.options.map(perMinute);
+  const flat = rates.every((r) => r === rates[0]);
+  const rate = flat
+    ? `${price(rates[0])} за хвилину`
+    : `від ${price(bestPerMinute(tier))} за хвилину`;
+  return `${tier.name} — ${range}, ${rate}`;
 }).join("; ") + ".";
 
 export const FAQ: QA[] = [

@@ -14,6 +14,11 @@
  *  а замовлення — прийматися вже за нею. */
 export const LAUNCH_UNTIL = "2026-09-30";
 
+/* Ціна рахується від ставки за хвилину: вартість = ставка × хвилини.
+   Щоб змінити тариф, достатньо однієї цифри в ladder() — усі пʼять
+   варіантів, ціна за хвилину, знижка, FAQ і розмітка для пошуку
+   перерахуються самі. `defaultOption: 0` показує 1 хвилину першою. */
+
 export type PlanOption = {
   minutes: number;
   base: number;
@@ -21,6 +26,15 @@ export type PlanOption = {
 };
 
 export type TierSlug = "story" | "signature" | "cinema";
+
+/** Будує варіанти 1..maxMinutes із ставки за хвилину.
+ *  `rate` — стартова ставка, `regularRate` — звичайна (до кінця акції). */
+function ladder(rate: number, regularRate: number, maxMinutes = 5): PlanOption[] {
+  return Array.from({ length: maxMinutes }, (_, i) => {
+    const minutes = i + 1;
+    return { minutes, base: regularRate * minutes, sale: rate * minutes };
+  });
+}
 
 export type Tier = {
   name: string;
@@ -35,24 +49,13 @@ export type Tier = {
   badge?: string;
 };
 
-/* Ціна в кожному тарифі лінійна: постановча частина + ставка за хвилину.
-   Тому 1, 2 і 5 хвилин — це точне продовження ряду 3 і 4 хвилини, а не
-   окремо придумані цифри. `defaultOption` вирішує, який варіант видно
-   одразу: скрізь 1 хвилина, щоб перше число не відлякувало. */
 export const TIERS: Tier[] = [
   {
     name: "STORY",
     slug: "story",
     tagline: "Доступний спосіб перетворити свою історію на фільм",
-    // Стартова ціна: 59 + 80 за кожну хвилину. Звичайна — та сама формула
-    // зі збереженням знижки ~14%. Дані для 3 хвилин — ваші, решта продовжує ряд.
-    options: [
-      { minutes: 1, base: 159, sale: 139 },
-      { minutes: 2, base: 259, sale: 219 },
-      { minutes: 3, base: 349, sale: 299 },
-      { minutes: 4, base: 439, sale: 379 },
-      { minutes: 5, base: 539, sale: 459 },
-    ],
+    // 85 за хвилину; звичайна ставка 99 зберігає знижку ~14%
+    options: ladder(85, 99),
     defaultOption: 0,
     features: [
       "Один основний візуальний стиль",
@@ -66,14 +69,8 @@ export const TIERS: Tier[] = [
     name: "SIGNATURE",
     slug: "signature",
     tagline: "Персональний міні-фільм, а не просто відео",
-    // Стартова ціна: 89 + 120 за кожну хвилину, знижка ~15%.
-    options: [
-      { minutes: 1, base: 249, sale: 209 },
-      { minutes: 2, base: 389, sale: 329 },
-      { minutes: 3, base: 529, sale: 449 },
-      { minutes: 4, base: 669, sale: 569 },
-      { minutes: 5, base: 809, sale: 689 },
-    ],
+    // 130 за хвилину; звичайна ставка 153 зберігає знижку ~15%
+    options: ladder(130, 153),
     defaultOption: 0,
     features: [
       "Глибше опрацювання історії",
@@ -91,14 +88,8 @@ export const TIERS: Tier[] = [
     name: "CINEMA",
     slug: "cinema",
     tagline: "Максимум режисури, деталей і звуку",
-    // Стартова ціна: 149 + 200 за кожну хвилину, знижка ~17%.
-    options: [
-      { minutes: 1, base: 419, sale: 349 },
-      { minutes: 2, base: 659, sale: 549 },
-      { minutes: 3, base: 899, sale: 749 },
-      { minutes: 4, base: 1139, sale: 949 },
-      { minutes: 5, base: 1379, sale: 1149 },
-    ],
+    // 170 за хвилину; звичайна ставка 204 зберігає знижку ~17%
+    options: ladder(170, 204),
     defaultOption: 0,
     features: [
       "Індивідуальний арт-дирекшн",
