@@ -99,7 +99,7 @@ export default function Home() {
               <br />
               Stories
             </span>
-            <VideoBox variant="wide" />
+            <VideoBox src="/video/hero.mp4" poster="/video/hero-poster.jpg" variant="wide" />
           </Reveal>
         </div>
       </header>
