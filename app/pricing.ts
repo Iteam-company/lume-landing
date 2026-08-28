@@ -69,8 +69,8 @@ export const TIERS: Tier[] = [
     name: "SIGNATURE",
     slug: "signature",
     tagline: "Персональний міні-фільм, а не просто відео",
-    // 130 за хвилину; звичайна ставка 153 зберігає знижку ~15%
-    options: ladder(130, 153),
+    // 120 за хвилину; звичайна ставка 141 зберігає знижку ~15%
+    options: ladder(120, 141),
     defaultOption: 0,
     features: [
       "Глибше опрацювання історії",
@@ -88,8 +88,8 @@ export const TIERS: Tier[] = [
     name: "CINEMA",
     slug: "cinema",
     tagline: "Максимум режисури, деталей і звуку",
-    // 170 за хвилину; звичайна ставка 204 зберігає знижку ~17%
-    options: ladder(170, 204),
+    // 150 за хвилину; звичайна ставка 180 зберігає знижку ~17%
+    options: ladder(150, 180),
     defaultOption: 0,
     features: [
       "Індивідуальний арт-дирекшн",
