@@ -1,6 +1,9 @@
 
 import type { TierSlug } from "./pricing";
 
+/** Set to true to re-enable Paddle checkout. */
+export const PADDLE_ENABLED = false as const;
+
 export const PADDLE_ENV = "sandbox" as const;
 
 export const PADDLE_CLIENT_TOKEN =
