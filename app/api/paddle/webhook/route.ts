@@ -10,6 +10,7 @@
 
 import {
   EventName,
+  NodeRuntime,
   Webhooks,
   type TransactionCompletedEvent,
 } from "@paddle/paddle-node-sdk";
@@ -19,6 +20,12 @@ import type { CheckoutCustomData } from "../../../paddle";
 export const runtime = "nodejs";
 // Вебхук не можна кешувати — виконуємо на кожен запит.
 export const dynamic = "force-dynamic";
+
+// Реєструє Node crypto-провайдер у RuntimeProvider SDK. Без цього
+// standalone `new Webhooks().unmarshal()` завжди повертає "signature
+// verification failed" — провайдер інакше ставиться лише конструктором
+// `new Paddle(...)`, якого ми тут не використовуємо.
+NodeRuntime.initialize();
 
 const webhooks = new Webhooks();
 
