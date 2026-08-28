@@ -139,11 +139,19 @@ export default function Home() {
             </Reveal>
             <Icon name="i-star" className="star star--sep" />
             <Reveal delay={1}>
-              <VideoBox variant="16x9" />
+              <VideoBox
+                variant="16x9"
+                src="/video/work-example-two.mp4"
+                poster="/video/work-example-two-poster.jpg"
+              />
             </Reveal>
             <Icon name="i-star" className="star star--sep" />
             <Reveal delay={2}>
-              <VideoBox variant="16x9" />
+              <VideoBox
+                variant="16x9"
+                src="/video/work-example-three.mp4"
+                poster="/video/work-example-three-poster.jpg"
+              />
             </Reveal>
           </div>
         </div>
