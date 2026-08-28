@@ -17,3 +17,8 @@ export const ORDER_EMAIL = process.env.NEXT_PUBLIC_ORDER_EMAIL ?? "";
 /** Посилання для плаваючої кнопки WhatsApp, напр. https://wa.me/380671234567 */
 export const WHATSAPP_LINK =
   process.env.NEXT_PUBLIC_WHATSAPP_LINK ?? "https://wa.me/";
+
+/** Профіль в Instagram — плаваюча кнопка та посилання в hero/футері. */
+export const INSTAGRAM_LINK =
+  process.env.NEXT_PUBLIC_INSTAGRAM_LINK ??
+  "https://www.instagram.com/lumestory.ua/";

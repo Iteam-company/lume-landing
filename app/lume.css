@@ -422,10 +422,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .footer a:hover{opacity:.7;text-decoration:underline}
 .footer__bottom{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:13px;opacity:.85}
 .footer__nav{display:flex;gap:36px;flex-wrap:wrap}
+.footer__ig{display:inline-flex;align-items:center;gap:6px}
+.footer__ig svg{width:16px;height:16px;fill:currentColor}
 
-/* ---------- плаваюча кнопка WhatsApp ---------- */
-.wa-float{
+/* ---------- плаваючі кнопки (WhatsApp / Instagram) ---------- */
+.floats{
   position:fixed;right:22px;bottom:22px;z-index:40;
+  display:flex;flex-direction:column;align-items:flex-end;gap:12px;
+}
+.wa-float{
   display:flex;align-items:center;gap:10px;
   padding:13px 20px 13px 15px;border-radius:999px;
   background:var(--wine);color:var(--ivory);text-decoration:none;font-weight:600;font-size:15px;
@@ -433,7 +438,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   transform:translateY(120px);opacity:0;
   transition:transform .5s var(--ease),opacity .5s;
 }
-.wa-float.is-visible{transform:translateY(0);opacity:1}
+.wa-float--ig{transition-delay:.06s}
+.floats.is-visible .wa-float{transform:translateY(0);opacity:1}
 .wa-float:hover{transform:translateY(-4px)}
 .wa-float svg{width:24px;height:24px;fill:var(--ivory)}
 
@@ -523,7 +529,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   .faq__a p{max-width:100%}
   .field__label{font-size:22px}
   .wa-float span{display:none}
-  .wa-float{padding:14px;right:16px;bottom:16px}
+  .wa-float{padding:14px}
+  .floats{right:16px;bottom:16px;gap:10px}
   .film{height:30px;background-size:34px 30px;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='30'%3E%3Crect x='5' y='9' width='24' height='12' rx='4' fill='%23F3F0EA'/%3E%3C/svg%3E")}
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { WHATSAPP_LINK } from "../config";
+import { WHATSAPP_LINK, INSTAGRAM_LINK } from "../config";
 import { Icon } from "./Icons";
 
 export default function WhatsAppFloat() {
@@ -15,15 +15,27 @@ export default function WhatsAppFloat() {
   }, []);
 
   return (
-    <a
-      className={`wa-float${visible ? " is-visible" : ""}`}
-      href={WHATSAPP_LINK}
-      target="_blank"
-      rel="noopener"
-      aria-label="Написати у WhatsApp"
-    >
-      <Icon name="i-wa" />
-      <span>WhatsApp</span>
-    </a>
+    <div className={`floats${visible ? " is-visible" : ""}`}>
+      <a
+        className="wa-float wa-float--ig"
+        href={INSTAGRAM_LINK}
+        target="_blank"
+        rel="noopener"
+        aria-label="Ми в Instagram"
+      >
+        <Icon name="i-ig" />
+        <span>Instagram</span>
+      </a>
+      <a
+        className="wa-float"
+        href={WHATSAPP_LINK}
+        target="_blank"
+        rel="noopener"
+        aria-label="Написати у WhatsApp"
+      >
+        <Icon name="i-wa" />
+        <span>WhatsApp</span>
+      </a>
+    </div>
   );
 }
