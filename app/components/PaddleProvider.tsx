@@ -13,7 +13,7 @@ import {
   initializePaddle,
   type Paddle,
 } from "@paddle/paddle-js";
-import { PADDLE_CLIENT_TOKEN, PADDLE_ENV } from "../paddle";
+import { PADDLE_CLIENT_TOKEN, PADDLE_ENABLED, PADDLE_ENV } from "../paddle";
 
 export type CheckoutPhase = "idle" | "loaded" | "closed" | "completed";
 
@@ -40,6 +40,7 @@ export default function PaddleProvider({ children }: { children: ReactNode }) {
   const resetCheckout = useCallback(() => setCheckoutPhase("idle"), []);
 
   useEffect(() => {
+    if (!PADDLE_ENABLED) return;
     if (!PADDLE_CLIENT_TOKEN) return;
     if (paddle?.Initialized) return;
 
