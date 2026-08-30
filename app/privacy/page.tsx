@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LegalShell from "../components/LegalShell";
 
 export const metadata: Metadata = {
-  title: "Політика конфіденційності — LUME",
+  title: "Політика конфіденційності",
   description:
     "Які дані збирає сайт LUME, з якою метою вони обробляються, як зберігаються та кому передаються.",
 };

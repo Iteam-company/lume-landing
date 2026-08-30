@@ -3,7 +3,7 @@ import Link from "next/link";
 import LegalShell from "../components/LegalShell";
 
 export const metadata: Metadata = {
-  title: "Користувацька угода — LUME",
+  title: "Користувацька угода",
   description: "Умови використання сайту LUME та оформлення замовлень.",
 };
 
