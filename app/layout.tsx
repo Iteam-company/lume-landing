@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Abhaya_Libre, Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import "./lume.css";
+import MetaPixel from "./components/MetaPixel";
 import { BRAND, DESCRIPTION, KEYWORDS, SITE_URL, TAGLINE } from "./site";
 
 /* Типографіка за брендбуком:
@@ -73,7 +74,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="uk"
       className={`${sans.variable} ${cormorant.variable} ${abhaya.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <MetaPixel />
+      </body>
     </html>
   );
 }

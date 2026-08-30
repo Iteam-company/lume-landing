@@ -12,6 +12,7 @@ import {
   type CheckoutCustomData,
 } from "../paddle";
 import { usePaddle } from "./PaddleProvider";
+import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 
 type Errors = Partial<Record<"name" | "phone" | "telegram" | "email", boolean>>;
@@ -127,10 +128,21 @@ export default function OrderForm() {
 
     setSent(true);
 
+    // Основна конверсія воронки: заявку заповнено і надіслано.
+    trackPixel("Lead", {
+      content_name: selection ? `${selection.tierName} · ${selection.minutes} хв` : "Форма заявки",
+      ...(selection ? { value: selection.amount, currency: "USD" } : {}),
+    });
+
     // 2. Після заявки — відкриваємо Paddle Sandbox overlay checkout.
     if (paddle && priceId && selection) {
       resetCheckout();
       setCheckoutRequested(true);
+      trackPixel("InitiateCheckout", {
+        content_name: `${selection.tierName} · ${selection.minutes} хв`,
+        value: selection.amount,
+        currency: "USD",
+      });
       paddle.Checkout.open({
         items: [{ priceId, quantity: 1 }],
         customer: { email: values.email.trim() },

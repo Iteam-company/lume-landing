@@ -11,6 +11,7 @@ import {
   price,
   type Tier,
 } from "../pricing";
+import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 
 export default function PlanCard({ tier }: { tier: Tier }) {
@@ -73,6 +74,14 @@ export default function PlanCard({ tier }: { tier: Tier }) {
       <Link
         href={`/?tier=${tier.slug}&minutes=${option.minutes}#form`}
         className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
+        onClick={() =>
+          trackPixel("ViewContent", {
+            content_name: `${tier.name} · ${option.minutes} хв`,
+            content_category: tier.name,
+            value: finalPrice(option),
+            currency: "USD",
+          })
+        }
       >
         Замовити
       </Link>
