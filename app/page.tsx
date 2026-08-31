@@ -18,8 +18,16 @@ import WhatsAppFloat from "./components/WhatsAppFloat";
    і впишіть шлях, напр. src="/video/work-1.mp4" */
 
 const REACTIONS = [
-  { caption: "Любов" },
-  { caption: "День народження" },
+  {
+    caption: "Любов",
+    src: "/video/reaction-one.mp4",
+    poster: "/video/reaction-one-poster.jpg",
+  },
+  {
+    caption: "Теплі моменти",
+    src: "/video/reaction-two.mp4",
+    poster: "/video/reaction-two-poster.jpg",
+  },
   { caption: "День народження" },
   { caption: "Гендер паті" },
 ] as const;
@@ -171,7 +179,11 @@ export default function Home() {
                 className="reaction"
                 delay={(i % 4) as 0 | 1 | 2 | 3}
               >
-                <VideoBox variant="9x16" />
+                <VideoBox
+                  variant="9x16"
+                  src={"src" in r ? r.src : undefined}
+                  poster={"poster" in r ? r.poster : undefined}
+                />
                 <figcaption className="script">{r.caption}</figcaption>
               </Reveal>
             ))}
