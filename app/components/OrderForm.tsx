@@ -3,7 +3,6 @@
 import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FORM_ENDPOINT, ORDER_EMAIL } from "../config";
 import { finalPrice, minutesLabel, price, TIERS } from "../pricing";
 import {
   isMinutes,
@@ -48,6 +47,8 @@ export default function OrderForm() {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const { paddle, checkoutPhase, resetCheckout } = usePaddle();
   const searchParams = useSearchParams();
@@ -75,10 +76,12 @@ export default function OrderForm() {
   const set = (field: keyof typeof values, value: string) => {
     setValues((v) => ({ ...v, [field]: value }));
     setErrors((e) => ({ ...e, [field]: false }));
+    setSubmitError(false);
   };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
 
     const next: Errors = {};
     (Object.keys(values) as (keyof typeof values)[]).forEach((k) => {
@@ -88,42 +91,35 @@ export default function OrderForm() {
     if (Object.keys(next).length) return;
 
     const priceId = selection?.priceId ?? null;
-    const willOpenCheckout = Boolean(paddle && priceId);
 
-    const payload = {
-      ...values,
-      page: window.location.href,
-      ...(selection
-        ? { tier: selection.slug, minutes: selection.minutes }
-        : {}),
-    };
+    setSubmitting(true);
+    setSubmitError(false);
 
-    // 1. Спершу — існуюча відправка заявки (лід зберігаємо в будь-якому разі).
-    if (FORM_ENDPOINT) {
-      try {
-        await fetch(FORM_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } catch {
-        /* заявку показуємо як надіслану, щоб не втратити користувача */
-      }
-    } else if (ORDER_EMAIL && !willOpenCheckout) {
-      // mailto повністю забирає сторінку — робимо його лише коли checkout не відкриваємо.
-      const body =
-        `Імʼя: ${payload.name}\n` +
-        `Телефон (WhatsApp): ${payload.phone}\n` +
-        `Telegram: ${payload.telegram || "—"}\n` +
-        `E-mail: ${payload.email}\n` +
-        (selection
-          ? `Тариф: ${selection.tierName} · ${selection.minutes} хв\n`
-          : "") +
-        `Сторінка: ${payload.page}`;
-      window.location.href =
-        `mailto:${ORDER_EMAIL}` +
-        `?subject=${encodeURIComponent("Заявка на мультфільм — LUME")}` +
-        `&body=${encodeURIComponent(body)}`;
+    let ok = false;
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: values.name.trim(),
+          phone: values.phone.trim(),
+          telegram: values.telegram.trim(),
+          email: values.email.trim(),
+          ...(selection
+            ? { tier: selection.slug, minutes: selection.minutes }
+            : {}),
+        }),
+      });
+      ok = res.ok;
+    } catch {
+      ok = false;
+    }
+
+    setSubmitting(false);
+
+    if (!ok) {
+      setSubmitError(true);
+      return;
     }
 
     setSent(true);
@@ -134,7 +130,6 @@ export default function OrderForm() {
       ...(selection ? { value: selection.amount, currency: "USD" } : {}),
     });
 
-    // 2. Після заявки — відкриваємо Paddle Sandbox overlay checkout.
     if (paddle && priceId && selection) {
       resetCheckout();
       setCheckoutRequested(true);
@@ -255,11 +250,19 @@ export default function OrderForm() {
         </p>
       )}
 
-      <button className="btn btn--cta" type="submit">
-        {selection && paddle && selection.priceId
-          ? "Перейти до оплати"
-          : "Замовити мультфільм"}
+      <button className="btn btn--cta" type="submit" disabled={submitting}>
+        {submitting
+          ? "Надсилаємо…"
+          : selection && paddle && selection.priceId
+            ? "Перейти до оплати"
+            : "Замовити мультфільм"}
       </button>
+
+      {submitError && (
+        <p className="form__error" role="alert">
+          Не вдалося надіслати заявку. Перевірте зʼєднання та спробуйте ще раз.
+        </p>
+      )}
 
       <p className="form__note">
         Натискаючи кнопку, ви погоджуєтесь з{" "}

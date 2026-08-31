@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WHATSAPP_LINK } from "../config";
 
 export default function SiteFooter() {
   return (
@@ -8,8 +9,9 @@ export default function SiteFooter() {
         <nav className="footer__nav">
           <Link href="/terms">Користувацька угода</Link>
           <Link href="/privacy">Політика конфіденційності</Link>
-          {/* Підтримка: за потреби замініть на mailto:ваша@пошта */}
-          <Link href="/#form">Підтримка</Link>
+          <a href={WHATSAPP_LINK} target="_blank" rel="noopener">
+            Підтримка
+          </a>
           <a
             className="footer__ig"
             href="https://www.instagram.com/lumestory.ua/"

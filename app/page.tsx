@@ -73,7 +73,7 @@ export default function Home() {
       <header className="hero">
         <div className="container hero__inner">
           <Reveal className="hero__left">
-            <Link href="/#form" className="logo" aria-label="LUME">
+            <Link href="/#pricing" className="logo" aria-label="LUME">
               <span className="logo__text">LUME</span>
             </Link>
             <h1 className="hero__title">
@@ -98,7 +98,7 @@ export default function Home() {
                 Особистий куратор
               </li>
             </ul>
-            <Link href="/#form" className="btn btn--dark">
+            <Link href="/#pricing" className="btn btn--dark">
               Замовити мультфільм
             </Link>
           </Reveal>
@@ -200,7 +200,7 @@ export default function Home() {
             <h2 className="h2 h2--left">
               Мультфільм за <span className="script script--xl">1 день</span>
             </h2>
-            <Link href="/#form" className="btn btn--light">
+            <Link href="/#pricing" className="btn btn--light">
               Замовити мультфільм
             </Link>
           </Reveal>

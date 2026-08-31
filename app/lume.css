@@ -394,6 +394,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .field.is-error .field__err{display:block}
 .form__note{text-align:center;font-size:13px;color:rgba(25,24,23,.65);margin:14px 0 0}
 .form__note a{text-decoration:underline}
+.form__error{text-align:center;font-size:14px;color:#c0392b;margin:2px 0 0}
+.btn:disabled{opacity:.55;pointer-events:none}
 .form__selection{
   display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;justify-content:center;
   padding:14px 22px;border-radius:999px;border:1.6px solid var(--maroon);
@@ -409,7 +411,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   border:1.5px solid var(--rose);
 }
 .form__ok strong{font-size:22px}
-.form.is-sent .field,.form.is-sent .btn,.form.is-sent .form__note{display:none}
+.form.is-sent .field,.form.is-sent .btn,.form.is-sent .form__note,.form.is-sent .form__error{display:none}
 
 /* ============================================================
    FOOTER

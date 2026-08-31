@@ -8,10 +8,7 @@
    а без префікса змінна лишається тільки на сервері.
    ============================================================ */
 
-/** Куди відправляти заявку (Formspree, Getform, власний бекенд). POST з JSON. */
-export const FORM_ENDPOINT = process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "";
-
-/** Запасний варіант: якщо endpoint не заданий, заявка піде листом на цю адресу. */
+/** Контактний e-mail для структурованої розмітки (JSON-LD). */
 export const ORDER_EMAIL = process.env.NEXT_PUBLIC_ORDER_EMAIL ?? "";
 
 /** Посилання для плаваючої кнопки WhatsApp, напр. https://wa.me/380671234567 */
