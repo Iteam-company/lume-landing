@@ -239,11 +239,11 @@ button{font:inherit;color:inherit;cursor:pointer}
    ============================================================ */
 .pricing{padding:100px 0 110px}
 .pricing__lead{margin:-22px 0 34px;font-size:17px;color:rgba(25,24,23,.75)}
-.pricing__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+.pricing__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:stretch}
 .pricing__grid > .reveal{display:flex}
 .plan{
   position:relative;display:flex;flex-direction:column;
-  padding:36px 28px 30px;border:1.6px solid var(--maroon);border-radius:var(--radius);
+  padding:34px 22px 28px;border:1.6px solid var(--maroon);border-radius:var(--radius);
   background:transparent;
   transition:transform .45s var(--ease),box-shadow .45s var(--ease);
 }
@@ -259,7 +259,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 }
 .plan__name{
   font-family:var(--font-sans),sans-serif;font-weight:900;text-transform:uppercase;
-  font-size:26px;letter-spacing:-.3px;margin:0;color:var(--maroon-text);
+  font-size:23px;letter-spacing:-.3px;margin:0;color:var(--maroon-text);
 }
 .plan{width:100%}
 /* min-height тримає перемикач і ціну на одній лінії в усіх картках,
@@ -287,9 +287,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .plan__launch{font-size:13px;color:rgba(25,24,23,.6)}
 .plan--featured .plan__launch{color:rgba(255,255,255,.65)}
 .plan--featured .plan__per{color:rgba(255,255,255,.78)}
-.plan__price{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:22px}
+/* min-height тримає списки переваг на одній лінії в усіх картках:
+   у безакційних тарифів немає рядків «стара ціна» і «стартова ціна діє до»,
+   тож без резерву їхній блок ціни на два рядки нижчий. */
+.plan__price{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:22px;min-height:129px}
 .plan__now{
-  font-family:var(--font-sans),sans-serif;font-weight:900;font-size:44px;line-height:1;
+  font-family:var(--font-sans),sans-serif;font-weight:900;font-size:40px;line-height:1;
   letter-spacing:-1.5px;color:var(--maroon-text);
 }
 .plan__was{display:inline-flex;align-items:center;gap:8px;font-size:16px}
@@ -485,6 +488,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* ============================================================
    АДАПТИВ
    ============================================================ */
+@media (max-width:1240px){
+  .pricing__grid{grid-template-columns:repeat(2,1fr);gap:24px}
+}
 @media (max-width:1100px){
   .step--down{margin-top:150px}
   .step__num{font-size:74px}
@@ -524,6 +530,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   .reactions__grid{grid-template-columns:1fr}
   .pricing{padding:70px 0}
   .pricing__grid{grid-template-columns:1fr;gap:26px}
+  .plan__price{min-height:0}
   .audience__lead{font-size:19px}
   .audience__text p{font-size:16px}
   .plan__now{font-size:38px}

@@ -23,7 +23,9 @@ export type CheckoutCustomData = {
  * app/pricing.ts (`finalPrice(option)`). Ці sandbox-ціни синхронізовані
  * саме з тими сумами; попередній набір заархівовано в Paddle.
  */
-const SANDBOX_PRICE_IDS: Record<TierSlug, Record<Minutes, string>> = {
+/* Partial: у DIAMOND ще немає позицій у Paddle, тому для нього
+   resolvePaddlePriceId поверне null і каса просто не відкриється. */
+const SANDBOX_PRICE_IDS: Partial<Record<TierSlug, Record<Minutes, string>>> = {
   story: {
     1: "pri_01m11nrkhc8vnzfjrafrtf057g",
     2: "pri_01m11nrkp0nvet0dxwab6njnvx",
@@ -47,7 +49,7 @@ const SANDBOX_PRICE_IDS: Record<TierSlug, Record<Minutes, string>> = {
   },
 };
 
-const TIER_SLUGS: readonly TierSlug[] = ["story", "signature", "cinema"];
+const TIER_SLUGS: readonly TierSlug[] = ["story", "signature", "cinema", "diamond"];
 const MINUTES_VALUES: readonly Minutes[] = [1, 2, 3, 4, 5];
 
 export function isTierSlug(value: string | null | undefined): value is TierSlug {
@@ -63,5 +65,5 @@ export function resolvePaddlePriceId(
   minutes: number | null | undefined,
 ): string | null {
   if (!isTierSlug(tier) || !isMinutes(minutes)) return null;
-  return SANDBOX_PRICE_IDS[tier][minutes] ?? null;
+  return SANDBOX_PRICE_IDS[tier]?.[minutes] ?? null;
 }

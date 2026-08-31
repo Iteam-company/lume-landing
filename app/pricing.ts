@@ -25,14 +25,19 @@ export type PlanOption = {
   sale?: number;
 };
 
-export type TierSlug = "story" | "signature" | "cinema";
+export type TierSlug = "story" | "signature" | "cinema" | "diamond";
 
 /** Будує варіанти 1..maxMinutes із ставки за хвилину.
- *  `rate` — стартова ставка, `regularRate` — звичайна (до кінця акції). */
-function ladder(rate: number, regularRate: number, maxMinutes = 5): PlanOption[] {
+ *
+ *  `rate` — ставка, яку платить клієнт зараз.
+ *  `regularRate` — звичайна ставка до кінця акції. Якщо її не передати,
+ *  тариф вважається безакційним: без перекресленої ціни й без строку дії. */
+function ladder(rate: number, regularRate?: number, maxMinutes = 5): PlanOption[] {
   return Array.from({ length: maxMinutes }, (_, i) => {
     const minutes = i + 1;
-    return { minutes, base: regularRate * minutes, sale: rate * minutes };
+    return regularRate
+      ? { minutes, base: regularRate * minutes, sale: rate * minutes }
+      : { minutes, base: rate * minutes };
   });
 }
 
@@ -62,7 +67,7 @@ export const TIERS: Tier[] = [
       "Стандартна деталізація персонажів",
       "Простіша режисура та анімація",
       "Готова музика і стандартний саунд-дизайн",
-      "Обмежена кількість правок",
+      "1 коло правок",
     ],
   },
   {
@@ -100,6 +105,22 @@ export const TIERS: Tier[] = [
       "Кілька варіантів ключових сцен",
       "3 кола правок",
       "Пріоритетне виробництво",
+    ],
+  },
+  {
+    name: "DIAMOND",
+    slug: "diamond",
+    tagline: "Преміум: унікальний звук і повний супровід",
+    // 210 за хвилину, без акційної ціни
+    options: ladder(210),
+    defaultOption: 0,
+    features: [
+      "3 кола правок на всіх етапах",
+      "Кастомний звук і унікальне аудіо-оформлення (Sound Design & Foley)",
+      "Повний супровід та індивідуальна розробка концепції",
+      "Максимальна відповідність і фотореалізм персонажів",
+      "Пріоритетне виготовлення",
+      "Адаптація під усі необхідні формати",
     ],
   },
 ];
