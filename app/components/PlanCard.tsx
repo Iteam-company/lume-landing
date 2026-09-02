@@ -18,9 +18,14 @@ export default function PlanCard({ tier }: { tier: Tier }) {
   const [index, setIndex] = useState(tier.defaultOption ?? 0);
   const option = tier.options[index];
   const off = discount(option);
+  const isDiamond = tier.slug === "diamond";
 
   return (
-    <article className={`plan${tier.featured ? " plan--featured" : ""}`}>
+    <article
+      className={`plan${tier.featured ? " plan--featured" : ""}${
+        isDiamond ? " plan--diamond" : ""
+      }`}
+    >
       {tier.badge ? <span className="plan__badge">{tier.badge}</span> : null}
 
       <h3 className="plan__name">{tier.name}</h3>
@@ -73,7 +78,9 @@ export default function PlanCard({ tier }: { tier: Tier }) {
 
       <Link
         href={`/?tier=${tier.slug}&minutes=${option.minutes}#form`}
-        className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
+        className={`btn ${
+          isDiamond ? "btn--gold" : tier.featured ? "btn--light" : "btn--dark"
+        } plan__cta`}
         onClick={() =>
           trackPixel("ViewContent", {
             content_name: `${tier.name} · ${option.minutes} хв`,

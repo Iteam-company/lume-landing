@@ -313,6 +313,41 @@ button{font:inherit;color:inherit;cursor:pointer}
   margin:10px 0 0;text-align:center;font-size:14px;color:rgba(25,24,23,.65);
 }
 
+/* ---------- DIAMOND: ексклюзивний вигляд ----------
+   Графітова картка з дозованими золотими акцентами. Лишається в межах
+   брендової палітри (--gold, --charcoal), без яскравого glow. */
+.plan--diamond{
+  color:var(--cream);
+  background:linear-gradient(160deg,#211F1E,#171615);
+  border-color:rgba(195,163,107,.55);
+  box-shadow:0 18px 40px rgba(0,0,0,.32);
+}
+.plan--diamond:hover{
+  box-shadow:0 26px 52px rgba(0,0,0,.42),0 0 0 1px rgba(195,163,107,.55);
+}
+.plan--diamond .plan__name{color:var(--gold)}
+.plan--diamond .plan__tagline{color:rgba(255,255,255,.7)}
+.plan--diamond .plan__now{color:var(--cream)}
+.plan--diamond .plan__per{color:rgba(255,255,255,.72)}
+.plan--diamond .plan__list li{color:rgba(255,255,255,.86)}
+.plan--diamond .plan__list .star{color:var(--gold)}
+.plan--diamond .plan__badge{box-shadow:0 6px 16px rgba(0,0,0,.28)}
+.plan--diamond .opt{border-color:rgba(195,163,107,.38);color:var(--cream)}
+.plan--diamond .opt:hover{border-color:var(--gold)}
+.plan--diamond .opt.is-active{
+  background:var(--gold);border-color:var(--gold);color:var(--charcoal);
+}
+
+/* золотий CTA — лише для DIAMOND */
+.btn--gold{
+  background:var(--gold);color:var(--charcoal);
+  box-shadow:0 10px 26px rgba(195,163,107,.28);
+}
+.btn--gold:hover{
+  background:#B4915A;
+  box-shadow:0 16px 34px rgba(195,163,107,.34);
+}
+
 /* ============================================================
    КОМУ ПІДІЙДЕ
    ============================================================ */
