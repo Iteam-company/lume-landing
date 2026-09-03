@@ -1,105 +1,86 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Audience from "./components/Audience";
-import Counter from "./components/Counter";
-import Faq from "./components/Faq";
-import FilmEdge from "./components/FilmEdge";
-import { Icon, IconSprite } from "./components/Icons";
-import OrderForm from "./components/OrderForm";
-import PaddleProvider from "./components/PaddleProvider";
-import Pricing from "./components/Pricing";
-import Reveal from "./components/Reveal";
-import StructuredData from "./components/StructuredData";
-import SiteFooter from "./components/SiteFooter";
-import VideoBox from "./components/VideoBox";
-import WhatsAppFloat from "./components/WhatsAppFloat";
+import Audience from "../components/Audience";
+import Counter from "../components/Counter";
+import Faq from "../components/Faq";
+import FilmEdge from "../components/FilmEdge";
+import { Icon, IconSprite } from "../components/Icons";
+import OrderForm from "../components/OrderForm";
+import PaddleProvider from "../components/PaddleProvider";
+import Pricing from "../components/Pricing";
+import Reveal from "../components/Reveal";
+import StructuredData from "../components/StructuredData";
+import SiteFooter from "../components/SiteFooter";
+import VideoBox from "../components/VideoBox";
+import WhatsAppFloat from "../components/WhatsAppFloat";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "../i18n/config";
+import { getDictionary } from "../i18n/dictionaries";
+import { localeHref } from "../i18n/locale-path";
+import { buildFaq } from "../faq";
 
-/* Щоб додати відео — покладіть файл у public/video/
-   і впишіть шлях, напр. src="/video/work-1.mp4" */
+/* Медіа для секцій. Текст (підписи, кроки, підписи цифр) — у словниках. */
+const REACTION_MEDIA: { src?: string; poster?: string }[] = [
+  { src: "/video/reaction-one.mp4", poster: "/video/reaction-one-poster.jpg" },
+  { src: "/video/reaction-two.mp4", poster: "/video/reaction-two-poster.jpg" },
+  {},
+  {},
+];
 
-const REACTIONS = [
-  {
-    caption: "Любов",
-    src: "/video/reaction-one.mp4",
-    poster: "/video/reaction-one-poster.jpg",
-  },
-  {
-    caption: "Теплі моменти",
-    src: "/video/reaction-two.mp4",
-    poster: "/video/reaction-two-poster.jpg",
-  },
-  { caption: "День народження" },
-  { caption: "Гендер паті" },
-] as const;
+const STEP_NUMS = ["01", "02", "03", "04"] as const;
 
-const STEPS = [
-  {
-    num: "01",
-    title: ["Бриф"],
-    text: "Ви проходите коротке опитування: розповідаєте історію, ділитеся деталями та важливими моментами",
-    dot: true,
-  },
-  {
-    num: "02",
-    title: ["Фото та", "персонажі"],
-    text: "Ви надсилаєте фотографії — ми малюємо персонажів, максимально схожих на вас",
-  },
-  {
-    num: "03",
-    title: ["Сценарій і", "розкадровка"],
-    text: "Опрацьовуємо сюжет, ритм і драматургію — щоб історія виглядала цілісно та зворушливо",
-  },
-  {
-    num: "04",
-    title: ["Монтаж і", "мультфільм"],
-    text: "Поєднуємо все разом: рухи, ефекти, атмосферу. За бажанням — озвучення або ваша улюблена пісня",
-  },
-] as const;
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang: raw } = await params;
+  const lang: Locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
+  const dict = getDictionary(lang);
+  const pricingHref = localeHref(lang, "/#pricing");
 
-const NUMBERS = [
-  { to: 200, suffix: "+", label: "створених мультфільмів" },
-  { to: 100, suffix: "+", label: "щасливих клієнтів" },
-  { text: "15 хв", label: "відповідь куратора" },
-  { text: "1 день", label: "термін виготовлення" },
-] as const;
+  const reactions = dict.reactions.captions.map((caption, i) => ({
+    caption,
+    ...REACTION_MEDIA[i],
+  }));
 
-export default function Home() {
+  const numbers = [
+    { to: 200, suffix: "+", label: dict.numbers.labels[0] },
+    { to: 100, suffix: "+", label: dict.numbers.labels[1] },
+    { text: dict.numbers.response, label: dict.numbers.labels[2] },
+    { text: dict.numbers.delivery, label: dict.numbers.labels[3] },
+  ] as const;
+
   return (
     <>
-      <StructuredData />
+      <StructuredData lang={lang} />
       <IconSprite />
 
       {/* ============ HERO ============ */}
       <header className="hero">
         <div className="container hero__inner">
           <Reveal className="hero__left">
-            <Link href="/#pricing" className="logo" aria-label="LUME">
+            <Link href={pricingHref} className="logo" aria-label="LUME">
               <span className="logo__text">LUME</span>
             </Link>
             <h1 className="hero__title">
-              Подаруй близькій людині
-              <br />
-              мультфільм
-              <br />
-              за вашою історією
+              {dict.hero.titleLines.map((line, i) => (
+                <span key={line}>
+                  {line}
+                  {i < dict.hero.titleLines.length - 1 ? <br /> : null}
+                </span>
+              ))}
             </h1>
-            <p className="hero__sub">Для пар, батьків, дітей, друзів і близьких</p>
+            <p className="hero__sub">{dict.hero.sub}</p>
             <ul className="hero__bullets">
-              <li>
-                <Icon name="i-star" className="star" />
-                200+ створених мультфільмів
-              </li>
-              <li>
-                <Icon name="i-star" className="star" />
-                Термін створення — 1 день
-              </li>
-              <li>
-                <Icon name="i-star" className="star" />
-                Особистий куратор
-              </li>
+              {dict.hero.bullets.map((bullet) => (
+                <li key={bullet}>
+                  <Icon name="i-star" className="star" />
+                  {bullet}
+                </li>
+              ))}
             </ul>
-            <Link href="/#pricing" className="btn btn--dark">
-              Замовити мультфільм
+            <Link href={pricingHref} className="btn btn--dark">
+              {dict.common.orderCta}
             </Link>
           </Reveal>
 
@@ -109,7 +90,12 @@ export default function Home() {
               <br />
               Stories
             </span>
-            <VideoBox src="/video/hero.mp4" poster="/video/hero-poster.jpg" variant="wide" />
+            <VideoBox
+              src="/video/hero.mp4"
+              poster="/video/hero-poster.jpg"
+              variant="wide"
+              labels={dict.video}
+            />
           </Reveal>
         </div>
       </header>
@@ -134,7 +120,7 @@ export default function Home() {
                 strokeLinecap="round"
               />
             </svg>
-            <h2 className="h2">Наші роботи</h2>
+            <h2 className="h2">{dict.works.heading}</h2>
           </Reveal>
 
           <div className="works__grid">
@@ -143,6 +129,7 @@ export default function Home() {
                 variant="16x9"
                 src="/video/work-example-one.mp4"
                 poster="/video/work-example-one-poster.jpg"
+                labels={dict.video}
               />
             </Reveal>
             <Icon name="i-star" className="star star--sep" />
@@ -151,6 +138,7 @@ export default function Home() {
                 variant="16x9"
                 src="/video/work-example-two.mp4"
                 poster="/video/work-example-two-poster.jpg"
+                labels={dict.video}
               />
             </Reveal>
             <Icon name="i-star" className="star star--sep" />
@@ -159,6 +147,7 @@ export default function Home() {
                 variant="16x9"
                 src="/video/work-example-three.mp4"
                 poster="/video/work-example-three-poster.jpg"
+                labels={dict.video}
               />
             </Reveal>
           </div>
@@ -169,10 +158,10 @@ export default function Home() {
       <section className="reactions" id="reactions">
         <div className="container">
           <Reveal as="h2" className="h2 h2--dark">
-            Реакції клієнтів:
+            {dict.reactions.heading}
           </Reveal>
           <div className="reactions__grid">
-            {REACTIONS.map((r, i) => (
+            {reactions.map((r, i) => (
               <Reveal
                 key={`${r.caption}-${i}`}
                 as="figure"
@@ -181,8 +170,9 @@ export default function Home() {
               >
                 <VideoBox
                   variant="9x16"
-                  src={"src" in r ? r.src : undefined}
-                  poster={"poster" in r ? r.poster : undefined}
+                  src={r.src}
+                  poster={r.poster}
+                  labels={dict.video}
                 />
                 <figcaption className="script">{r.caption}</figcaption>
               </Reveal>
@@ -198,10 +188,11 @@ export default function Home() {
         <div className="container">
           <Reveal className="process__head">
             <h2 className="h2 h2--left">
-              Мультфільм за <span className="script script--xl">1 день</span>
+              {dict.process.headingPrefix}
+              <span className="script script--xl">{dict.process.headingAccent}</span>
             </h2>
-            <Link href="/#pricing" className="btn btn--light">
-              Замовити мультфільм
+            <Link href={pricingHref} className="btn btn--light">
+              {dict.common.orderCta}
             </Link>
           </Reveal>
 
@@ -211,14 +202,14 @@ export default function Home() {
             <div className="arch arch--3" aria-hidden="true" />
             <span className="arch-tail" aria-hidden="true" />
 
-            {STEPS.map((step, i) => (
+            {dict.process.steps.map((step, i) => (
               <Reveal
-                key={step.num}
+                key={STEP_NUMS[i]}
                 as="article"
                 className={`step step--${i % 2 === 0 ? "up" : "down"}`}
                 delay={i as 0 | 1 | 2 | 3}
               >
-                <span className="step__num">{step.num}</span>
+                <span className="step__num">{STEP_NUMS[i]}</span>
                 <h3 className="script step__title">
                   {step.title.map((line, k) => (
                     <span key={line}>
@@ -228,7 +219,7 @@ export default function Home() {
                   ))}
                 </h3>
                 <p>
-                  {"dot" in step && step.dot ? <span className="dot" /> : null}
+                  {i === 0 ? <span className="dot" /> : null}
                   {step.text}
                 </p>
               </Reveal>
@@ -238,16 +229,16 @@ export default function Home() {
       </section>
 
       {/* ============ ТАРИФИ ============ */}
-      <Pricing />
+      <Pricing dict={dict} lang={lang} />
 
       {/* ============ ЦИФРИ ============ */}
       <section className="numbers" id="numbers">
         <div className="container">
           <Reveal as="h2" className="h2 h2--dark">
-            Цифри:
+            {dict.numbers.heading}
           </Reveal>
           <div className="numbers__grid">
-            {NUMBERS.map((n, i) => (
+            {numbers.map((n, i) => (
               <Reveal key={n.label} className="num" delay={i as 0 | 1 | 2 | 3}>
                 <Icon name="i-star" className="star star--num" />
                 {"to" in n ? (
@@ -263,16 +254,16 @@ export default function Home() {
       </section>
 
       {/* ============ КОМУ ПІДІЙДЕ ============ */}
-      <Audience />
+      <Audience dict={dict} />
 
       {/* ============ FAQ ============ */}
       <section className="faq section--dark" id="faq">
         <div className="container container--narrow">
           <Reveal as="h2" className="h2 h2--sm">
-            FAQ:
+            {dict.faq.heading}
           </Reveal>
           <Reveal>
-            <Faq />
+            <Faq items={buildFaq(lang)} />
           </Reveal>
         </div>
       </section>
@@ -283,15 +274,15 @@ export default function Home() {
           <Reveal>
             <PaddleProvider>
               <Suspense fallback={null}>
-                <OrderForm />
+                <OrderForm dict={dict.form} lang={lang} />
               </Suspense>
             </PaddleProvider>
           </Reveal>
         </div>
       </section>
 
-      <SiteFooter />
-      <WhatsAppFloat />
+      <SiteFooter dict={dict} lang={lang} />
+      <WhatsAppFloat labels={dict.floats} />
     </>
   );
 }

@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { WHATSAPP_LINK, INSTAGRAM_LINK } from "../config";
 import { Icon } from "./Icons";
 
-export default function WhatsAppFloat() {
+export default function WhatsAppFloat({
+  labels,
+}: {
+  labels: { instagramAria: string; whatsappAria: string };
+}) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -21,7 +25,7 @@ export default function WhatsAppFloat() {
         href={INSTAGRAM_LINK}
         target="_blank"
         rel="noopener"
-        aria-label="Ми в Instagram"
+        aria-label={labels.instagramAria}
       >
         <Icon name="i-ig" />
         <span>Instagram</span>
@@ -31,7 +35,7 @@ export default function WhatsAppFloat() {
         href={WHATSAPP_LINK}
         target="_blank"
         rel="noopener"
-        aria-label="Написати у WhatsApp"
+        aria-label={labels.whatsappAria}
       >
         <Icon name="i-wa" />
         <span>WhatsApp</span>

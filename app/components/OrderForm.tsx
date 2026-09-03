@@ -3,7 +3,11 @@
 import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { finalPrice, minutesLabel, price, TIERS } from "../pricing";
+import { finalPrice, optionsFor, TIERS } from "../pricing";
+import { localeToCurrency, type Locale } from "../i18n/config";
+import { formatMinutes, formatPrice } from "../i18n/format";
+import { localeHref } from "../i18n/locale-path";
+import type { Dictionary } from "../i18n/dictionaries";
 import {
   isMinutes,
   isTierSlug,
@@ -38,7 +42,15 @@ const isValid = {
     /^@?[A-Za-z0-9_]{4,32}$/.test(v.trim().replace(/^https?:\/\/t\.me\//i, "")),
 };
 
-export default function OrderForm() {
+export default function OrderForm({
+  dict,
+  lang,
+}: {
+  dict: Dictionary["form"];
+  lang: Locale;
+}) {
+  const currency = localeToCurrency(lang);
+
   const [values, setValues] = useState({
     name: "",
     phone: "",
@@ -59,7 +71,9 @@ export default function OrderForm() {
     if (!isTierSlug(tierParam) || !isMinutes(minutesParam)) return null;
 
     const tier = TIERS.find((t) => t.slug === tierParam);
-    const option = tier?.options.find((o) => o.minutes === minutesParam);
+    const option = optionsFor(tier ?? TIERS[0], currency).find(
+      (o) => o.minutes === minutesParam,
+    );
     if (!tier || !option) return null;
 
     return {
@@ -69,7 +83,7 @@ export default function OrderForm() {
       amount: finalPrice(option),
       priceId: resolvePaddlePriceId(tierParam, minutesParam),
     };
-  }, [searchParams]);
+  }, [searchParams, currency]);
 
   const [checkoutRequested, setCheckoutRequested] = useState(false);
 
@@ -105,6 +119,7 @@ export default function OrderForm() {
           phone: values.phone.trim(),
           telegram: values.telegram.trim(),
           email: values.email.trim(),
+          locale: lang,
           ...(selection
             ? { tier: selection.slug, minutes: selection.minutes }
             : {}),
@@ -124,19 +139,23 @@ export default function OrderForm() {
 
     setSent(true);
 
+    const selectionName = selection
+      ? `${selection.tierName} · ${formatMinutes(selection.minutes, lang)}`
+      : dict.leadContentName;
+
     // Основна конверсія воронки: заявку заповнено і надіслано.
     trackPixel("Lead", {
-      content_name: selection ? `${selection.tierName} · ${selection.minutes} хв` : "Форма заявки",
-      ...(selection ? { value: selection.amount, currency: "USD" } : {}),
+      content_name: selectionName,
+      ...(selection ? { value: selection.amount, currency } : {}),
     });
 
     if (paddle && priceId && selection) {
       resetCheckout();
       setCheckoutRequested(true);
       trackPixel("InitiateCheckout", {
-        content_name: `${selection.tierName} · ${selection.minutes} хв`,
+        content_name: selectionName,
         value: selection.amount,
-        currency: "USD",
+        currency,
       });
       paddle.Checkout.open({
         items: [{ priceId, quantity: 1 }],
@@ -168,21 +187,21 @@ export default function OrderForm() {
       </svg>
 
       <label className={`field${errors.name ? " is-error" : ""}`}>
-        <span className="field__label">Імʼя:</span>
+        <span className="field__label">{dict.nameLabel}</span>
         <input
           type="text"
           name="name"
-          placeholder="Ваше імʼя"
+          placeholder={dict.namePlaceholder}
           autoComplete="name"
           value={values.name}
           onChange={(e) => set("name", e.target.value)}
         />
-        <span className="field__err">Вкажіть, будь ласка, ваше імʼя</span>
+        <span className="field__err">{dict.nameError}</span>
       </label>
 
       <div className={`field${errors.phone ? " is-error" : ""}`}>
         <span className="field__label">
-          Ваш телефон, на якому є Whatsapp
+          {dict.phoneLabel}
           <Icon name="i-wa" className="badge badge--wa" />
         </span>
         <div className="phone">
@@ -194,105 +213,100 @@ export default function OrderForm() {
             type="tel"
             name="phone"
             inputMode="tel"
-            placeholder="+380 (00) 000-00-00"
+            placeholder={dict.phonePlaceholder}
             autoComplete="tel"
             value={values.phone}
             onFocus={() => !values.phone && set("phone", "+380 (")}
             onChange={(e) => set("phone", maskPhone(e.target.value))}
           />
         </div>
-        <span className="field__err">Введіть коректний номер телефону</span>
+        <span className="field__err">{dict.phoneError}</span>
       </div>
 
       <label className={`field${errors.telegram ? " is-error" : ""}`}>
         <span className="field__label">
-          Ваш нік у Telegram
+          {dict.telegramLabel}
           <Icon name="i-tg" className="badge badge--tg" />
         </span>
-        <span className="field__hint">Якщо його немає, залиште це поле порожнім</span>
+        <span className="field__hint">{dict.telegramHint}</span>
         <input
           type="text"
           name="telegram"
-          placeholder="@nickname"
+          placeholder={dict.telegramPlaceholder}
           autoComplete="off"
           value={values.telegram}
           onChange={(e) => set("telegram", e.target.value)}
         />
-        <span className="field__err">Нік має складатися з латиниці, цифр і «_»</span>
+        <span className="field__err">{dict.telegramError}</span>
       </label>
 
       <label className={`field${errors.email ? " is-error" : ""}`}>
         <span className="field__label">
-          Ваш e-mail
+          {dict.emailLabel}
           <Icon name="i-mail" className="badge badge--mail" />
         </span>
-        <span className="field__hint">
-          На цю адресу надішлемо деталі замовлення та готовий мультфільм
-        </span>
+        <span className="field__hint">{dict.emailHint}</span>
         <input
           type="email"
           name="email"
-          placeholder="you@example.com"
+          placeholder={dict.emailPlaceholder}
           autoComplete="email"
           value={values.email}
           onChange={(e) => set("email", e.target.value)}
         />
-        <span className="field__err">Введіть коректний e-mail</span>
+        <span className="field__err">{dict.emailError}</span>
       </label>
 
       {selection && (
         <p className="form__selection">
           <span className="form__selection-tier">{selection.tierName}</span>
           {" · "}
-          {minutesLabel(selection.minutes)}
+          {formatMinutes(selection.minutes, lang)}
           {" · "}
-          <b>{price(selection.amount)}</b>
+          <b>{formatPrice(selection.amount, lang)}</b>
         </p>
       )}
 
       <button className="btn btn--cta" type="submit" disabled={submitting}>
         {submitting
-          ? "Надсилаємо…"
+          ? dict.submitting
           : selection && paddle && selection.priceId
-            ? "Перейти до оплати"
-            : "Замовити мультфільм"}
+            ? dict.submitToPay
+            : dict.submit}
       </button>
 
       {submitError && (
         <p className="form__error" role="alert">
-          Не вдалося надіслати заявку. Перевірте зʼєднання та спробуйте ще раз.
+          {dict.submitError}
         </p>
       )}
 
       <p className="form__note">
-        Натискаючи кнопку, ви погоджуєтесь з{" "}
-        <Link href="/privacy">політикою конфіденційності</Link>
+        {dict.privacyNoteBefore}
+        <Link href={localeHref(lang, "/privacy")}>{dict.privacyNoteLink}</Link>
       </p>
 
       {sent && (
         <div className="form__ok">
           {checkoutRequested && checkoutPhase === "completed" ? (
             <>
-              <strong>Оплату отримано. Дякуємо!</strong>
-              <span>Куратор підтвердить замовлення та звʼяжеться з вами.</span>
+              <strong>{dict.okPaidTitle}</strong>
+              <span>{dict.okPaidText}</span>
             </>
           ) : checkoutRequested && checkoutPhase === "closed" ? (
             <>
-              <strong>Дякуємо! Заявку надіслано.</strong>
-              <span>
-                Оплату не завершено — куратор звʼяжеться з вами протягом 15
-                хвилин.
-              </span>
+              <strong>{dict.okClosedTitle}</strong>
+              <span>{dict.okClosedText}</span>
             </>
           ) : checkoutRequested ? (
             <>
-              <strong>Заявку надіслано. Відкриваємо оплату…</strong>
-              <span>Завершіть оплату у вікні Paddle, що зʼявилося.</span>
+              <strong>{dict.okOpeningTitle}</strong>
+              <span>{dict.okOpeningText}</span>
             </>
           ) : (
             <>
-              <strong>Дякуємо! Заявку надіслано.</strong>
-              <span>Куратор звʼяжеться з вами протягом 15 хвилин.</span>
+              <strong>{dict.okSentTitle}</strong>
+              <span>{dict.okSentText}</span>
             </>
           )}
         </div>

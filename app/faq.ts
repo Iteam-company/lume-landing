@@ -1,65 +1,57 @@
 /* ============================================================
-   FAQ — один список для секції на сайті та для розмітки
-   FAQPage (її цитують пошук і AI-асистенти).
-   Питання сформульовані так, як їх реально ставлять у пошуку.
+   FAQ — той самий список для секції на сайті та для розмітки
+   FAQPage. Тексти живуть у словниках; відповідь про ціни
+   збирається з pricing.ts у валюті локалі, щоб не розʼїхатися
+   із секцією «Вартість».
    ============================================================ */
 
-import { bestPerMinute, finalPrice, minutesLabelAcc, perMinute, price, TIERS } from "./pricing";
+import { localeToCurrency, type Locale } from "./i18n/config";
+import { getDictionary } from "./i18n/dictionaries";
+import { formatMinutesAcc, formatPrice } from "./i18n/format";
+import {
+  bestPerMinute,
+  finalPrice,
+  optionsFor,
+  perMinute,
+  TIERS,
+} from "./pricing";
 
 export type QA = { q: string; a: string };
 
-/** Відповідь про ціни збирається з тарифів, щоб не розʼїхатися з секцією «Вартість». */
-const PRICE_ANSWER = TIERS.map((tier) => {
-  const cheapest = tier.options[0];
-  const priciest = tier.options[tier.options.length - 1];
-  const range =
-    tier.options.length > 1
-      ? `від ${price(finalPrice(cheapest))} за ${minutesLabelAcc(cheapest.minutes)} ` +
-        `до ${price(finalPrice(priciest))} за ${minutesLabelAcc(priciest.minutes)}`
-      : `${price(finalPrice(cheapest))} за ${minutesLabelAcc(cheapest.minutes)}`;
-  const rates = tier.options.map(perMinute);
-  const flat = rates.every((r) => r === rates[0]);
-  const rate = flat
-    ? `${price(rates[0])} за хвилину`
-    : `від ${price(bestPerMinute(tier))} за хвилину`;
-  return `${tier.name} — ${range}, ${rate}`;
-}).join("; ") + ".";
+/** «STORY — від X за 1 хвилину до Y за 5 хвилин, Z за хвилину; …». */
+function priceAnswer(locale: Locale): string {
+  const currency = localeToCurrency(locale);
+  const d = getDictionary(locale).faq;
 
-export const FAQ: QA[] = [
-  {
-    q: "Скільки часу займає створення?",
-    a: "1 день. Ви залишаєте заявку, проходите короткий бриф, надсилаєте фотографії — і наступного дня отримуєте готовий мультфільм.",
-  },
-  {
-    q: "Скільки коштує мультфільм?",
-    a: `Вартість залежить від тарифу та хронометражу: ${PRICE_ANSWER} Ціни вказані в доларах США.`,
-  },
-  {
-    q: "Як створюють мультфільм за фотографіями?",
-    a: "Ви надсилаєте фотографії, а ми малюємо персонажів, максимально схожих на вас, прописуємо сценарій і розкадровку за вашою історією та збираємо все в анімацію.",
-  },
-  {
-    q: "Чи точно вийде передати те, що я хочу?",
-    a: "Перед початком роботи ми детально узгоджуємо сценарій і фотографії, щоб Ви отримали саме те, що задумували.",
-  },
-  {
-    q: "У якому форматі отримаю мультфільм?",
-    a: "Full HD, файл для телефона та соцмереж. Його можна показати на екрані у ресторані, надіслати в месенджері або опублікувати в Instagram.",
-  },
-  {
-    q: "Чи можна додати озвучення або пісню?",
-    a: "Так. За бажанням додаємо озвучення або вашу улюблену пісню — про це домовляємось на етапі брифу.",
-  },
-  {
-    q: "На який привід замовляють мультфільм?",
-    a: "Найчастіше — на день народження, річницю стосунків, весілля, ювілей, гендер-паті, освідчення та як подарунок батькам або дітям.",
-  },
-  {
-    q: "Ви працюєте по всій Україні?",
-    a: "Так, ми працюємо онлайн: бриф і фотографії надсилаєте у месенджері, готовий файл отримуєте на пошту. Замовляють із Києва, Львова, Одеси, Харкова, Дніпра та з-за кордону.",
-  },
-  {
-    q: "Як почати?",
-    a: "Залиште заявку на сайті — куратор звʼяжеться протягом 15 хвилин.",
-  },
-];
+  const lines = TIERS.map((tier) => {
+    const options = optionsFor(tier, currency);
+    const cheapest = options[0];
+    const priciest = options[options.length - 1];
+
+    const range =
+      `${d.priceFrom} ${formatPrice(finalPrice(cheapest), locale)} ` +
+      `${d.priceFor} ${formatMinutesAcc(cheapest.minutes, locale)} ` +
+      `${d.priceTo} ${formatPrice(finalPrice(priciest), locale)} ` +
+      `${d.priceFor} ${formatMinutesAcc(priciest.minutes, locale)}`;
+
+    const rates = options.map(perMinute);
+    const flat = rates.every((r) => r === rates[0]);
+    const rate = flat
+      ? `${formatPrice(rates[0], locale)} ${d.perMinuteWord}`
+      : `${d.priceFrom} ${formatPrice(bestPerMinute(tier, currency), locale)} ${d.perMinuteWord}`;
+
+    return `${tier.name} — ${range}, ${rate}`;
+  });
+
+  return lines.join("; ") + ".";
+}
+
+export function buildFaq(locale: Locale): QA[] {
+  const d = getDictionary(locale).faq;
+  return d.items.map((item) => ({
+    q: item.q,
+    a: item.a
+      .replace("{prices}", priceAnswer(locale))
+      .replace("{currencyNote}", d.currencyNote),
+  }));
+}

@@ -1,63 +1,37 @@
-import { CITIES } from "../site";
+import type { Dictionary } from "../i18n/dictionaries";
 import Reveal from "./Reveal";
 
 /* Текстовий блок під пошукові запити: описує приводи, аудиторію
    та географію звичайною мовою — це те, що читають і люди,
    і AI-асистенти, коли добирають, що порадити. */
 
-const OCCASIONS = [
-  "День народження",
-  "Річниця стосунків",
-  "Весілля",
-  "Ювілей",
-  "Гендер-паті",
-  "Освідчення",
-  "Народження дитини",
-  "Випускний",
-  "8 Березня",
-  "День святого Валентина",
-  "Новий рік",
-  "Подяка команді",
-];
+export default function Audience({ dict }: { dict: Dictionary }) {
+  const a = dict.audience;
+  const cities = a.cities.join(", ");
+  const [citiesBefore, citiesAfter] = a.citiesParagraph.split("{cities}");
 
-const FOR_WHOM = [
-  ["Другій половинці", "історія знайомства, перше побачення, спільні подорожі"],
-  ["Батькам і бабусям", "родинна хроніка, у якій вони головні герої"],
-  ["Дитині", "казка, де дитина стає персонажем мультфільму"],
-  ["Друзям і колегам", "тепла історія замість чергового сертифіката"],
-];
-
-export default function Audience() {
   return (
     <section className="audience" id="audience">
       <div className="container">
         <Reveal as="h2" className="h2 h2--dark">
-          Кому підійде
+          {a.heading}
         </Reveal>
 
         <div className="audience__grid">
           <Reveal className="audience__text">
-            <p className="audience__lead">
-              Персональний мультфільм — це подарунок, якого не купиш у магазині: ми
-              малюємо саме вас за вашими фотографіями і розповідаємо саме вашу історію.
-            </p>
+            <p className="audience__lead">{a.lead}</p>
+            {a.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
             <p>
-              Ви розповідаєте, як познайомилися, що вас звело разом і які моменти хочеться
-              зберегти. Ми перетворюємо це на анімацію: персонажі схожі на вас, сюжет — ваш,
-              а за бажанням додаємо озвучення або вашу улюблену пісню. Готовий мультфільм
-              приходить наступного дня у Full HD — його показують на екрані у ресторані,
-              надсилають у месенджері або публікують у соцмережах.
-            </p>
-            <p>
-              Ми працюємо онлайн, тому місто не має значення: бриф і фотографії надсилаєте у
-              месенджері, а готовий файл отримуєте на пошту. Найчастіше замовляють із таких
-              міст: {CITIES.join(", ")} — а також українці з-за кордону, які хочуть привітати
-              рідних вдома.
+              {citiesBefore}
+              {cities}
+              {citiesAfter}
             </p>
           </Reveal>
 
           <Reveal className="audience__cards" delay={1}>
-            {FOR_WHOM.map(([who, what]) => (
+            {a.forWhom.map(({ who, what }) => (
               <div className="who" key={who}>
                 <h3 className="who__title">{who}</h3>
                 <p className="who__text">{what}</p>
@@ -67,9 +41,9 @@ export default function Audience() {
         </div>
 
         <Reveal className="audience__occasions" delay={2}>
-          <h3 className="audience__sub">Приводи, на які замовляють найчастіше</h3>
+          <h3 className="audience__sub">{a.occasionsHeading}</h3>
           <ul className="chips">
-            {OCCASIONS.map((item) => (
+            {a.occasions.map((item) => (
               <li className="chip" key={item}>
                 {item}
               </li>

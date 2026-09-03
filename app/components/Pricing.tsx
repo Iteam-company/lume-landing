@@ -1,34 +1,53 @@
 import { TIERS } from "../pricing";
+import type { Dictionary } from "../i18n/dictionaries";
+import type { Locale } from "../i18n/config";
 import PlanCard from "./PlanCard";
 import Reveal from "./Reveal";
 
-/** Те, що входить у будь-який тариф. */
-const COMMON = ["Готово за 1 день", "Full HD для телефона та соцмереж", "Особистий куратор"];
+export default function Pricing({
+  dict,
+  lang,
+}: {
+  dict: Dictionary;
+  lang: Locale;
+}) {
+  const p = dict.pricing;
 
-export default function Pricing() {
   return (
     <section className="pricing" id="pricing">
       <div className="container">
         <Reveal as="h2" className="h2 h2--dark">
-          Вартість:
+          {p.heading}
         </Reveal>
         <Reveal as="p" className="pricing__lead">
-          Оплата за хвилину: у кожному тарифі фіксована ставка, а хронометраж обираєте ви — від 1 до 5 хвилин.
+          {p.lead}
         </Reveal>
 
         <div className="pricing__grid">
           {TIERS.map((tier, i) => (
-            <Reveal key={tier.name} delay={(i % 4) as 0 | 1 | 2 | 3}>
-              <PlanCard tier={tier} />
+            <Reveal key={tier.slug} delay={(i % 4) as 0 | 1 | 2 | 3}>
+              <PlanCard
+                tier={tier}
+                lang={lang}
+                copy={p.tiers[tier.slug]}
+                labels={{
+                  perMinute: p.perMinute,
+                  minutesShort: p.minutesShort,
+                  durationAria: p.durationAria,
+                  launchNote: p.launchNote,
+                  order: p.orderCard,
+                }}
+              />
             </Reveal>
           ))}
         </div>
 
         <Reveal as="p" className="pricing__common">
-          У кожному тарифі: {COMMON.join(" · ")}
+          {p.commonPrefix}
+          {p.common.join(" · ")}
         </Reveal>
         <Reveal as="p" className="pricing__note">
-          Ціни вказані в доларах США. Точну вартість куратор підтвердить після брифу.
+          {p.noteCurrency} {p.noteConfirm}
         </Reveal>
       </div>
     </section>

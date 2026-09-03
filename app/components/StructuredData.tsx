@@ -1,41 +1,58 @@
-import { FAQ } from "../faq";
+import { buildFaq } from "../faq";
 import {
-  ALL_OPTIONS,
+  allOptions,
   discount,
   finalPrice,
   LAUNCH_UNTIL,
-  minutesLabel,
   perMinute,
 } from "../pricing";
 import { ORDER_EMAIL } from "../config";
-import { BRAND, CITIES, DESCRIPTION, SITE_URL, TAGLINE } from "../site";
+import { BRAND, SITE_URL } from "../site";
+import {
+  localeToBcp47,
+  localeToCurrency,
+  type Locale,
+} from "../i18n/config";
+import { getDictionary } from "../i18n/dictionaries";
+import { formatMinutes, formatPrice } from "../i18n/format";
 
 /* ============================================================
    Структурована розмітка (JSON-LD).
-   Саме її читають Google, Bing та AI-асистенти, коли вирішують,
-   що це за послуга, скільки коштує і кому підходить.
-   Дані беруться з тих самих файлів, що й видима частина сайту,
-   тому розмітка не розʼїжджається з цінами на сторінці.
+   Дані беруться з тих самих словників і pricing.ts, що й видима
+   частина сайту, тому розмітка не розʼїжджається з цінами.
+   Мова та валюта — за локаллю сторінки.
    ============================================================ */
 
-export default function StructuredData() {
-  const offers = ALL_OPTIONS.map(({ tier, option }) => {
+export default function StructuredData({ lang }: { lang: Locale }) {
+  const dict = getDictionary(lang);
+  const sd = dict.structuredData;
+  const currency = localeToCurrency(lang);
+  const bcp47 = localeToBcp47(lang);
+  const base = `${SITE_URL}/${lang}`;
+
+  const options = allOptions(currency);
+
+  const offers = options.map(({ tier, option }) => {
     const off = discount(option);
+    const minutes = formatMinutes(option.minutes, lang);
     return {
       "@type": "Offer",
-      name: `${BRAND} ${tier.name} — мультфільм ${minutesLabel(option.minutes)}`,
-      description:
-        `Персональний мультфільм за вашою історією, хронометраж ${minutesLabel(option.minutes)}. ` +
-        `Це ${perMinute(option)} доларів за хвилину.`,
+      name: sd.offerName
+        .replace("{brand}", BRAND)
+        .replace("{tier}", tier.name)
+        .replace("{minutes}", minutes),
+      description: sd.offerDescription
+        .replace("{minutes}", minutes)
+        .replace("{rate}", formatPrice(perMinute(option), lang)),
       price: String(finalPrice(option)),
-      priceCurrency: "USD",
+      priceCurrency: currency,
       availability: "https://schema.org/InStock",
-      url: `${SITE_URL}/#pricing`,
+      url: `${base}/#pricing`,
       eligibleQuantity: {
         "@type": "QuantitativeValue",
         value: option.minutes,
         unitCode: "MIN",
-        unitText: "хвилин мультфільму",
+        unitText: sd.unitText,
       },
       ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
       ...(option.sale && off
@@ -43,7 +60,7 @@ export default function StructuredData() {
             priceSpecification: {
               "@type": "PriceSpecification",
               price: String(option.base),
-              priceCurrency: "USD",
+              priceCurrency: currency,
               valueAddedTaxIncluded: true,
             },
           }
@@ -51,17 +68,17 @@ export default function StructuredData() {
     };
   });
 
-  const prices = ALL_OPTIONS.map(({ option }) => finalPrice(option));
+  const prices = options.map(({ option }) => finalPrice(option));
 
   const graph = [
     {
       "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
+      "@id": `${base}#organization`,
       name: BRAND,
-      url: SITE_URL,
-      description: DESCRIPTION,
-      slogan: TAGLINE,
-      areaServed: { "@type": "Country", name: "Україна" },
+      url: base,
+      description: dict.meta.description,
+      slogan: dict.meta.tagline,
+      areaServed: { "@type": "Country", name: sd.countryName },
       knowsLanguage: ["uk", "en"],
       ...(ORDER_EMAIL
         ? {
@@ -69,40 +86,39 @@ export default function StructuredData() {
               "@type": "ContactPoint",
               contactType: "customer service",
               email: ORDER_EMAIL,
-              availableLanguage: ["uk"],
+              availableLanguage: ["uk", "en"],
             },
           }
         : {}),
     },
     {
       "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
+      "@id": `${base}#website`,
+      url: base,
       name: BRAND,
-      description: DESCRIPTION,
-      inLanguage: "uk-UA",
-      publisher: { "@id": `${SITE_URL}/#organization` },
+      description: dict.meta.description,
+      inLanguage: bcp47,
+      publisher: { "@id": `${base}#organization` },
     },
     {
       "@type": "Service",
-      "@id": `${SITE_URL}/#service`,
-      name: "Створення персонального мультфільму за вашою історією",
-      serviceType: "Персональна анімація на замовлення",
-      description: DESCRIPTION,
-      provider: { "@id": `${SITE_URL}/#organization` },
+      "@id": `${base}#service`,
+      name: sd.serviceName,
+      serviceType: sd.serviceType,
+      description: dict.meta.description,
+      provider: { "@id": `${base}#organization` },
       areaServed: [
-        { "@type": "Country", name: "Україна" },
-        ...CITIES.map((city) => ({ "@type": "City", name: city })),
+        { "@type": "Country", name: sd.countryName },
+        ...dict.audience.cities.map((city) => ({ "@type": "City", name: city })),
       ],
       audience: {
         "@type": "Audience",
-        audienceType:
-          "пари, батьки, діти, друзі та близькі, які шукають подарунок на день народження, річницю, весілля чи ювілей",
+        audienceType: sd.audienceType,
       },
-      hoursAvailable: "1 день на виготовлення",
+      hoursAvailable: sd.hoursAvailable,
       offers: {
         "@type": "AggregateOffer",
-        priceCurrency: "USD",
+        priceCurrency: currency,
         lowPrice: String(Math.min(...prices)),
         highPrice: String(Math.max(...prices)),
         offerCount: String(offers.length),
@@ -111,8 +127,9 @@ export default function StructuredData() {
     },
     {
       "@type": "FAQPage",
-      "@id": `${SITE_URL}/#faq`,
-      mainEntity: FAQ.map((item) => ({
+      "@id": `${base}#faq`,
+      inLanguage: bcp47,
+      mainEntity: buildFaq(lang).map((item) => ({
         "@type": "Question",
         name: item.q,
         acceptedAnswer: { "@type": "Answer", text: item.a },

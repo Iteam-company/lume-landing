@@ -14,10 +14,12 @@ export default function VideoBox({
   variant,
   src,
   poster,
+  labels,
 }: {
   variant: Variant;
   src?: string;
   poster?: string;
+  labels: { play: string; placeholder: string };
 }) {
   return (
     <div className={`video video--${variant}${src ? " has-video" : ""}`}>
@@ -25,10 +27,10 @@ export default function VideoBox({
         <video src={src} poster={poster} controls playsInline preload="metadata" />
       ) : (
         <>
-          <button className="play" type="button" aria-label="Відтворити відео">
+          <button className="play" type="button" aria-label={labels.play}>
             <Icon name="i-play" />
           </button>
-          <span className="video__hint">Відео буде додано</span>
+          <span className="video__hint">{labels.placeholder}</span>
         </>
       )}
     </div>

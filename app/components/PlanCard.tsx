@@ -5,18 +5,42 @@ import { useState } from "react";
 import {
   discount,
   finalPrice,
-  launchUntilLabel,
-  minutesLabel,
+  LAUNCH_UNTIL,
+  optionsFor,
   perMinute,
-  price,
   type Tier,
 } from "../pricing";
+import { localeToCurrency, type Locale } from "../i18n/config";
+import { formatDateYmd, formatMinutes, formatPrice } from "../i18n/format";
+import { localeHref } from "../i18n/locale-path";
+import type { TierCopy } from "../i18n/dictionaries/types";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 
-export default function PlanCard({ tier }: { tier: Tier }) {
+type Labels = {
+  perMinute: string;
+  minutesShort: string;
+  durationAria: string;
+  launchNote: string;
+  order: string;
+};
+
+export default function PlanCard({
+  tier,
+  lang,
+  copy,
+  labels,
+}: {
+  tier: Tier;
+  lang: Locale;
+  copy: TierCopy;
+  labels: Labels;
+}) {
+  const currency = localeToCurrency(lang);
+  const options = optionsFor(tier, currency);
+
   const [index, setIndex] = useState(tier.defaultOption ?? 0);
-  const option = tier.options[index];
+  const option = options[index];
   const off = discount(option);
   const isDiamond = tier.slug === "diamond";
 
@@ -26,17 +50,17 @@ export default function PlanCard({ tier }: { tier: Tier }) {
         isDiamond ? " plan--diamond" : ""
       }`}
     >
-      {tier.badge ? <span className="plan__badge">{tier.badge}</span> : null}
+      {copy.badge ? <span className="plan__badge">{copy.badge}</span> : null}
 
       <h3 className="plan__name">{tier.name}</h3>
-      <p className="plan__tagline">{tier.tagline}</p>
+      <p className="plan__tagline">{copy.tagline}</p>
 
       <div
         className="plan__opts"
         role="group"
-        aria-label={`Хронометраж, тариф ${tier.name}`}
+        aria-label={labels.durationAria.replace("{name}", tier.name)}
       >
-        {tier.options.map((o, i) => (
+        {options.map((o, i) => (
           <button
             key={o.minutes}
             type="button"
@@ -44,31 +68,35 @@ export default function PlanCard({ tier }: { tier: Tier }) {
             aria-pressed={i === index}
             onClick={() => setIndex(i)}
           >
-            {o.minutes} хв
+            {o.minutes} {labels.minutesShort}
           </button>
         ))}
       </div>
 
       <div className="plan__price">
-        <span className="plan__now">{price(finalPrice(option))}</span>
+        <span className="plan__now">{formatPrice(finalPrice(option), lang)}</span>
         <span className="plan__per">
-          {price(perMinute(option))} за хвилину · {minutesLabel(option.minutes)}
+          {formatPrice(perMinute(option), lang)} {labels.perMinute} ·{" "}
+          {formatMinutes(option.minutes, lang)}
         </span>
         {option.sale ? (
           <>
             <span className="plan__was">
-              <s>{price(option.base)}</s>
+              <s>{formatPrice(option.base, lang)}</s>
               {off ? <b className="plan__off">−{off}%</b> : null}
             </span>
             <span className="plan__launch">
-              Стартова ціна діє до {launchUntilLabel()}
+              {labels.launchNote.replace(
+                "{date}",
+                formatDateYmd(LAUNCH_UNTIL, lang),
+              )}
             </span>
           </>
         ) : null}
       </div>
 
       <ul className="plan__list">
-        {tier.features.map((item) => (
+        {copy.features.map((item) => (
           <li key={item}>
             <Icon name="i-star" className="star" />
             {item}
@@ -77,20 +105,23 @@ export default function PlanCard({ tier }: { tier: Tier }) {
       </ul>
 
       <Link
-        href={`/?tier=${tier.slug}&minutes=${option.minutes}#form`}
+        href={localeHref(
+          lang,
+          `/?tier=${tier.slug}&minutes=${option.minutes}#form`,
+        )}
         className={`btn ${
           isDiamond ? "btn--gold" : tier.featured ? "btn--light" : "btn--dark"
         } plan__cta`}
         onClick={() =>
           trackPixel("ViewContent", {
-            content_name: `${tier.name} · ${option.minutes} хв`,
+            content_name: `${tier.name} · ${option.minutes} ${labels.minutesShort}`,
             content_category: tier.name,
             value: finalPrice(option),
-            currency: "USD",
+            currency,
           })
         }
       >
-        Замовити
+        {labels.order}
       </Link>
     </article>
   );
