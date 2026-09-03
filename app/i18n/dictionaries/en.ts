@@ -500,6 +500,7 @@ const en: Dictionary = {
 
   floats: {
     instagramAria: "Find us on Instagram",
+    telegramAria: "Message us on Telegram",
     whatsappAria: "Message us on WhatsApp",
   },
 

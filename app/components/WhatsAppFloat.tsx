@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { WHATSAPP_LINK, INSTAGRAM_LINK } from "../config";
+import { INSTAGRAM_LINK, TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import { Icon } from "./Icons";
 
 export default function WhatsAppFloat({
   labels,
 }: {
-  labels: { instagramAria: string; whatsappAria: string };
+  labels: {
+    instagramAria: string;
+    telegramAria: string;
+    whatsappAria: string;
+  };
 }) {
   const [visible, setVisible] = useState(false);
 
@@ -29,6 +33,16 @@ export default function WhatsAppFloat({
       >
         <Icon name="i-ig" />
         <span>Instagram</span>
+      </a>
+      <a
+        className="wa-float wa-float--tg"
+        href={TELEGRAM_LINK}
+        target="_blank"
+        rel="noopener"
+        aria-label={labels.telegramAria}
+      >
+        <Icon name="i-tg" />
+        <span>Telegram</span>
       </a>
       <a
         className="wa-float"

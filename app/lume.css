@@ -476,17 +476,18 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* ---------- плаваючі кнопки (WhatsApp / Instagram) ---------- */
 .floats{
   position:fixed;right:22px;bottom:22px;z-index:40;
-  display:flex;flex-direction:column;align-items:flex-end;gap:12px;
+  display:grid;justify-items:stretch;gap:12px;
 }
 .wa-float{
   display:flex;align-items:center;gap:10px;
-  padding:13px 20px 13px 15px;border-radius:999px;
+  padding:13px 20px 13px 18px;border-radius:999px;
   background:var(--wine);color:var(--ivory);text-decoration:none;font-weight:600;font-size:15px;
   box-shadow:0 12px 30px rgba(102,27,43,.35);
   transform:translateY(120px);opacity:0;
   transition:transform .5s var(--ease),opacity .5s;
 }
-.wa-float--ig{transition-delay:.06s}
+.wa-float--tg{transition-delay:.06s}
+.wa-float--ig{transition-delay:.12s}
 .floats.is-visible .wa-float{transform:translateY(0);opacity:1}
 .wa-float:hover{transform:translateY(-4px)}
 .wa-float svg{width:24px;height:24px;fill:var(--ivory)}

@@ -19,3 +19,7 @@ export const WHATSAPP_LINK =
 export const INSTAGRAM_LINK =
   process.env.NEXT_PUBLIC_INSTAGRAM_LINK ??
   "https://www.instagram.com/lumestory.ua/";
+
+/** Telegram — плаваюча кнопка. Приклад: https://t.me/lumestory */
+export const TELEGRAM_LINK =
+  process.env.NEXT_PUBLIC_TELEGRAM_LINK ?? "https://t.me/lumestory";
