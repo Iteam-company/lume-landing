@@ -1,8 +1,8 @@
 /* ============================================================
    Діагностика Location Observer.
 
-   Мета: пересвідчитися, що Hosting Ukraine реально прокидає заголовок
-   geoip-country-code до Next.js-застосунку на stage / prod.
+   Мета: пересвідчитися, що edge-мережа Vercel реально прокидає заголовок
+   x-vercel-ip-country до Next.js-застосунку на Preview / Production.
 
    Доступ лише з правильним токеном (?token=<LOCATION_DEBUG_TOKEN>).
    Без токена, з невірним токеном або коли секрет не заданий у оточенні —
@@ -41,7 +41,7 @@ export async function GET(request: Request): Promise<Response> {
   return Response.json(
     {
       headerSeen: geo.headerSeen,
-      // Лише значення geoip-country-code — інші заголовки запиту не віддаємо.
+      // Лише значення x-vercel-ip-country — інші заголовки запиту не віддаємо.
       headerRaw: geo.headerRaw,
       country: location.country,
       market: location.market,

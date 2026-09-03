@@ -39,9 +39,9 @@ const MARKET_DEFAULTS: Record<
 const ISO_ALPHA2 = /^[A-Z]{2}$/;
 
 /**
- * Значення, які MaxMind / GeoLite повертає замість реальної країни
- * (анонімний проксі, супутниковий провайдер, «інше», наднаціональні
- * позначки). Для наших цілей це «країну не визначено».
+ * Значення, які geo-провайдер (Vercel edge / MaxMind) повертає замість
+ * реальної країни: анонімний проксі, Tor, супутниковий провайдер,
+ * «інше», наднаціональні позначки. Для наших цілей — «країну не визначено».
  */
 const NON_COUNTRY_CODES: ReadonlySet<string> = new Set([
   "XX", // невідомо
@@ -49,6 +49,7 @@ const NON_COUNTRY_CODES: ReadonlySet<string> = new Set([
   "O1", // Other Country
   "A1", // Anonymous Proxy
   "A2", // Satellite Provider
+  "T1", // Vercel: Tor exit node
   "EU", // Європа — не країна
   "AP", // Asia/Pacific Region — не країна
 ]);

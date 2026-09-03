@@ -1,12 +1,15 @@
 /* ============================================================
    Location Observer — server-only рідер.
 
-   Єдине місце в проєкті, де читається заголовок геолокації, який
-   reverse proxy (nginx) Hosting Ukraine додає до кожного запиту:
+   Застосунок задеплоєно на Vercel. Домен веде на Vercel напряму
+   (Hosting Ukraine / adm.tools — лише DNS, не reverse proxy), тож
+   країну визначає edge-мережа Vercel і додає до кожного запиту
+   заголовок:
 
-       GeoIp-Country-Code: UA        (ISO 3166-1 alpha-2, MaxMind GeoLite)
+       x-vercel-ip-country: UA      (ISO 3166-1 alpha-2)
 
-   HTTP-заголовки регістронезалежні, тож читаємо як "geoip-country-code".
+   Доступний і в Preview, і в Production. HTTP-заголовки
+   регістронезалежні, читаємо як "x-vercel-ip-country".
 
    ВАЖЛИВО: не викликайте getVisitorLocation() з app/page.tsx чи
    app/layout.tsx. Доступ до headers() робить маршрут динамічним, а
@@ -24,8 +27,8 @@ import {
 } from "./markets";
 import type { VisitorLocation } from "./types";
 
-/** Заголовок від nginx Hosting Ukraine (MaxMind GeoLite). */
-const GEO_HEADER = "geoip-country-code";
+/** Країна відвідувача від edge-мережі Vercel (Preview + Production). */
+const GEO_HEADER = "x-vercel-ip-country";
 
 /** Dev-only заголовок для локальної підміни країни. */
 const DEV_OVERRIDE_HEADER = "x-vl-country";
@@ -44,11 +47,11 @@ function devOverrideEnabled(): boolean {
 
 /**
  * Визначає ринок / дефолтну мову / валюту відвідувача за IP-країною,
- * яку встановив reverse proxy хостингу.
+ * яку встановила edge-мережа Vercel.
  *
  * Пріоритет:
  *   1. dev-override — лише коли NODE_ENV !== "production" AND LOCATION_DEBUG=1;
- *   2. заголовок geoip-country-code від хостингу;
+ *   2. заголовок x-vercel-ip-country від Vercel;
  *   3. fallback → international / en / USD.
  */
 export async function getVisitorLocation(): Promise<VisitorLocation> {
@@ -66,10 +69,10 @@ export async function getVisitorLocation(): Promise<VisitorLocation> {
 }
 
 /**
- * Чи бачить застосунок сирий гео-заголовок від хостингу.
+ * Чи бачить застосунок сирий гео-заголовок від Vercel.
  *
  * Тільки для діагностики (app/api/debug/location). Повертаємо виключно
- * значення geoip-country-code — жодних інших заголовків запиту й жодного
+ * значення x-vercel-ip-country — жодних інших заголовків запиту й жодного
  * IP тут не торкаємось.
  */
 export async function readGeoHeader(): Promise<{
