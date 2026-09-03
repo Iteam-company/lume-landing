@@ -311,7 +311,7 @@ const en: Dictionary = {
 
   reactions: {
     heading: "Client reactions:",
-    captions: ["Love", "Warm moments", "Birthday", "Gender reveal"],
+    captions: ["Love", "Warm moments", "Birthday", "Love"],
   },
 
   process: {

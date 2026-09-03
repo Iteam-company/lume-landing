@@ -1,6 +1,6 @@
 "use client";
 
-import type { MouseEvent } from "react";
+import { Fragment, type MouseEvent } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { DEFAULT_LOCALE, LOCALES, isLocale, type Locale } from "../i18n/config";
 
@@ -65,17 +65,19 @@ export default function LocaleSwitcher() {
 
   return (
     <div className="locale-switcher" role="group" aria-label="Language / Мова">
-      {LOCALES.map((locale) => (
-        <a
-          key={locale}
-          href={pathFor(locale)}
-          hrefLang={locale}
-          aria-current={locale === current ? "true" : undefined}
-          className={`locale-switcher__opt${locale === current ? " is-active" : ""}`}
-          onClick={onSelect(locale)}
-        >
-          {LABELS[locale]}
-        </a>
+      {LOCALES.map((locale, i) => (
+        <Fragment key={locale}>
+          {i > 0 && <span className="locale-switcher__sep" aria-hidden="true" />}
+          <a
+            href={pathFor(locale)}
+            hrefLang={locale}
+            aria-current={locale === current ? "true" : undefined}
+            className={`locale-switcher__opt${locale === current ? " is-active" : ""}`}
+            onClick={onSelect(locale)}
+          >
+            {LABELS[locale]}
+          </a>
+        </Fragment>
       ))}
     </div>
   );

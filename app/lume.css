@@ -91,7 +91,8 @@ button{font:inherit;color:inherit;cursor:pointer}
    HERO
    ============================================================ */
 .hero{padding:56px 0 96px;position:relative}
-.hero__inner{display:grid;grid-template-columns:1fr 1.08fr;gap:64px;align-items:center}
+.hero__inner{display:grid;grid-template-columns:1fr 1.08fr;gap:64px;align-items:center;position:relative}
+.hero__lang{position:absolute;top:4px;right:0;z-index:4;color:var(--maroon-text)}
 .logo{display:inline-block;text-decoration:none;margin-bottom:52px}
 .logo__text{
   font-family:var(--font-abhaya),Georgia,serif;font-size:44px;font-weight:600;
@@ -465,11 +466,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .footer__ig{display:inline-flex;align-items:center;gap:6px}
 .footer__ig svg{width:16px;height:16px;fill:currentColor}
 
-/* ---------- перемикач мови ---------- */
-.locale-switcher{display:inline-flex;align-items:center;gap:8px;letter-spacing:.06em}
-.locale-switcher__opt{opacity:.65}
-.locale-switcher__opt+.locale-switcher__opt{border-left:1px solid rgba(255,255,255,.3);padding-left:8px}
-.locale-switcher__opt.is-active{opacity:1;font-weight:600;text-decoration:underline}
+/* ---------- перемикач мови (працює на світлому й темному тлі) ---------- */
+.locale-switcher{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;letter-spacing:.08em}
+.locale-switcher__opt{opacity:.5;text-decoration:none;transition:opacity .2s var(--ease)}
+.locale-switcher__opt:hover{opacity:.8}
+.locale-switcher__opt.is-active{opacity:1;text-decoration:underline;text-underline-offset:3px}
+.locale-switcher__sep{width:1px;height:11px;background:currentColor;opacity:.28}
 
 /* ---------- плаваючі кнопки (WhatsApp / Instagram) ---------- */
 .floats{

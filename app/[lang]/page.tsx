@@ -8,6 +8,7 @@ import { Icon, IconSprite } from "../components/Icons";
 import OrderForm from "../components/OrderForm";
 import PaddleProvider from "../components/PaddleProvider";
 import Pricing from "../components/Pricing";
+import LocaleSwitcher from "../components/LocaleSwitcher";
 import Reveal from "../components/Reveal";
 import StructuredData from "../components/StructuredData";
 import SiteFooter from "../components/SiteFooter";
@@ -22,8 +23,8 @@ import { buildFaq } from "../faq";
 const REACTION_MEDIA: { src?: string; poster?: string }[] = [
   { src: "/video/reaction-one.mp4", poster: "/video/reaction-one-poster.jpg" },
   { src: "/video/reaction-two.mp4", poster: "/video/reaction-two-poster.jpg" },
-  {},
-  {},
+  { src: "/video/reaction-three.mp4", poster: "/video/reaction-three-poster.jpg" },
+  { src: "/video/reaction-four.mp4", poster: "/video/reaction-four-poster.jpg" },
 ];
 
 const STEP_NUMS = ["01", "02", "03", "04"] as const;
@@ -58,6 +59,9 @@ export default async function Home({
       {/* ============ HERO ============ */}
       <header className="hero">
         <div className="container hero__inner">
+          <div className="hero__lang">
+            <LocaleSwitcher />
+          </div>
           <Reveal className="hero__left">
             <Link href={pricingHref} className="logo" aria-label="LUME">
               <span className="logo__text">LUME</span>
