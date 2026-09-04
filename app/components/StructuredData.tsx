@@ -1,20 +1,23 @@
 import { buildFaq } from "../faq";
-import {
-  allOptions,
-  discount,
-  finalPrice,
-  LAUNCH_UNTIL,
-  perMinute,
-} from "../pricing";
+// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: імпорти цін повернути разом із блоком offers нижче.
+// import {
+//   allOptions,
+//   discount,
+//   finalPrice,
+//   LAUNCH_UNTIL,
+//   perMinute,
+// } from "../pricing";
 import { ORDER_EMAIL } from "../config";
 import { BRAND, SITE_URL } from "../site";
 import {
   localeToBcp47,
-  localeToCurrency,
+  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: localeToCurrency повернути разом із блоком offers.
+  // localeToCurrency,
   type Locale,
 } from "../i18n/config";
 import { getDictionary } from "../i18n/dictionaries";
-import { formatMinutes, formatPrice } from "../i18n/format";
+// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
+// import { formatMinutes, formatPrice } from "../i18n/format";
 
 /* ============================================================
    Структурована розмітка (JSON-LD).
@@ -26,49 +29,53 @@ import { formatMinutes, formatPrice } from "../i18n/format";
 export default function StructuredData({ lang }: { lang: Locale }) {
   const dict = getDictionary(lang);
   const sd = dict.structuredData;
-  const currency = localeToCurrency(lang);
+  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
+  // const currency = localeToCurrency(lang);
   const bcp47 = localeToBcp47(lang);
   const base = `${SITE_URL}/${lang}`;
 
-  const options = allOptions(currency);
+  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
+  // const options = allOptions(currency);
 
-  const offers = options.map(({ tier, option }) => {
-    const off = discount(option);
-    const minutes = formatMinutes(option.minutes, lang);
-    return {
-      "@type": "Offer",
-      name: sd.offerName
-        .replace("{brand}", BRAND)
-        .replace("{tier}", tier.name)
-        .replace("{minutes}", minutes),
-      description: sd.offerDescription
-        .replace("{minutes}", minutes)
-        .replace("{rate}", formatPrice(perMinute(option), lang)),
-      price: String(finalPrice(option)),
-      priceCurrency: currency,
-      availability: "https://schema.org/InStock",
-      url: `${base}/#pricing`,
-      eligibleQuantity: {
-        "@type": "QuantitativeValue",
-        value: option.minutes,
-        unitCode: "MIN",
-        unitText: sd.unitText,
-      },
-      ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
-      ...(option.sale && off
-        ? {
-            priceSpecification: {
-              "@type": "PriceSpecification",
-              price: String(option.base),
-              priceCurrency: currency,
-              valueAddedTaxIncluded: true,
-            },
-          }
-        : {}),
-    };
-  });
+  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: обчислення пропозицій вимкнено разом із блоком offers.
+  // const offers = options.map(({ tier, option }) => {
+  //   const off = discount(option);
+  //   const minutes = formatMinutes(option.minutes, lang);
+  //   return {
+  //     "@type": "Offer",
+  //     name: sd.offerName
+  //       .replace("{brand}", BRAND)
+  //       .replace("{tier}", tier.name)
+  //       .replace("{minutes}", minutes),
+  //     description: sd.offerDescription
+  //       .replace("{minutes}", minutes)
+  //       .replace("{rate}", formatPrice(perMinute(option), lang)),
+  //     price: String(finalPrice(option)),
+  //     priceCurrency: currency,
+  //     availability: "https://schema.org/InStock",
+  //     url: `${base}/#pricing`,
+  //     eligibleQuantity: {
+  //       "@type": "QuantitativeValue",
+  //       value: option.minutes,
+  //       unitCode: "MIN",
+  //       unitText: sd.unitText,
+  //     },
+  //     ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
+  //     ...(option.sale && off
+  //       ? {
+  //           priceSpecification: {
+  //             "@type": "PriceSpecification",
+  //             price: String(option.base),
+  //             priceCurrency: currency,
+  //             valueAddedTaxIncluded: true,
+  //           },
+  //         }
+  //       : {}),
+  //   };
+  // });
 
-  const prices = options.map(({ option }) => finalPrice(option));
+  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
+  // const prices = options.map(({ option }) => finalPrice(option));
 
   const graph = [
     {
@@ -116,14 +123,15 @@ export default function StructuredData({ lang }: { lang: Locale }) {
         audienceType: sd.audienceType,
       },
       hoursAvailable: sd.hoursAvailable,
-      offers: {
-        "@type": "AggregateOffer",
-        priceCurrency: currency,
-        lowPrice: String(Math.min(...prices)),
-        highPrice: String(Math.max(...prices)),
-        offerCount: String(offers.length),
-        offers,
-      },
+      // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: ціни не віддаємо пошуку й AI-асистентам.
+      // offers: {
+      //   "@type": "AggregateOffer",
+      //   priceCurrency: currency,
+      //   lowPrice: String(Math.min(...prices)),
+      //   highPrice: String(Math.max(...prices)),
+      //   offerCount: String(offers.length),
+      //   offers,
+      // },
     },
     {
       "@type": "FAQPage",

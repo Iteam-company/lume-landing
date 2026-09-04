@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { finalPrice, optionsFor, TIERS } from "../pricing";
 import { localeToCurrency, type Locale } from "../i18n/config";
-import { formatMinutes, formatPrice } from "../i18n/format";
+// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: formatPrice повернути разом із сумою в підсумку заявки.
+import { formatMinutes } from "../i18n/format";
 import { localeHref } from "../i18n/locale-path";
 import type { Dictionary } from "../i18n/dictionaries";
 import {
@@ -257,13 +258,12 @@ export default function OrderForm({
         <span className="field__err">{dict.emailError}</span>
       </label>
 
+      {/* ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: суму обраного тарифу не показуємо. */}
       {selection && (
         <p className="form__selection">
           <span className="form__selection-tier">{selection.tierName}</span>
           {" · "}
           {formatMinutes(selection.minutes, lang)}
-          {" · "}
-          <b>{formatPrice(selection.amount, lang)}</b>
         </p>
       )}
 

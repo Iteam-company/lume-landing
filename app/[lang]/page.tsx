@@ -7,7 +7,8 @@ import FilmEdge from "../components/FilmEdge";
 import { Icon, IconSprite } from "../components/Icons";
 import OrderForm from "../components/OrderForm";
 import PaddleProvider from "../components/PaddleProvider";
-import Pricing from "../components/Pricing";
+// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: секцію вимкнено. Повернути — розкоментувати імпорт і рендер нижче.
+// import Pricing from "../components/Pricing";
 import Reveal from "../components/Reveal";
 import StructuredData from "../components/StructuredData";
 import SiteFooter from "../components/SiteFooter";
@@ -36,7 +37,8 @@ export default async function Home({
   const { lang: raw } = await params;
   const lang: Locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const dict = getDictionary(lang);
-  const pricingHref = localeHref(lang, "/#pricing");
+  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: якоря #pricing на сторінці немає, тож кнопки ведуть на форму.
+  const pricingHref = localeHref(lang, "/#form");
 
   const reactions = dict.reactions.captions.map((caption, i) => ({
     caption,
@@ -255,7 +257,8 @@ export default async function Home({
       </section>
 
       {/* ============ ТАРИФИ ============ */}
-      <Pricing dict={dict} lang={lang} />
+      {/* ЦІНИ ТИМЧАСОВО ПРИХОВАНІ */}
+      {/* <Pricing dict={dict} lang={lang} /> */}
 
       {/* ============ ЦИФРИ ============ */}
       <section className="numbers" id="numbers">

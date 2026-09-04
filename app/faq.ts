@@ -48,10 +48,13 @@ function priceAnswer(locale: Locale): string {
 
 export function buildFaq(locale: Locale): QA[] {
   const d = getDictionary(locale).faq;
-  return d.items.map((item) => ({
+  return d.items
+    // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: питання про вартість не показуємо. Повернути — прибрати filter.
+    .filter((item) => !item.a.includes("{prices}"))
+    .map((item) => ({
     q: item.q,
     a: item.a
       .replace("{prices}", priceAnswer(locale))
       .replace("{currencyNote}", d.currencyNote),
-  }));
+    }));
 }
