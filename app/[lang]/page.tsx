@@ -154,6 +154,32 @@ export default async function Home({
                 labels={dict.video}
               />
             </Reveal>
+            <Reveal>
+              <VideoBox
+                variant="16x9"
+                src="/video/work-example-four.mp4"
+                poster="/video/work-example-four-poster.jpg"
+                labels={dict.video}
+              />
+            </Reveal>
+            <Icon name="i-star" className="star star--sep" />
+            <Reveal delay={1}>
+              <VideoBox
+                variant="16x9"
+                src="/video/work-example-five.mp4"
+                poster="/video/work-example-five-poster.jpg"
+                labels={dict.video}
+              />
+            </Reveal>
+            <Icon name="i-star" className="star star--sep" />
+            <Reveal delay={2}>
+              <VideoBox
+                variant="16x9"
+                src="/video/work-example-six.mp4"
+                poster="/video/work-example-six-poster.jpg"
+                labels={dict.video}
+              />
+            </Reveal>
           </div>
         </div>
       </section>
