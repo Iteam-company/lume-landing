@@ -3,7 +3,6 @@ import { WHATSAPP_LINK } from "../config";
 import { localeHref } from "../i18n/locale-path";
 import type { Locale } from "../i18n/config";
 import type { Dictionary } from "../i18n/dictionaries";
-import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function SiteFooter({
   lang,
@@ -34,7 +33,6 @@ export default function SiteFooter({
             </svg>
             {f.instagram}
           </a>
-          <LocaleSwitcher />
         </nav>
       </div>
     </footer>

@@ -49,18 +49,6 @@ const tiers: Record<TierSlugKey, TierCopy> = {
     ],
     badge: null,
   },
-  diamond: {
-    tagline: "Premium: unique sound and full support",
-    features: [
-      "3 rounds of revisions at every stage",
-      "Custom sound and unique audio design (Sound Design & Foley)",
-      "Full support and bespoke concept development",
-      "Maximum likeness and photorealistic characters",
-      "Priority production",
-      "Adaptation to every format you need",
-    ],
-    badge: "Premium",
-  },
 };
 
 const privacy: LegalDoc = {
@@ -351,7 +339,7 @@ const en: Dictionary = {
 
   pricing: {
     heading: "Pricing:",
-    lead: "Pay per minute: each tier has a fixed rate, and you choose the length — from 1 to 5 minutes.",
+    lead: "Pay per minute: each tier has a fixed rate, and you choose the length.",
     commonPrefix: "In every tier: ",
     common: [
       "Ready in 1 day",
@@ -364,6 +352,8 @@ const en: Dictionary = {
     minutesShort: "min",
     durationAria: "Length, {name} tier",
     launchNote: "Launch price valid until {date}",
+    songAdd: "Add a custom song",
+    songIncluded: "Custom song included",
     orderCard: "Order",
     tiers,
   },

@@ -35,6 +35,8 @@ export default function Pricing({
                   minutesShort: p.minutesShort,
                   durationAria: p.durationAria,
                   launchNote: p.launchNote,
+                  songAdd: p.songAdd,
+                  songIncluded: p.songIncluded,
                   order: p.orderCard,
                 }}
               />

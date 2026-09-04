@@ -49,7 +49,7 @@ const SANDBOX_PRICE_IDS: Partial<Record<TierSlug, Record<Minutes, string>>> = {
   },
 };
 
-const TIER_SLUGS: readonly TierSlug[] = ["story", "signature", "cinema", "diamond"];
+const TIER_SLUGS: readonly TierSlug[] = ["story", "signature", "cinema"];
 const MINUTES_VALUES: readonly Minutes[] = [1, 2, 3, 4, 5];
 
 export function isTierSlug(value: string | null | undefined): value is TierSlug {

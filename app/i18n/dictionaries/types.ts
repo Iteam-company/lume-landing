@@ -29,4 +29,4 @@ export type TierCopy = {
   badge: string | null;
 };
 
-export type TierSlugKey = "story" | "signature" | "cinema" | "diamond";
+export type TierSlugKey = "story" | "signature" | "cinema";

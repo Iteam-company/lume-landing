@@ -92,7 +92,6 @@ button{font:inherit;color:inherit;cursor:pointer}
    ============================================================ */
 .hero{padding:56px 0 96px;position:relative}
 .hero__inner{display:grid;grid-template-columns:1fr 1.08fr;gap:64px;align-items:center;position:relative}
-.hero__lang{position:absolute;top:4px;right:0;z-index:4;color:var(--maroon-text)}
 .logo{display:inline-block;text-decoration:none;margin-bottom:52px}
 .logo__text{
   font-family:var(--font-abhaya),Georgia,serif;font-size:44px;font-weight:600;
@@ -240,7 +239,7 @@ button{font:inherit;color:inherit;cursor:pointer}
    ============================================================ */
 .pricing{padding:100px 0 110px}
 .pricing__lead{margin:-22px 0 34px;font-size:17px;color:rgba(25,24,23,.75)}
-.pricing__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:stretch}
+.pricing__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
 .pricing__grid > .reveal{display:flex}
 .plan{
   position:relative;display:flex;flex-direction:column;
@@ -252,7 +251,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .plan--featured{background:var(--maroon);color:var(--cream);box-shadow:0 18px 40px rgba(102,27,43,.28)}
 .plan--featured .plan__name,.plan--featured .plan__dur,.plan--featured .plan__now{color:var(--cream)}
 .plan--featured .plan__list li{color:rgba(255,255,255,.9)}
-.plan--featured .plan__was s{color:rgba(255,255,255,.6)}
+.plan--featured .plan__was s{color:rgba(255,255,255,.65)}
 .plan__badge{
   position:absolute;top:-13px;left:28px;
   padding:6px 16px;border-radius:999px;background:var(--gold);color:var(--charcoal);
@@ -296,12 +295,54 @@ button{font:inherit;color:inherit;cursor:pointer}
   font-family:var(--font-sans),sans-serif;font-weight:900;font-size:40px;line-height:1;
   letter-spacing:-1.5px;color:var(--maroon-text);
 }
-.plan__was{display:inline-flex;align-items:center;gap:8px;font-size:16px}
-.plan__was s{color:rgba(25,24,23,.55)}
-.plan__off{
-  padding:3px 9px;border-radius:999px;background:var(--rose);color:var(--charcoal);
-  font-size:13px;font-weight:600;font-style:normal;
+.plan__was{display:inline-flex;align-items:center;gap:10px;font-size:22px}
+/* Стару ціну перекреслюємо власною лінією: у <s> вона тонка й губиться
+   на великому кеглі. */
+.plan__was s{
+  position:relative;text-decoration:none;color:rgba(25,24,23,.5);font-weight:500;
 }
+.plan__was s::after{
+  content:"";position:absolute;left:-2px;right:-2px;top:52%;height:2px;
+  background:currentColor;transform:rotate(-6deg);
+}
+.plan__off{
+  padding:5px 13px;border-radius:999px;background:var(--rose);color:var(--charcoal);
+  font-size:16px;font-weight:700;font-style:normal;letter-spacing:.01em;
+}
+/* ---------- пісня на замовлення ---------- */
+.plan__song{
+  display:flex;align-items:center;gap:10px;margin:0 0 20px;cursor:pointer;
+  padding:12px 14px;border:1.4px dashed rgba(25,24,23,.3);border-radius:14px;
+  font-size:15px;line-height:1.3;transition:border-color .25s,background .25s;
+}
+.plan__song:hover{border-color:var(--maroon)}
+.plan__song input{position:absolute;opacity:0;width:0;height:0}
+.plan__song-box{
+  flex:none;width:20px;height:20px;border-radius:6px;
+  border:1.6px solid rgba(25,24,23,.4);position:relative;transition:all .2s;
+}
+.plan__song-box::after{
+  content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+  border:solid var(--ivory);border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);
+  transition:transform .2s var(--ease);
+}
+.plan__song input:checked ~ .plan__song-box{background:var(--maroon);border-color:var(--maroon)}
+.plan__song input:checked ~ .plan__song-box::after{transform:rotate(45deg) scale(1)}
+.plan__song input:focus-visible ~ .plan__song-box{box-shadow:0 0 0 3px rgba(102,27,43,.25)}
+.plan__song-text{flex:1}
+.plan__song-price{font-weight:700;white-space:nowrap}
+.plan__song--included{
+  border-style:solid;border-color:rgba(25,24,23,.2);cursor:default;font-weight:500;
+}
+.plan__song--included .star{width:14px;height:14px;flex:none}
+.plan--featured .plan__song{border-color:rgba(255,255,255,.35)}
+.plan--featured .plan__song:hover{border-color:rgba(255,255,255,.7)}
+.plan--featured .plan__song-box{border-color:rgba(255,255,255,.5)}
+.plan--featured .plan__song input:checked ~ .plan__song-box{
+  background:var(--ivory);border-color:var(--ivory);
+}
+.plan--featured .plan__song input:checked ~ .plan__song-box::after{border-color:var(--maroon)}
+
 .plan__list{list-style:none;margin:0 0 26px;padding:0;display:grid;gap:9px}
 .plan__list li{display:flex;align-items:flex-start;gap:9px;font-size:15px;line-height:1.45}
 .plan__list .star{margin-top:5px}
@@ -312,41 +353,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 }
 .pricing__note{
   margin:10px 0 0;text-align:center;font-size:14px;color:rgba(25,24,23,.65);
-}
-
-/* ---------- DIAMOND: ексклюзивний вигляд ----------
-   Графітова картка з дозованими золотими акцентами. Лишається в межах
-   брендової палітри (--gold, --charcoal), без яскравого glow. */
-.plan--diamond{
-  color:var(--cream);
-  background:linear-gradient(160deg,#211F1E,#171615);
-  border-color:rgba(195,163,107,.55);
-  box-shadow:0 18px 40px rgba(0,0,0,.32);
-}
-.plan--diamond:hover{
-  box-shadow:0 26px 52px rgba(0,0,0,.42),0 0 0 1px rgba(195,163,107,.55);
-}
-.plan--diamond .plan__name{color:var(--gold)}
-.plan--diamond .plan__tagline{color:rgba(255,255,255,.7)}
-.plan--diamond .plan__now{color:var(--cream)}
-.plan--diamond .plan__per{color:rgba(255,255,255,.72)}
-.plan--diamond .plan__list li{color:rgba(255,255,255,.86)}
-.plan--diamond .plan__list .star{color:var(--gold)}
-.plan--diamond .plan__badge{box-shadow:0 6px 16px rgba(0,0,0,.28)}
-.plan--diamond .opt{border-color:rgba(195,163,107,.38);color:var(--cream)}
-.plan--diamond .opt:hover{border-color:var(--gold)}
-.plan--diamond .opt.is-active{
-  background:var(--gold);border-color:var(--gold);color:var(--charcoal);
-}
-
-/* золотий CTA — лише для DIAMOND */
-.btn--gold{
-  background:var(--gold);color:var(--charcoal);
-  box-shadow:0 10px 26px rgba(195,163,107,.28);
-}
-.btn--gold:hover{
-  background:#B4915A;
-  box-shadow:0 16px 34px rgba(195,163,107,.34);
 }
 
 /* ============================================================
@@ -467,11 +473,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .footer__ig svg{width:16px;height:16px;fill:currentColor}
 
 /* ---------- перемикач мови (працює на світлому й темному тлі) ---------- */
-.locale-switcher{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;letter-spacing:.08em}
-.locale-switcher__opt{opacity:.5;text-decoration:none;transition:opacity .2s var(--ease)}
-.locale-switcher__opt:hover{opacity:.8}
-.locale-switcher__opt.is-active{opacity:1;text-decoration:underline;text-underline-offset:3px}
-.locale-switcher__sep{width:1px;height:11px;background:currentColor;opacity:.28}
 
 /* ---------- плаваючі кнопки (WhatsApp / Instagram) ---------- */
 .floats{
