@@ -11,10 +11,9 @@ import {
   songPrice,
   type Tier,
 } from "../pricing";
-import { localeToCurrency, type Locale } from "../i18n/config";
-import { formatDateYmd, formatMinutes, formatPrice } from "../i18n/format";
-import { localeHref } from "../i18n/locale-path";
-import type { TierCopy } from "../i18n/dictionaries/types";
+import type { Currency } from "../location/types";
+import { formatDateYmd, formatMinutes, formatPrice } from "../content/format";
+import type { TierCopy } from "../content/types";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 
@@ -30,16 +29,15 @@ type Labels = {
 
 export default function PlanCard({
   tier,
-  lang,
+  currency,
   copy,
   labels,
 }: {
   tier: Tier;
-  lang: Locale;
+  currency: Currency;
   copy: TierCopy;
   labels: Labels;
 }) {
-  const currency = localeToCurrency(lang);
   const options = optionsFor(tier, currency);
 
   const [index, setIndex] = useState(tier.defaultOption ?? 0);
@@ -77,25 +75,22 @@ export default function PlanCard({
       </div>
 
       <div className="plan__price">
-        <span className="plan__now">{formatPrice(total, lang)}</span>
+        <span className="plan__now">{formatPrice(total, currency)}</span>
         {/* Стару ціну тримаємо одразу під новою: пара «було / стало»
             має читатися з одного погляду. */}
         {option.sale ? (
           <span className="plan__was">
-            <s>{formatPrice(option.base, lang)}</s>
+            <s>{formatPrice(option.base, currency)}</s>
             {off ? <b className="plan__off">−{off}%</b> : null}
           </span>
         ) : null}
         <span className="plan__per">
-          {formatPrice(perMinute(option), lang)} {labels.perMinute} ·{" "}
-          {formatMinutes(option.minutes, lang)}
+          {formatPrice(perMinute(option), currency)} {labels.perMinute} ·{" "}
+          {formatMinutes(option.minutes)}
         </span>
         {option.sale ? (
           <span className="plan__launch">
-            {labels.launchNote.replace(
-              "{date}",
-              formatDateYmd(LAUNCH_UNTIL, lang),
-            )}
+            {labels.launchNote.replace("{date}", formatDateYmd(LAUNCH_UNTIL))}
           </span>
         ) : null}
       </div>
@@ -115,7 +110,7 @@ export default function PlanCard({
           <span className="plan__song-box" aria-hidden="true" />
           <span className="plan__song-text">{labels.songAdd}</span>
           <span className="plan__song-price">
-            +{formatPrice(songPrice(currency), lang)}
+            +{formatPrice(songPrice(currency), currency)}
           </span>
         </label>
       )}
@@ -130,12 +125,9 @@ export default function PlanCard({
       </ul>
 
       <Link
-        href={localeHref(
-          lang,
-          `/?tier=${tier.slug}&minutes=${option.minutes}${
-            song && !tier.songIncluded ? "&song=1" : ""
-          }#form`,
-        )}
+        href={`/?tier=${tier.slug}&minutes=${option.minutes}${
+          song && !tier.songIncluded ? "&song=1" : ""
+        }#form`}
         className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
         onClick={() =>
           trackPixel("ViewContent", {

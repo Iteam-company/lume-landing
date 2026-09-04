@@ -1,10 +1,6 @@
 import { isMinutes, isTierSlug } from "../../paddle";
 import { priceFor, TIERS } from "../../pricing";
-import {
-  DEFAULT_LOCALE,
-  isLocale,
-  localeToCurrency,
-} from "../../i18n/config";
+import { getVisitorLocation } from "../../location";
 import { deliverToN8n } from "../../../lib/n8n";
 
 export const runtime = "nodejs";
@@ -38,10 +34,9 @@ export async function POST(request: Request) {
   if (!phone) return badRequest("Вкажіть номер телефону");
   if (!email || !EMAIL_RE.test(email)) return badRequest("Вкажіть коректний e-mail");
 
-  // Локаль приходить від клієнта; валюту й суму сервер визначає сам.
-  const localeInput = typeof body.locale === "string" ? body.locale : undefined;
-  const locale = isLocale(localeInput) ? localeInput : DEFAULT_LOCALE;
-  const currency = localeToCurrency(locale);
+  // Валюту не приймаємо від клієнта: сервер сам визначає її за trusted
+  // Vercel Geo (x-vercel-ip-country) — так само, як і суму нижче.
+  const { currency } = await getVisitorLocation();
 
   const tierInput = typeof body.tier === "string" ? body.tier : null;
   if (!isTierSlug(tierInput)) return badRequest("Невідомий тариф");
@@ -72,7 +67,9 @@ export async function POST(request: Request) {
     phone,
     telegram: telegram || null,
     email,
-    locale,
+    // Сайт лише українською — лишаємо поле для сумісності з n8n workflow,
+    // яка вже очікує locale у payload.
+    locale: "uk" as const,
     tier: tier.slug,
     tierLabel: tier.name,
     minutes: minutesInput,

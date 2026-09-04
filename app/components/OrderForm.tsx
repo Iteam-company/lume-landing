@@ -4,11 +4,10 @@ import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { finalPrice, optionsFor, TIERS } from "../pricing";
-import { localeToCurrency, type Locale } from "../i18n/config";
+import type { Currency } from "../location/types";
 // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: formatPrice повернути разом із сумою в підсумку заявки.
-import { formatMinutes } from "../i18n/format";
-import { localeHref } from "../i18n/locale-path";
-import type { Dictionary } from "../i18n/dictionaries";
+import { formatMinutes } from "../content/format";
+import type { Dictionary } from "../content/dictionary";
 import {
   isMinutes,
   isTierSlug,
@@ -45,13 +44,11 @@ const isValid = {
 
 export default function OrderForm({
   dict,
-  lang,
+  currency,
 }: {
   dict: Dictionary["form"];
-  lang: Locale;
+  currency: Currency;
 }) {
-  const currency = localeToCurrency(lang);
-
   const [values, setValues] = useState({
     name: "",
     phone: "",
@@ -116,11 +113,12 @@ export default function OrderForm({
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
+          // currency/amount/locale навмисно не надсилаємо: сервер сам
+          // визначає їх за trusted Vercel Geo, клієнту тут не довіряють.
           name: values.name.trim(),
           phone: values.phone.trim(),
           telegram: values.telegram.trim(),
           email: values.email.trim(),
-          locale: lang,
           ...(selection
             ? { tier: selection.slug, minutes: selection.minutes }
             : {}),
@@ -141,7 +139,7 @@ export default function OrderForm({
     setSent(true);
 
     const selectionName = selection
-      ? `${selection.tierName} · ${formatMinutes(selection.minutes, lang)}`
+      ? `${selection.tierName} · ${formatMinutes(selection.minutes)}`
       : dict.leadContentName;
 
     // Основна конверсія воронки: заявку заповнено і надіслано.
@@ -263,7 +261,7 @@ export default function OrderForm({
         <p className="form__selection">
           <span className="form__selection-tier">{selection.tierName}</span>
           {" · "}
-          {formatMinutes(selection.minutes, lang)}
+          {formatMinutes(selection.minutes)}
         </p>
       )}
 
@@ -283,7 +281,7 @@ export default function OrderForm({
 
       <p className="form__note">
         {dict.privacyNoteBefore}
-        <Link href={localeHref(lang, "/privacy")}>{dict.privacyNoteLink}</Link>
+        <Link href="/privacy">{dict.privacyNoteLink}</Link>
       </p>
 
       {sent && (

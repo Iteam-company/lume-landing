@@ -1,10 +1,8 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import SiteFooter from "./SiteFooter";
-import { localeHref } from "../i18n/locale-path";
-import type { Locale } from "../i18n/config";
-import type { Dictionary } from "../i18n/dictionaries";
-import type { LegalBlock, LegalDoc } from "../i18n/dictionaries/types";
+import type { Dictionary } from "../content/dictionary";
+import type { LegalBlock, LegalDoc } from "../content/types";
 
 /** Абзац з посиланням на «/privacy»: текст містить "{link}". */
 function LinkedParagraph({
@@ -50,17 +48,15 @@ function Block({ block, privacyHref }: { block: LegalBlock; privacyHref: string 
 
 /** Каркас юридичних сторінок: шапка з логотипом, тіло документа, футер. */
 export default function LegalShell({
-  lang,
   dict,
   doc,
 }: {
-  lang: Locale;
   dict: Dictionary;
   doc: LegalDoc;
 }) {
   const l = dict.legal;
-  const homeHref = localeHref(lang, "/");
-  const privacyHref = localeHref(lang, "/privacy");
+  const homeHref = "/";
+  const privacyHref = "/privacy";
 
   return (
     <>
@@ -106,7 +102,7 @@ export default function LegalShell({
           </p>
         </div>
       </main>
-      <SiteFooter lang={lang} dict={dict} />
+      <SiteFooter dict={dict} />
     </>
   );
 }

@@ -9,7 +9,6 @@
 export type {
   CountryCode,
   Currency,
-  Locale,
   Market,
   VisitorLocation,
   VisitorLocationSource,

@@ -1,25 +1,24 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Audience from "../components/Audience";
-import Counter from "../components/Counter";
-import Faq from "../components/Faq";
-import FilmEdge from "../components/FilmEdge";
-import { Icon, IconSprite } from "../components/Icons";
-import OrderForm from "../components/OrderForm";
-import PaddleProvider from "../components/PaddleProvider";
+import Audience from "./components/Audience";
+import Counter from "./components/Counter";
+import Faq from "./components/Faq";
+import FilmEdge from "./components/FilmEdge";
+import { Icon, IconSprite } from "./components/Icons";
+import OrderForm from "./components/OrderForm";
+import PaddleProvider from "./components/PaddleProvider";
 // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: секцію вимкнено. Повернути — розкоментувати імпорт і рендер нижче.
-// import Pricing from "../components/Pricing";
-import Reveal from "../components/Reveal";
-import StructuredData from "../components/StructuredData";
-import SiteFooter from "../components/SiteFooter";
-import VideoBox from "../components/VideoBox";
-import WhatsAppFloat from "../components/WhatsAppFloat";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "../i18n/config";
-import { getDictionary } from "../i18n/dictionaries";
-import { localeHref } from "../i18n/locale-path";
-import { buildFaq } from "../faq";
+// import Pricing from "./components/Pricing";
+import Reveal from "./components/Reveal";
+import StructuredData from "./components/StructuredData";
+import SiteFooter from "./components/SiteFooter";
+import VideoBox from "./components/VideoBox";
+import WhatsAppFloat from "./components/WhatsAppFloat";
+import dict from "./content/dictionary";
+import { buildFaq } from "./faq";
+import { getVisitorLocation } from "./location";
 
-/* Медіа для секцій. Текст (підписи, кроки, підписи цифр) — у словниках. */
+/* Медіа для секцій. Текст (підписи, кроки, підписи цифр) — у content/dictionary. */
 const REACTION_MEDIA: { src?: string; poster?: string }[] = [
   { src: "/video/reaction-one.mp4", poster: "/video/reaction-one-poster.jpg" },
   { src: "/video/reaction-two.mp4", poster: "/video/reaction-two-poster.jpg" },
@@ -29,16 +28,15 @@ const REACTION_MEDIA: { src?: string; poster?: string }[] = [
 
 const STEP_NUMS = ["01", "02", "03", "04"] as const;
 
-export default async function Home({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}) {
-  const { lang: raw } = await params;
-  const lang: Locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
-  const dict = getDictionary(lang);
-  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: якоря #pricing на сторінці немає, тож кнопки ведуть на форму.
-  const pricingHref = localeHref(lang, "/#form");
+// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: якоря #pricing на сторінці немає, тож кнопки ведуть на форму.
+const pricingHref = "/#form";
+
+export default async function Home() {
+  // Мова сайту завжди українська. Валюта — від Geo відвідувача
+  // (Location Observer): UA → UAH, решта країн і fallback → USD.
+  // headers() усередині робить цю сторінку динамічною (SSR на кожен
+  // запит) — свідомий компроміс заради ціни без "флешу" валюти.
+  const { currency } = await getVisitorLocation();
 
   const reactions = dict.reactions.captions.map((caption, i) => ({
     caption,
@@ -54,7 +52,7 @@ export default async function Home({
 
   return (
     <>
-      <StructuredData lang={lang} />
+      <StructuredData />
       <IconSprite />
 
       {/* ============ HERO ============ */}
@@ -258,7 +256,7 @@ export default async function Home({
 
       {/* ============ ТАРИФИ ============ */}
       {/* ЦІНИ ТИМЧАСОВО ПРИХОВАНІ */}
-      {/* <Pricing dict={dict} lang={lang} /> */}
+      {/* <Pricing dict={dict} currency={currency} /> */}
 
       {/* ============ ЦИФРИ ============ */}
       <section className="numbers" id="numbers">
@@ -292,7 +290,7 @@ export default async function Home({
             {dict.faq.heading}
           </Reveal>
           <Reveal>
-            <Faq items={buildFaq(lang)} />
+            <Faq items={buildFaq(currency)} />
           </Reveal>
         </div>
       </section>
@@ -303,14 +301,14 @@ export default async function Home({
           <Reveal>
             <PaddleProvider>
               <Suspense fallback={null}>
-                <OrderForm dict={dict.form} lang={lang} />
+                <OrderForm dict={dict.form} currency={currency} />
               </Suspense>
             </PaddleProvider>
           </Reveal>
         </div>
       </section>
 
-      <SiteFooter dict={dict} lang={lang} />
+      <SiteFooter dict={dict} />
       <WhatsAppFloat labels={dict.floats} />
     </>
   );

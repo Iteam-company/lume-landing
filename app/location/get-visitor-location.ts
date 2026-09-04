@@ -11,10 +11,12 @@
    Доступний і в Preview, і в Production. HTTP-заголовки
    регістронезалежні, читаємо як "x-vercel-ip-country".
 
-   ВАЖЛИВО: не викликайте getVisitorLocation() з app/page.tsx чи
-   app/layout.tsx. Доступ до headers() робить маршрут динамічним, а
-   головна сторінка має лишатися статичною. На етапі 1 єдиний споживач —
-   діагностичний маршрут app/api/debug/location.
+   app/page.tsx викликає getVisitorLocation(), щоб вибрати валюту цін
+   (UAH/USD) до першого рендеру — без цього довелося б визначати
+   валюту на клієнті й ловити "флеш" USD → UAH. Доступ до headers()
+   робить головну сторінку динамічною (SSR на кожен запит) — свідомий
+   компроміс заради коректної валюти з першого байта. /privacy та
+   /terms цей модуль не викликають і лишаються статичними.
    ============================================================ */
 
 import "server-only";
@@ -46,13 +48,13 @@ function devOverrideEnabled(): boolean {
 }
 
 /**
- * Визначає ринок / дефолтну мову / валюту відвідувача за IP-країною,
+ * Визначає ринок / валюту відвідувача за IP-країною,
  * яку встановила edge-мережа Vercel.
  *
  * Пріоритет:
  *   1. dev-override — лише коли NODE_ENV !== "production" AND LOCATION_DEBUG=1;
  *   2. заголовок x-vercel-ip-country від Vercel;
- *   3. fallback → international / en / USD.
+ *   3. fallback → international / USD.
  */
 export async function getVisitorLocation(): Promise<VisitorLocation> {
   const headerList = await headers();

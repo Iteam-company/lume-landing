@@ -45,7 +45,6 @@ export async function GET(request: Request): Promise<Response> {
       headerRaw: geo.headerRaw,
       country: location.country,
       market: location.market,
-      defaultLocale: location.defaultLocale,
       currency: location.currency,
       source: location.source,
     },

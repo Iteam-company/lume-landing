@@ -5,16 +5,18 @@
    усе в цьому файлі можна викликати й покривати тестами ізольовано.
    Рідер, що читає заголовок запиту, — окремо в get-visitor-location.ts.
 
-   Бізнес-правило (етап 1):
-     UA                    → market "ukraine",      locale "uk", currency "UAH"
-     будь-яка інша країна   → market "international", locale "en", currency "USD"
+   Бізнес-правило:
+     UA                    → market "ukraine",      currency "UAH"
+     будь-яка інша країна   → market "international", currency "USD"
      країну не визначено    → те саме, що "international"
+
+   Мова сайту сюди не входить: сайт завжди українською, незалежно
+   від ринку відвідувача.
    ============================================================ */
 
 import type {
   CountryCode,
   Currency,
-  Locale,
   Market,
   VisitorLocation,
   VisitorLocationSource,
@@ -26,13 +28,10 @@ export const FALLBACK_MARKET: Market = "international";
 /** Країни, що належать до ринку "ukraine". Поки що лише Україна. */
 const UKRAINE_COUNTRIES: ReadonlySet<CountryCode> = new Set<CountryCode>(["UA"]);
 
-/** Дефолтні locale та currency для кожного ринку. */
-const MARKET_DEFAULTS: Record<
-  Market,
-  { defaultLocale: Locale; currency: Currency }
-> = {
-  ukraine: { defaultLocale: "uk", currency: "UAH" },
-  international: { defaultLocale: "en", currency: "USD" },
+/** Валюта для кожного ринку. */
+const MARKET_CURRENCY: Record<Market, Currency> = {
+  ukraine: "UAH",
+  international: "USD",
 };
 
 /** Рівно дві латинські літери. */
@@ -90,8 +89,7 @@ export function toVisitorLocation(
   return {
     country,
     market,
-    defaultLocale: MARKET_DEFAULTS[market].defaultLocale,
-    currency: MARKET_DEFAULTS[market].currency,
+    currency: MARKET_CURRENCY[market],
     source,
   };
 }

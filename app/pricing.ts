@@ -8,11 +8,11 @@
            дві валюти живуть незалежно одна від одної.
 
    Ладдер, знижка та ціна за хвилину рахуються з ставки автоматично.
-   Текст тарифів (tagline / features / badge) — у словниках
-   (app/i18n/dictionaries), тут лише числа й структура.
+   Текст тарифів (tagline / features / badge) — у app/content/dictionary,
+   тут лише числа й структура.
    ============================================================ */
 
-import type { Currency } from "./i18n/config";
+import type { Currency } from "./location/types";
 
 /** Доки діє стартова ціна. Формат YYYY-MM-DD. */
 export const LAUNCH_UNTIL = "2026-09-30";

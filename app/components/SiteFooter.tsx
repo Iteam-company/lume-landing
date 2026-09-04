@@ -1,24 +1,16 @@
 import Link from "next/link";
 import { WHATSAPP_LINK } from "../config";
-import { localeHref } from "../i18n/locale-path";
-import type { Locale } from "../i18n/config";
-import type { Dictionary } from "../i18n/dictionaries";
+import type { Dictionary } from "../content/dictionary";
 
-export default function SiteFooter({
-  lang,
-  dict,
-}: {
-  lang: Locale;
-  dict: Dictionary;
-}) {
+export default function SiteFooter({ dict }: { dict: Dictionary }) {
   const f = dict.footer;
   return (
     <footer className="footer">
       <div className="container footer__bottom">
         <p>{f.rights}</p>
         <nav className="footer__nav">
-          <Link href={localeHref(lang, "/terms")}>{f.terms}</Link>
-          <Link href={localeHref(lang, "/privacy")}>{f.privacy}</Link>
+          <Link href="/terms">{f.terms}</Link>
+          <Link href="/privacy">{f.privacy}</Link>
           <a href={WHATSAPP_LINK} target="_blank" rel="noopener">
             {f.support}
           </a>

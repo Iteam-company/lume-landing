@@ -9,38 +9,39 @@ import { buildFaq } from "../faq";
 // } from "../pricing";
 import { ORDER_EMAIL } from "../config";
 import { BRAND, SITE_URL } from "../site";
-import {
-  localeToBcp47,
-  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: localeToCurrency повернути разом із блоком offers.
-  // localeToCurrency,
-  type Locale,
-} from "../i18n/config";
-import { getDictionary } from "../i18n/dictionaries";
+import dict from "../content/dictionary";
 // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
-// import { formatMinutes, formatPrice } from "../i18n/format";
+// import { formatMinutes, formatPrice } from "../content/format";
 
 /* ============================================================
    Структурована розмітка (JSON-LD).
-   Дані беруться з тих самих словників і pricing.ts, що й видима
-   частина сайту, тому розмітка не розʼїжджається з цінами.
-   Мова та валюта — за локаллю сторінки.
+   Дані беруться з тих самих content/dictionary і pricing.ts, що
+   й видима частина сайту, тому розмітка не розʼїжджається з цінами.
+
+   Мова тут завжди uk-UA — сайт лише українською.
+
+   Валюта — НЕ від Geo відвідувача. Ціна в pricing.ts залежить від
+   ринку (UAH/USD), але той самий бот (Google, AI-асистент) не має
+   бачити то одну, то іншу валюту між заходами: це робить розмітку
+   нестабільною для SEO. Тому для schema.org завжди береться одна
+   канонічна валюта — UAH (основний ринок сайту, Україна), незалежно
+   від того, з якої країни прийшов конкретний запит.
    ============================================================ */
 
-export default function StructuredData({ lang }: { lang: Locale }) {
-  const dict = getDictionary(lang);
+const STRUCTURED_DATA_CURRENCY = "UAH" as const;
+
+export default function StructuredData() {
   const sd = dict.structuredData;
-  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
-  // const currency = localeToCurrency(lang);
-  const bcp47 = localeToBcp47(lang);
-  const base = `${SITE_URL}/${lang}`;
+  const bcp47 = "uk-UA";
+  const base = SITE_URL;
 
   // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
-  // const options = allOptions(currency);
+  // const options = allOptions(STRUCTURED_DATA_CURRENCY);
 
   // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: обчислення пропозицій вимкнено разом із блоком offers.
   // const offers = options.map(({ tier, option }) => {
   //   const off = discount(option);
-  //   const minutes = formatMinutes(option.minutes, lang);
+  //   const minutes = formatMinutes(option.minutes);
   //   return {
   //     "@type": "Offer",
   //     name: sd.offerName
@@ -49,9 +50,9 @@ export default function StructuredData({ lang }: { lang: Locale }) {
   //       .replace("{minutes}", minutes),
   //     description: sd.offerDescription
   //       .replace("{minutes}", minutes)
-  //       .replace("{rate}", formatPrice(perMinute(option), lang)),
+  //       .replace("{rate}", formatPrice(perMinute(option), STRUCTURED_DATA_CURRENCY)),
   //     price: String(finalPrice(option)),
-  //     priceCurrency: currency,
+  //     priceCurrency: STRUCTURED_DATA_CURRENCY,
   //     availability: "https://schema.org/InStock",
   //     url: `${base}/#pricing`,
   //     eligibleQuantity: {
@@ -66,7 +67,7 @@ export default function StructuredData({ lang }: { lang: Locale }) {
   //           priceSpecification: {
   //             "@type": "PriceSpecification",
   //             price: String(option.base),
-  //             priceCurrency: currency,
+  //             priceCurrency: STRUCTURED_DATA_CURRENCY,
   //             valueAddedTaxIncluded: true,
   //           },
   //         }
@@ -86,14 +87,14 @@ export default function StructuredData({ lang }: { lang: Locale }) {
       description: dict.meta.description,
       slogan: dict.meta.tagline,
       areaServed: { "@type": "Country", name: sd.countryName },
-      knowsLanguage: ["uk", "en"],
+      knowsLanguage: ["uk"],
       ...(ORDER_EMAIL
         ? {
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer service",
               email: ORDER_EMAIL,
-              availableLanguage: ["uk", "en"],
+              availableLanguage: ["uk"],
             },
           }
         : {}),
@@ -126,7 +127,7 @@ export default function StructuredData({ lang }: { lang: Locale }) {
       // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: ціни не віддаємо пошуку й AI-асистентам.
       // offers: {
       //   "@type": "AggregateOffer",
-      //   priceCurrency: currency,
+      //   priceCurrency: STRUCTURED_DATA_CURRENCY,
       //   lowPrice: String(Math.min(...prices)),
       //   highPrice: String(Math.max(...prices)),
       //   offerCount: String(offers.length),
@@ -137,7 +138,7 @@ export default function StructuredData({ lang }: { lang: Locale }) {
       "@type": "FAQPage",
       "@id": `${base}#faq`,
       inLanguage: bcp47,
-      mainEntity: buildFaq(lang).map((item) => ({
+      mainEntity: buildFaq(STRUCTURED_DATA_CURRENCY).map((item) => ({
         "@type": "Question",
         name: item.q,
         acceptedAnswer: { "@type": "Answer", text: item.a },

@@ -1,4 +1,4 @@
-import type { Dictionary } from "../i18n/dictionaries";
+import type { Dictionary } from "../content/dictionary";
 import Reveal from "./Reveal";
 
 /* Текстовий блок під пошукові запити: описує приводи, аудиторію

@@ -1,15 +1,15 @@
 import { TIERS } from "../pricing";
-import type { Dictionary } from "../i18n/dictionaries";
-import type { Locale } from "../i18n/config";
+import type { Dictionary } from "../content/dictionary";
+import type { Currency } from "../location/types";
 import PlanCard from "./PlanCard";
 import Reveal from "./Reveal";
 
 export default function Pricing({
   dict,
-  lang,
+  currency,
 }: {
   dict: Dictionary;
-  lang: Locale;
+  currency: Currency;
 }) {
   const p = dict.pricing;
 
@@ -28,7 +28,7 @@ export default function Pricing({
             <Reveal key={tier.slug} delay={(i % 4) as 0 | 1 | 2 | 3}>
               <PlanCard
                 tier={tier}
-                lang={lang}
+                currency={currency}
                 copy={p.tiers[tier.slug]}
                 labels={{
                   perMinute: p.perMinute,
