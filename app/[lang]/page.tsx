@@ -8,7 +8,6 @@ import { Icon, IconSprite } from "../components/Icons";
 import OrderForm from "../components/OrderForm";
 import PaddleProvider from "../components/PaddleProvider";
 import Pricing from "../components/Pricing";
-import LocaleSwitcher from "../components/LocaleSwitcher";
 import Reveal from "../components/Reveal";
 import StructuredData from "../components/StructuredData";
 import SiteFooter from "../components/SiteFooter";
@@ -59,9 +58,6 @@ export default async function Home({
       {/* ============ HERO ============ */}
       <header className="hero">
         <div className="container hero__inner">
-          <div className="hero__lang">
-            <LocaleSwitcher />
-          </div>
           <Reveal className="hero__left">
             <Link href={pricingHref} className="logo" aria-label="LUME">
               <span className="logo__text">LUME</span>

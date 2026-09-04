@@ -8,6 +8,7 @@ import {
   LAUNCH_UNTIL,
   optionsFor,
   perMinute,
+  songPrice,
   type Tier,
 } from "../pricing";
 import { localeToCurrency, type Locale } from "../i18n/config";
@@ -22,6 +23,8 @@ type Labels = {
   minutesShort: string;
   durationAria: string;
   launchNote: string;
+  songAdd: string;
+  songIncluded: string;
   order: string;
 };
 
@@ -40,16 +43,16 @@ export default function PlanCard({
   const options = optionsFor(tier, currency);
 
   const [index, setIndex] = useState(tier.defaultOption ?? 0);
+  const [song, setSong] = useState(false);
   const option = options[index];
   const off = discount(option);
-  const isDiamond = tier.slug === "diamond";
+
+  // У CINEMA пісня входить у тариф, тож доплати немає.
+  const songCost = tier.songIncluded || !song ? 0 : songPrice(currency);
+  const total = finalPrice(option) + songCost;
 
   return (
-    <article
-      className={`plan${tier.featured ? " plan--featured" : ""}${
-        isDiamond ? " plan--diamond" : ""
-      }`}
-    >
+    <article className={`plan${tier.featured ? " plan--featured" : ""}`}>
       {copy.badge ? <span className="plan__badge">{copy.badge}</span> : null}
 
       <h3 className="plan__name">{tier.name}</h3>
@@ -74,26 +77,48 @@ export default function PlanCard({
       </div>
 
       <div className="plan__price">
-        <span className="plan__now">{formatPrice(finalPrice(option), lang)}</span>
+        <span className="plan__now">{formatPrice(total, lang)}</span>
+        {/* Стару ціну тримаємо одразу під новою: пара «було / стало»
+            має читатися з одного погляду. */}
+        {option.sale ? (
+          <span className="plan__was">
+            <s>{formatPrice(option.base, lang)}</s>
+            {off ? <b className="plan__off">−{off}%</b> : null}
+          </span>
+        ) : null}
         <span className="plan__per">
           {formatPrice(perMinute(option), lang)} {labels.perMinute} ·{" "}
           {formatMinutes(option.minutes, lang)}
         </span>
         {option.sale ? (
-          <>
-            <span className="plan__was">
-              <s>{formatPrice(option.base, lang)}</s>
-              {off ? <b className="plan__off">−{off}%</b> : null}
-            </span>
-            <span className="plan__launch">
-              {labels.launchNote.replace(
-                "{date}",
-                formatDateYmd(LAUNCH_UNTIL, lang),
-              )}
-            </span>
-          </>
+          <span className="plan__launch">
+            {labels.launchNote.replace(
+              "{date}",
+              formatDateYmd(LAUNCH_UNTIL, lang),
+            )}
+          </span>
         ) : null}
       </div>
+
+      {tier.songIncluded ? (
+        <p className="plan__song plan__song--included">
+          <Icon name="i-star" className="star" />
+          {labels.songIncluded}
+        </p>
+      ) : (
+        <label className="plan__song">
+          <input
+            type="checkbox"
+            checked={song}
+            onChange={(e) => setSong(e.target.checked)}
+          />
+          <span className="plan__song-box" aria-hidden="true" />
+          <span className="plan__song-text">{labels.songAdd}</span>
+          <span className="plan__song-price">
+            +{formatPrice(songPrice(currency), lang)}
+          </span>
+        </label>
+      )}
 
       <ul className="plan__list">
         {copy.features.map((item) => (
@@ -107,16 +132,16 @@ export default function PlanCard({
       <Link
         href={localeHref(
           lang,
-          `/?tier=${tier.slug}&minutes=${option.minutes}#form`,
+          `/?tier=${tier.slug}&minutes=${option.minutes}${
+            song && !tier.songIncluded ? "&song=1" : ""
+          }#form`,
         )}
-        className={`btn ${
-          isDiamond ? "btn--gold" : tier.featured ? "btn--light" : "btn--dark"
-        } plan__cta`}
+        className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
         onClick={() =>
           trackPixel("ViewContent", {
             content_name: `${tier.name} · ${option.minutes} ${labels.minutesShort}`,
             content_category: tier.name,
-            value: finalPrice(option),
+            value: total,
             currency,
           })
         }
