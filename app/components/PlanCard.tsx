@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import {
   discount,
@@ -16,6 +15,7 @@ import { formatDateYmd, formatMinutes, formatPrice } from "../content/format";
 import type { TierCopy } from "../content/types";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
+import ScrollToFormLink from "./ScrollToFormLink";
 
 type Labels = {
   perMinute: string;
@@ -124,7 +124,7 @@ export default function PlanCard({
         ))}
       </ul>
 
-      <Link
+      <ScrollToFormLink
         href={`/?tier=${tier.slug}&minutes=${option.minutes}${
           song && !tier.songIncluded ? "&song=1" : ""
         }#form`}
@@ -139,7 +139,7 @@ export default function PlanCard({
         }
       >
         {labels.order}
-      </Link>
+      </ScrollToFormLink>
     </article>
   );
 }

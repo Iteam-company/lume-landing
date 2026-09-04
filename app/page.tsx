@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import Audience from "./components/Audience";
 import Counter from "./components/Counter";
 import Faq from "./components/Faq";
@@ -10,6 +9,7 @@ import PaddleProvider from "./components/PaddleProvider";
 // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: секцію вимкнено. Повернути — розкоментувати імпорт і рендер нижче.
 // import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
+import ScrollToFormLink from "./components/ScrollToFormLink";
 import StructuredData from "./components/StructuredData";
 import SiteFooter from "./components/SiteFooter";
 import VideoBox from "./components/VideoBox";
@@ -59,9 +59,9 @@ export default async function Home() {
       <header className="hero">
         <div className="container hero__inner">
           <Reveal className="hero__left">
-            <Link href={pricingHref} className="logo" aria-label="LUME">
+            <ScrollToFormLink href={pricingHref} className="logo" aria-label="LUME">
               <span className="logo__text">LUME</span>
-            </Link>
+            </ScrollToFormLink>
             <h1 className="hero__title">
               {dict.hero.titleLines.map((line, i) => (
                 <span key={line}>
@@ -79,9 +79,9 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            <Link href={pricingHref} className="btn btn--dark">
+            <ScrollToFormLink href={pricingHref} className="btn btn--dark">
               {dict.common.orderCta}
-            </Link>
+            </ScrollToFormLink>
           </Reveal>
 
           <Reveal className="hero__right" delay={1}>
@@ -217,9 +217,9 @@ export default async function Home() {
               {dict.process.headingPrefix}
               <span className="script script--xl">{dict.process.headingAccent}</span>
             </h2>
-            <Link href={pricingHref} className="btn btn--light">
+            <ScrollToFormLink href={pricingHref} className="btn btn--light">
               {dict.common.orderCta}
-            </Link>
+            </ScrollToFormLink>
           </Reveal>
 
           <div className="process__track">
