@@ -78,23 +78,25 @@ export default function PlanCard({
 
       <div className="plan__price">
         <span className="plan__now">{formatPrice(total, lang)}</span>
+        {/* Стару ціну тримаємо одразу під новою: пара «було / стало»
+            має читатися з одного погляду. */}
+        {option.sale ? (
+          <span className="plan__was">
+            <s>{formatPrice(option.base, lang)}</s>
+            {off ? <b className="plan__off">−{off}%</b> : null}
+          </span>
+        ) : null}
         <span className="plan__per">
           {formatPrice(perMinute(option), lang)} {labels.perMinute} ·{" "}
           {formatMinutes(option.minutes, lang)}
         </span>
         {option.sale ? (
-          <>
-            <span className="plan__was">
-              <s>{formatPrice(option.base, lang)}</s>
-              {off ? <b className="plan__off">−{off}%</b> : null}
-            </span>
-            <span className="plan__launch">
-              {labels.launchNote.replace(
-                "{date}",
-                formatDateYmd(LAUNCH_UNTIL, lang),
-              )}
-            </span>
-          </>
+          <span className="plan__launch">
+            {labels.launchNote.replace(
+              "{date}",
+              formatDateYmd(LAUNCH_UNTIL, lang),
+            )}
+          </span>
         ) : null}
       </div>
 
