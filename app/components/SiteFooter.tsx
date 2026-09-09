@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { WHATSAPP_LINK } from "../config";
+import { TELEGRAM_LINK } from "../config";
 import type { Dictionary } from "../content/dictionary";
 
 export default function SiteFooter({ dict }: { dict: Dictionary }) {
@@ -11,7 +11,7 @@ export default function SiteFooter({ dict }: { dict: Dictionary }) {
         <nav className="footer__nav">
           <Link href="/terms">{f.terms}</Link>
           <Link href="/privacy">{f.privacy}</Link>
-          <a href={WHATSAPP_LINK} target="_blank" rel="noopener">
+          <a href={TELEGRAM_LINK} target="_blank" rel="noopener">
             {f.support}
           </a>
           <a

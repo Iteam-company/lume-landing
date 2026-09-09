@@ -15,7 +15,7 @@ import {
   type CheckoutCustomData,
 } from "../paddle";
 import { usePaddle } from "./PaddleProvider";
-import { TELEGRAM_DM_LINK } from "../config";
+import { TELEGRAM_LINK } from "../config";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 
@@ -218,7 +218,7 @@ export default function OrderForm({
 
       <a
         className="btn btn--tg form__tg"
-        href={TELEGRAM_DM_LINK}
+        href={TELEGRAM_LINK}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackPixel("Contact", { content_name: "Telegram" })}

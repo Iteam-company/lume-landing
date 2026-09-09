@@ -491,7 +491,6 @@ const dict = {
   floats: {
     instagramAria: "Ми в Instagram",
     telegramAria: "Написати в Telegram",
-    whatsappAria: "Написати у WhatsApp",
   },
 
   video: {
