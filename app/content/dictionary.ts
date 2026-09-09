@@ -279,6 +279,7 @@ const dict = {
 
   common: {
     orderCta: "Замовити мультфільм",
+    orderCtaAlt: "або у WhatsApp",
   },
 
   hero: {
@@ -462,6 +463,7 @@ const dict = {
     emailPlaceholder: "you@example.com",
     emailError: "Введіть коректний e-mail",
     contactHeading: "Розкажіть нам свою історію",
+    contactProof: "200+ мультфільмів · 100+ клієнтів · відповідь за 15 хвилин",
     contactLead: "Напишіть у месенджер — куратор відповість протягом 15 хвилин.",
     whatsappCta: "Написати у WhatsApp",
     telegramCta: "Написати в Telegram",

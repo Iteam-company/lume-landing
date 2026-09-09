@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useState } from "react";
 import { Icon } from "./Icons";
 
 type Variant = "wide" | "16x9" | "9x16";
@@ -5,10 +8,14 @@ type Variant = "wide" | "16x9" | "9x16";
 /**
  * Відео або плейсхолдер під нього.
  *
- * Коли `src` заданий, керування повністю віддане нативним контролам
- * браузера. Свій обробник кліку на контейнері тут ставити не можна:
- * тап по кнопці паузи спливає до контейнера, і той одразу вмикає
- * відео назад — на iPhone пауза через це не спрацьовувала взагалі.
+ * До першого запуску показуємо постер із фірмовою кнопкою play, а нативні
+ * контроли вмикаємо лише після старту. Так сітка робіт не перетворюється
+ * на стіну чорних смуг із таймкодами.
+ *
+ * Оверлей ЗНИКАЄ, щойно відео стартувало, і більше нічого не перехоплює
+ * кліки. Це принципово: раніше обробник на контейнері ловив тап по
+ * нативній кнопці паузи й одразу вмикав відео назад — на iPhone пауза
+ * через це не працювала взагалі.
  */
 export default function VideoBox({
   variant,
@@ -21,17 +28,44 @@ export default function VideoBox({
   poster?: string;
   labels: { play: string; placeholder: string };
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [started, setStarted] = useState(false);
+
+  if (!src) {
+    return (
+      <div className={`video video--${variant}`}>
+        <button className="play" type="button" aria-label={labels.play}>
+          <Icon name="i-play" />
+        </button>
+        <span className="video__hint">{labels.placeholder}</span>
+      </div>
+    );
+  }
+
   return (
-    <div className={`video video--${variant}${src ? " has-video" : ""}`}>
-      {src ? (
-        <video src={src} poster={poster} controls playsInline preload="metadata" />
-      ) : (
-        <>
-          <button className="play" type="button" aria-label={labels.play}>
+    <div className={`video video--${variant} has-video${started ? " is-playing" : ""}`}>
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        controls={started}
+        playsInline
+        preload="metadata"
+      />
+      {!started && (
+        <button
+          className="video__start"
+          type="button"
+          aria-label={labels.play}
+          onClick={() => {
+            setStarted(true);
+            videoRef.current?.play();
+          }}
+        >
+          <span className="video__start-chip">
             <Icon name="i-play" />
-          </button>
-          <span className="video__hint">{labels.placeholder}</span>
-        </>
+          </span>
+        </button>
       )}
     </div>
   );

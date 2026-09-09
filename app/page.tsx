@@ -13,7 +13,7 @@ import StructuredData from "./components/StructuredData";
 import SiteFooter from "./components/SiteFooter";
 import VideoBox from "./components/VideoBox";
 import WhatsAppFloat from "./components/WhatsAppFloat";
-import { TELEGRAM_LINK } from "./config";
+import { TELEGRAM_LINK, WHATSAPP_LINK } from "./config";
 import dict from "./content/dictionary";
 import { buildFaq } from "./faq";
 import { getVisitorLocation } from "./location";
@@ -79,13 +79,23 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            <ChatLink
-              href={TELEGRAM_LINK}
-              channel="Telegram"
-              className="btn btn--dark"
-            >
-              {dict.common.orderCta}
-            </ChatLink>
+            <div className="hero__cta">
+              <ChatLink
+                href={TELEGRAM_LINK}
+                channel="Telegram"
+                className="btn btn--dark"
+              >
+                {dict.common.orderCta}
+              </ChatLink>
+              {/* Не всі користуються Telegram — даємо другий канал одразу. */}
+              <ChatLink
+                href={WHATSAPP_LINK}
+                channel="WhatsApp"
+                className="hero__cta-alt"
+              >
+                {dict.common.orderCtaAlt}
+              </ChatLink>
+            </div>
           </Reveal>
 
           <Reveal className="hero__right" delay={1}>

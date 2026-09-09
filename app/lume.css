@@ -86,7 +86,12 @@ button{font:inherit;color:inherit;cursor:pointer}
   font-size:clamp(30px,4vw,52px);line-height:1.04;letter-spacing:-.6px;
   margin:0 0 16px;color:var(--wine);
 }
-.contact__lead{margin:0 0 40px;font-size:19px;line-height:1.5;max-width:46ch}
+.contact__lead{margin:0 0 18px;font-size:19px;line-height:1.5;max-width:46ch}
+/* соціальний доказ у точці рішення */
+.contact__proof{
+  margin:0 0 34px;font-size:15px;font-weight:600;letter-spacing:.02em;
+  color:var(--wine);opacity:.85;
+}
 .contact__actions{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:100%}
 
 /* Великі кнопки-месенджери: іконка в кружечку, помітний підйом на ховері.
@@ -159,6 +164,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   text-transform:uppercase;letter-spacing:.1em;font-size:clamp(13px,1.2vw,17px);
   font-weight:500;margin:0 0 26px;
 }
+.hero__cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.hero__cta-alt{
+  font-size:15px;font-weight:600;color:var(--wine);text-decoration:none;
+  border-bottom:1.5px solid rgba(102,27,43,.35);padding-bottom:2px;
+  transition:border-color .25s;
+}
+.hero__cta-alt:hover{border-color:var(--wine)}
 .hero__bullets{list-style:none;margin:0 0 40px;padding:0;display:grid;gap:10px}
 .hero__bullets li{display:flex;align-items:center;gap:10px;font-size:15px;letter-spacing:.02em}
 .hero__right{position:relative;padding-top:104px}
@@ -187,6 +199,27 @@ button{font:inherit;color:inherit;cursor:pointer}
 .video--wide{aspect-ratio:16/10.4}
 .video--16x9{aspect-ratio:16/9}
 .video--9x16{aspect-ratio:9/15.4;border:3px solid var(--maroon);border-radius:26px}
+
+/* ---------- кнопка запуску поверх постера ---------- */
+.video__start{
+  position:absolute;inset:0;z-index:2;width:100%;height:100%;
+  display:grid;place-items:center;border:0;padding:0;cursor:pointer;
+  background:linear-gradient(180deg,rgba(25,24,23,.05),rgba(25,24,23,.35));
+  transition:background .35s var(--ease);
+}
+.video__start-chip{
+  display:grid;place-items:center;width:76px;height:76px;border-radius:50%;
+  background:rgba(246,241,233,.92);backdrop-filter:blur(4px);
+  box-shadow:0 10px 30px rgba(25,24,23,.35);
+  transition:transform .35s var(--ease),background .35s var(--ease);
+}
+.video__start-chip svg{width:28px;height:28px;fill:var(--wine);margin-left:4px}
+.video:hover .video__start-chip{transform:scale(1.08);background:var(--ivory)}
+.video__start:focus-visible{outline:3px solid var(--rose);outline-offset:-6px}
+.video--9x16 .video__start-chip{width:60px;height:60px}
+.video--9x16 .video__start-chip svg{width:22px;height:22px}
+/* під час відтворення картку не піднімаємо — курсор має влучати в контроли */
+.video.is-playing:hover{transform:none}
 .video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 .play{
   position:relative;z-index:2;width:62px;height:62px;border:0;border-radius:50%;
