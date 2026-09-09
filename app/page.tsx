@@ -1,11 +1,10 @@
-import { Suspense } from "react";
 import Audience from "./components/Audience";
 import Counter from "./components/Counter";
 import Faq from "./components/Faq";
 import FilmEdge from "./components/FilmEdge";
 import { Icon, IconSprite } from "./components/Icons";
-import OrderForm from "./components/OrderForm";
-import PaddleProvider from "./components/PaddleProvider";
+import ChatLink from "./components/ChatLink";
+import ContactCta from "./components/ContactCta";
 // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: секцію вимкнено. Повернути — розкоментувати імпорт і рендер нижче.
 // import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
@@ -14,6 +13,7 @@ import StructuredData from "./components/StructuredData";
 import SiteFooter from "./components/SiteFooter";
 import VideoBox from "./components/VideoBox";
 import WhatsAppFloat from "./components/WhatsAppFloat";
+import { TELEGRAM_LINK } from "./config";
 import dict from "./content/dictionary";
 import { buildFaq } from "./faq";
 import { getVisitorLocation } from "./location";
@@ -79,9 +79,13 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            <ScrollToFormLink href={pricingHref} className="btn btn--dark">
+            <ChatLink
+              href={TELEGRAM_LINK}
+              channel="Telegram"
+              className="btn btn--dark"
+            >
               {dict.common.orderCta}
-            </ScrollToFormLink>
+            </ChatLink>
           </Reveal>
 
           <Reveal className="hero__right" delay={1}>
@@ -217,9 +221,13 @@ export default async function Home() {
               {dict.process.headingPrefix}
               <span className="script script--xl">{dict.process.headingAccent}</span>
             </h2>
-            <ScrollToFormLink href={pricingHref} className="btn btn--light">
+            <ChatLink
+              href={TELEGRAM_LINK}
+              channel="Telegram"
+              className="btn btn--light"
+            >
               {dict.common.orderCta}
-            </ScrollToFormLink>
+            </ChatLink>
           </Reveal>
 
           <div className="process__track">
@@ -295,15 +303,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ ФОРМА ============ */}
+      {/* ============ ЗВʼЯЗОК ============ */}
       <section className="formsec" id="form">
         <div className="container container--form">
           <Reveal>
-            <PaddleProvider>
-              <Suspense fallback={null}>
-                <OrderForm dict={dict.form} currency={currency} />
-              </Suspense>
-            </PaddleProvider>
+            <ContactCta dict={dict.form} />
           </Reveal>
         </div>
       </section>

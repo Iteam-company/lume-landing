@@ -88,8 +88,28 @@ button{font:inherit;color:inherit;cursor:pointer}
 }
 .btn--tg svg{width:22px;height:22px;fill:currentColor}
 .btn--tg:hover{background:var(--wine);color:var(--ivory)}
-.form__tg-hint{
-  margin:10px 0 0;text-align:center;font-size:14px;color:rgba(25,24,23,.65);
+/* ---------- блок звʼязку замість форми ---------- */
+.contact{text-align:center;display:grid;justify-items:center}
+.contact__title{
+  font-family:var(--font-sans),sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:clamp(28px,3.6vw,46px);line-height:1.06;letter-spacing:-.5px;
+  margin:0 0 14px;color:var(--wine);
+}
+.contact__lead{margin:0 0 32px;font-size:18px;line-height:1.5;max-width:46ch}
+.contact__actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;width:100%}
+.contact__actions .btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  flex:1 1 260px;max-width:320px;margin:0;
+}
+.contact__actions .btn svg{width:22px;height:22px;fill:currentColor}
+/* Telegram — основна дія, WhatsApp — рівноцінна альтернатива контуром. */
+.btn--tg{background:var(--wine);color:var(--ivory);box-shadow:0 12px 30px rgba(102,27,43,.28)}
+.btn--tg:hover{background:var(--wine-dark)}
+.btn--wa{background:transparent;color:var(--wine);border:1.6px solid var(--wine)}
+.btn--wa:hover{background:var(--wine);color:var(--ivory)}
+.contact .form__note{margin-top:24px}
+@media (max-width:620px){
+  .contact__actions .btn{flex:1 1 100%;max-width:none}
 }
 .btn--cta:hover{background:var(--wine-dark)}
 

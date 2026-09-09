@@ -16,6 +16,9 @@ export const INSTAGRAM_LINK =
   process.env.NEXT_PUBLIC_INSTAGRAM_LINK ??
   "https://www.instagram.com/lumestory.ua/";
 
+/** WhatsApp — той самий номер, що й Telegram. Зашитий у код. */
+export const WHATSAPP_LINK = "https://wa.me/380638977496";
+
 /** Telegram — чат із менеджером за номером +380 63 897 74 96.
  *  Одне посилання і для плаваючої кнопки, і для кнопки у формі.
  *  Номер зашитий у код навмисно, без змінної оточення: щоб змінити —
