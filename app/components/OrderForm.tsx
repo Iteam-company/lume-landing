@@ -15,30 +15,16 @@ import {
   type CheckoutCustomData,
 } from "../paddle";
 import { usePaddle } from "./PaddleProvider";
+import { TELEGRAM_DM_LINK } from "../config";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 
-type Errors = Partial<Record<"name" | "phone" | "telegram" | "email", boolean>>;
-
-function maskPhone(raw: string) {
-  let d = raw.replace(/\D/g, "");
-  if (d.startsWith("380")) d = d.slice(3);
-  if (d.startsWith("0")) d = d.slice(1);
-  d = d.slice(0, 9);
-  let out = "+380";
-  if (d.length) out += " (" + d.slice(0, 2);
-  if (d.length >= 2) out += ") " + d.slice(2, 5);
-  if (d.length > 5) out += "-" + d.slice(5, 7);
-  if (d.length > 7) out += "-" + d.slice(7, 9);
-  return out;
-}
+type Errors = Partial<Record<"name" | "telegram", boolean>>;
 
 const isValid = {
   name: (v: string) => v.trim().length >= 2,
-  phone: (v: string) => v.replace(/\D/g, "").length >= 12,
-  email: (v: string) => /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(v.trim()),
+  // Telegram лишився єдиним каналом зв'язку, тому поле стало обов'язковим.
   telegram: (v: string) =>
-    v.trim() === "" ||
     /^@?[A-Za-z0-9_]{4,32}$/.test(v.trim().replace(/^https?:\/\/t\.me\//i, "")),
 };
 
@@ -49,12 +35,7 @@ export default function OrderForm({
   dict: Dictionary["form"];
   currency: Currency;
 }) {
-  const [values, setValues] = useState({
-    name: "",
-    phone: "",
-    telegram: "",
-    email: "",
-  });
+  const [values, setValues] = useState({ name: "", telegram: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -116,9 +97,7 @@ export default function OrderForm({
           // currency/amount/locale навмисно не надсилаємо: сервер сам
           // визначає їх за trusted Vercel Geo, клієнту тут не довіряють.
           name: values.name.trim(),
-          phone: values.phone.trim(),
           telegram: values.telegram.trim(),
-          email: values.email.trim(),
           ...(selection
             ? { tier: selection.slug, minutes: selection.minutes }
             : {}),
@@ -158,7 +137,6 @@ export default function OrderForm({
       });
       paddle.Checkout.open({
         items: [{ priceId, quantity: 1 }],
-        customer: { email: values.email.trim() },
         customData: {
           tier: selection.slug,
           minutes: selection.minutes,
@@ -198,30 +176,6 @@ export default function OrderForm({
         <span className="field__err">{dict.nameError}</span>
       </label>
 
-      <div className={`field${errors.phone ? " is-error" : ""}`}>
-        <span className="field__label">
-          {dict.phoneLabel}
-          <Icon name="i-wa" className="badge badge--wa" />
-        </span>
-        <div className="phone">
-          <span className="phone__flag">
-            <span className="flag">🇺🇦</span>
-            <span className="caret" />
-          </span>
-          <input
-            type="tel"
-            name="phone"
-            inputMode="tel"
-            placeholder={dict.phonePlaceholder}
-            autoComplete="tel"
-            value={values.phone}
-            onFocus={() => !values.phone && set("phone", "+380 (")}
-            onChange={(e) => set("phone", maskPhone(e.target.value))}
-          />
-        </div>
-        <span className="field__err">{dict.phoneError}</span>
-      </div>
-
       <label className={`field${errors.telegram ? " is-error" : ""}`}>
         <span className="field__label">
           {dict.telegramLabel}
@@ -237,23 +191,6 @@ export default function OrderForm({
           onChange={(e) => set("telegram", e.target.value)}
         />
         <span className="field__err">{dict.telegramError}</span>
-      </label>
-
-      <label className={`field${errors.email ? " is-error" : ""}`}>
-        <span className="field__label">
-          {dict.emailLabel}
-          <Icon name="i-mail" className="badge badge--mail" />
-        </span>
-        <span className="field__hint">{dict.emailHint}</span>
-        <input
-          type="email"
-          name="email"
-          placeholder={dict.emailPlaceholder}
-          autoComplete="email"
-          value={values.email}
-          onChange={(e) => set("email", e.target.value)}
-        />
-        <span className="field__err">{dict.emailError}</span>
       </label>
 
       {/* ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: суму обраного тарифу не показуємо. */}
@@ -278,6 +215,18 @@ export default function OrderForm({
           {dict.submitError}
         </p>
       )}
+
+      <a
+        className="btn btn--tg form__tg"
+        href={TELEGRAM_DM_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackPixel("Contact", { content_name: "Telegram" })}
+      >
+        <Icon name="i-tg" />
+        {dict.telegramCta}
+      </a>
+      <p className="form__tg-hint">{dict.telegramCtaHint}</p>
 
       <p className="form__note">
         {dict.privacyNoteBefore}

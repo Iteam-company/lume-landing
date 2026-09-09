@@ -23,3 +23,7 @@ export const INSTAGRAM_LINK =
 /** Telegram — плаваюча кнопка. Приклад: https://t.me/lumestory */
 export const TELEGRAM_LINK =
   process.env.NEXT_PUBLIC_TELEGRAM_LINK ?? "https://t.me/lumestory";
+
+/** Пряме листування з менеджером: чат за номером +380 63 897 74 96. */
+export const TELEGRAM_DM_LINK =
+  process.env.NEXT_PUBLIC_TELEGRAM_DM_LINK ?? "https://t.me/+380638977496";

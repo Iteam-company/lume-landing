@@ -6,7 +6,8 @@ import { deliverToN8n } from "../../../lib/n8n";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+/** Нік у Telegram: латиниця, цифри й «_», 4-32 символи, «@» необовʼязкове. */
+const TELEGRAM_RE = /^@?[A-Za-z0-9_]{4,32}$/;
 
 function badRequest(error: string) {
   return Response.json({ error }, { status: 400 });
@@ -26,37 +27,37 @@ export async function POST(request: Request) {
   const body = raw as Record<string, unknown>;
 
   const name = typeof body.name === "string" ? body.name.trim() : "";
-  const phone = typeof body.phone === "string" ? body.phone.trim() : "";
-  const email = typeof body.email === "string" ? body.email.trim() : "";
   const telegram = typeof body.telegram === "string" ? body.telegram.trim() : "";
 
   if (!name) return badRequest("Вкажіть імʼя");
-  if (!phone) return badRequest("Вкажіть номер телефону");
-  if (!email || !EMAIL_RE.test(email)) return badRequest("Вкажіть коректний e-mail");
+  // Telegram — єдиний канал звʼязку, тому поле обовʼязкове.
+  if (!TELEGRAM_RE.test(telegram.replace(/^https?:\/\/t\.me\//i, ""))) {
+    return badRequest("Вкажіть нік у Telegram");
+  }
 
   // Валюту не приймаємо від клієнта: сервер сам визначає її за trusted
   // Vercel Geo (x-vercel-ip-country) — так само, як і суму нижче.
   const { currency } = await getVisitorLocation();
 
+  /* Тариф необовʼязковий: секція з цінами прихована, тож більшість заявок
+     приходить без нього. Якщо він усе ж переданий (стара кнопка чи
+     збережене посилання) — перевіряємо і рахуємо суму на сервері. */
   const tierInput = typeof body.tier === "string" ? body.tier : null;
-  if (!isTierSlug(tierInput)) return badRequest("Невідомий тариф");
-
   const minutesInput =
     typeof body.minutes === "number"
       ? body.minutes
       : typeof body.minutes === "string" && body.minutes.trim() !== ""
         ? Number(body.minutes)
         : null;
-  if (!isMinutes(minutesInput)) {
-    return badRequest("Хронометраж має бути від 1 до 5 хвилин");
-  }
 
-  const tier = TIERS.find((t) => t.slug === tierInput);
-  if (!tier) return badRequest("Такий тариф зараз недоступний");
+  const tier =
+    isTierSlug(tierInput) && isMinutes(minutesInput)
+      ? (TIERS.find((t) => t.slug === tierInput) ?? null)
+      : null;
 
   // Суму рахуємо на сервері з pricing.ts — клієнтським значенням не довіряємо.
-  const amount = priceFor(tier, minutesInput, currency);
-  if (!amount) return badRequest("Такий тариф зараз недоступний");
+  const amount =
+    tier && isMinutes(minutesInput) ? priceFor(tier, minutesInput, currency) : null;
 
   const orderId = crypto.randomUUID();
 
@@ -64,15 +65,13 @@ export async function POST(request: Request) {
     event: "lume.order.created" as const,
     orderId,
     name,
-    phone,
-    telegram: telegram || null,
-    email,
+    telegram,
     // Сайт лише українською — лишаємо поле для сумісності з n8n workflow,
     // яка вже очікує locale у payload.
     locale: "uk" as const,
-    tier: tier.slug,
-    tierLabel: tier.name,
-    minutes: minutesInput,
+    tier: tier?.slug ?? null,
+    tierLabel: tier?.name ?? null,
+    minutes: tier ? minutesInput : null,
     price: amount,
     amount,
     currency,
