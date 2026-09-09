@@ -164,6 +164,22 @@ button{font:inherit;color:inherit;cursor:pointer}
   text-transform:uppercase;letter-spacing:.1em;font-size:clamp(13px,1.2vw,17px);
   font-weight:500;margin:0 0 26px;
 }
+/* ---------- пропозиція з відліком біля кнопки ---------- */
+.offer{
+  display:inline-grid;justify-items:start;gap:8px;margin:0 0 20px;
+  padding:14px 20px;border-radius:18px;
+  background:rgba(215,166,162,.22);border:1.4px solid rgba(215,166,162,.7);
+}
+.offer__title{margin:0;font-size:15px;font-weight:700;color:var(--wine);letter-spacing:.01em}
+.offer__clock{display:flex;gap:8px;align-items:flex-end}
+.offer__unit{
+  display:grid;justify-items:center;gap:2px;min-width:46px;padding:6px 8px;
+  border-radius:10px;background:var(--wine);color:var(--ivory);
+}
+.offer__unit b{font-size:20px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.offer__unit i{font-size:10px;font-style:normal;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.offer__note{margin:0;font-size:13px;color:rgba(25,24,23,.7)}
+
 .hero__cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .hero__cta-alt{
   font-size:15px;font-weight:600;color:var(--wine);text-decoration:none;

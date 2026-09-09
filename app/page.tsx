@@ -5,6 +5,7 @@ import FilmEdge from "./components/FilmEdge";
 import { Icon, IconSprite } from "./components/Icons";
 import ChatLink from "./components/ChatLink";
 import ContactCta from "./components/ContactCta";
+import OfferCountdown from "./components/OfferCountdown";
 // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: секцію вимкнено. Повернути — розкоментувати імпорт і рендер нижче.
 // import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
@@ -79,6 +80,7 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
+            <OfferCountdown labels={dict.common.offer} />
             <div className="hero__cta">
               <ChatLink
                 href={TELEGRAM_LINK}

@@ -279,6 +279,15 @@ const dict = {
 
   common: {
     orderCta: "Замовити мультфільм",
+    offer: {
+      title: "Персональна знижка на перше замовлення",
+      note: "куратор назве її у чаті",
+      until: "діє до {date}",
+      days: "дн",
+      hours: "год",
+      minutes: "хв",
+      seconds: "с",
+    },
     orderCtaAlt: "або у WhatsApp",
   },
 
