@@ -217,23 +217,28 @@ button{font:inherit;color:inherit;cursor:pointer}
 .video--9x16{aspect-ratio:9/15.4;border:3px solid var(--maroon);border-radius:26px}
 
 /* ---------- кнопка запуску поверх постера ---------- */
+/* Клікабельна вся площа, але сам кружечок — у нижньому куті: по центру
+   він перекривав підписи, вбудовані в кадр реакцій, і водяний знак у
+   відео шапки. */
 .video__start{
   position:absolute;inset:0;z-index:2;width:100%;height:100%;
-  display:grid;place-items:center;border:0;padding:0;cursor:pointer;
-  background:linear-gradient(180deg,rgba(25,24,23,.05),rgba(25,24,23,.35));
+  display:grid;place-items:end;border:0;padding:18px;cursor:pointer;
+  background:linear-gradient(180deg,rgba(25,24,23,.02) 55%,rgba(25,24,23,.42));
   transition:background .35s var(--ease);
 }
+.video:hover .video__start{background:linear-gradient(180deg,rgba(25,24,23,.04) 50%,rgba(25,24,23,.5))}
 .video__start-chip{
-  display:grid;place-items:center;width:76px;height:76px;border-radius:50%;
+  display:grid;place-items:center;width:60px;height:60px;border-radius:50%;
   background:rgba(246,241,233,.92);backdrop-filter:blur(4px);
   box-shadow:0 10px 30px rgba(25,24,23,.35);
   transition:transform .35s var(--ease),background .35s var(--ease);
 }
-.video__start-chip svg{width:28px;height:28px;fill:var(--wine);margin-left:4px}
+.video__start-chip svg{width:24px;height:24px;fill:var(--wine);margin-left:3px}
 .video:hover .video__start-chip{transform:scale(1.08);background:var(--ivory)}
 .video__start:focus-visible{outline:3px solid var(--rose);outline-offset:-6px}
-.video--9x16 .video__start-chip{width:60px;height:60px}
-.video--9x16 .video__start-chip svg{width:22px;height:22px}
+.video--9x16 .video__start{padding:14px}
+.video--9x16 .video__start-chip{width:52px;height:52px}
+.video--9x16 .video__start-chip svg{width:20px;height:20px}
 /* під час відтворення картку не піднімаємо — курсор має влучати в контроли */
 .video.is-playing:hover{transform:none}
 .video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
