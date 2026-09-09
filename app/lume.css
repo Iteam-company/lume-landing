@@ -79,37 +79,55 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn--light{background:var(--cream);color:var(--maroon-text);padding:18px 36px;font-size:16px}
 .btn--light:hover{box-shadow:0 14px 30px rgba(0,0,0,.25)}
 .btn--cta{background:var(--wine);color:var(--ivory);width:min(100%,420px);margin:34px auto 0;box-shadow:0 12px 30px rgba(102,27,43,.32)}
-/* Пряме листування з менеджером: другорядна дія поруч із заявкою,
-   тому контурна, а не заливка — щоб не сперечалася з основною кнопкою. */
-.btn--tg{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  width:min(100%,420px);margin:14px auto 0;
-  background:transparent;color:var(--wine);border:1.6px solid var(--wine);
-}
-.btn--tg svg{width:22px;height:22px;fill:currentColor}
-.btn--tg:hover{background:var(--wine);color:var(--ivory)}
 /* ---------- блок звʼязку замість форми ---------- */
 .contact{text-align:center;display:grid;justify-items:center}
 .contact__title{
   font-family:var(--font-sans),sans-serif;font-weight:900;text-transform:uppercase;
-  font-size:clamp(28px,3.6vw,46px);line-height:1.06;letter-spacing:-.5px;
-  margin:0 0 14px;color:var(--wine);
+  font-size:clamp(30px,4vw,52px);line-height:1.04;letter-spacing:-.6px;
+  margin:0 0 16px;color:var(--wine);
 }
-.contact__lead{margin:0 0 32px;font-size:18px;line-height:1.5;max-width:46ch}
-.contact__actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;width:100%}
+.contact__lead{margin:0 0 40px;font-size:19px;line-height:1.5;max-width:46ch}
+.contact__actions{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:100%}
+
+/* Великі кнопки-месенджери: іконка в кружечку, помітний підйом на ховері.
+   Обидві однакової ваги — це рівноцінні канали, а не головний і запасний. */
 .contact__actions .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  flex:1 1 260px;max-width:320px;margin:0;
+  display:inline-flex;align-items:center;justify-content:center;gap:14px;
+  flex:1 1 300px;max-width:340px;margin:0;
+  min-height:72px;padding:20px 30px;
+  font-size:17px;font-weight:700;letter-spacing:.06em;
+  border-radius:999px;position:relative;isolation:isolate;
 }
-.contact__actions .btn svg{width:22px;height:22px;fill:currentColor}
-/* Telegram — основна дія, WhatsApp — рівноцінна альтернатива контуром. */
-.btn--tg{background:var(--wine);color:var(--ivory);box-shadow:0 12px 30px rgba(102,27,43,.28)}
-.btn--tg:hover{background:var(--wine-dark)}
-.btn--wa{background:transparent;color:var(--wine);border:1.6px solid var(--wine)}
-.btn--wa:hover{background:var(--wine);color:var(--ivory)}
-.contact .form__note{margin-top:24px}
+.contact__actions .btn svg{
+  width:24px;height:24px;fill:currentColor;flex:none;
+  transition:transform .35s var(--ease);
+}
+/* кружечок під іконкою */
+.contact__actions .btn .icon-chip{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  background:rgba(246,241,233,.16);flex:none;
+  transition:background .3s var(--ease);
+}
+.contact__actions .btn:hover{transform:translateY(-4px)}
+.contact__actions .btn:hover .icon-chip{background:rgba(246,241,233,.28)}
+.contact__actions .btn:hover svg{transform:translateX(2px)}
+.contact__actions .btn:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+
+.btn--tg{
+  background:var(--wine);color:var(--ivory);
+  box-shadow:0 14px 34px rgba(102,27,43,.3);
+}
+.btn--tg:hover{background:var(--wine-dark);box-shadow:0 22px 46px rgba(102,27,43,.38)}
+.btn--wa{
+  background:var(--charcoal);color:var(--ivory);
+  box-shadow:0 14px 34px rgba(25,24,23,.28);
+}
+.btn--wa:hover{background:#2A2827;box-shadow:0 22px 46px rgba(25,24,23,.36)}
+
+.contact .form__note{margin-top:28px}
 @media (max-width:620px){
-  .contact__actions .btn{flex:1 1 100%;max-width:none}
+  .contact__actions{gap:14px}
+  .contact__actions .btn{flex:1 1 100%;max-width:none;min-height:66px;font-size:16px}
 }
 .btn--cta:hover{background:var(--wine-dark)}
 

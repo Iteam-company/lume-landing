@@ -51,11 +51,22 @@ export const metadata: Metadata = {
     url: "/",
     title: dict.meta.title,
     description: dict.meta.description,
+    // Прев'ю для месенджерів і соцмереж: без нього посилання, надіслане
+    // в Telegram чи WhatsApp, показується голим текстом.
+    images: [
+      {
+        url: "/video/hero-poster.jpg",
+        width: 1920,
+        height: 1080,
+        alt: dict.meta.title,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: dict.meta.title,
     description: dict.meta.description,
+    images: ["/video/hero-poster.jpg"],
   },
   robots: {
     index: true,

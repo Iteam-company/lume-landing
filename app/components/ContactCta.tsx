@@ -13,11 +13,15 @@ export default function ContactCta({ dict }: { dict: Dictionary["form"] }) {
 
       <div className="contact__actions">
         <ChatLink href={TELEGRAM_LINK} channel="Telegram" className="btn btn--tg">
-          <Icon name="i-tg" />
+          <span className="icon-chip">
+            <Icon name="i-tg" />
+          </span>
           {dict.telegramCta}
         </ChatLink>
         <ChatLink href={WHATSAPP_LINK} channel="WhatsApp" className="btn btn--wa">
-          <Icon name="i-wa" />
+          <span className="icon-chip">
+            <Icon name="i-wa" />
+          </span>
           {dict.whatsappCta}
         </ChatLink>
       </div>
