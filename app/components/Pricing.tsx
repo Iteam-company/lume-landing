@@ -21,6 +21,8 @@ export default function Pricing({
         </Reveal>
         <Reveal as="p" className="pricing__lead">
           {p.lead}
+          <br />
+          {p.preview.lead}
         </Reveal>
 
         <div className="pricing__grid">
@@ -38,6 +40,7 @@ export default function Pricing({
                   songAdd: p.songAdd,
                   songIncluded: p.songIncluded,
                   order: p.orderCard,
+                  preview: p.preview,
                 }}
               />
             </Reveal>
@@ -49,7 +52,7 @@ export default function Pricing({
           {p.common.join(" · ")}
         </Reveal>
         <Reveal as="p" className="pricing__note">
-          {p.noteCurrency} {p.noteConfirm}
+          {p.noteCurrency[currency]} {p.noteConfirm}
         </Reveal>
       </div>
     </section>

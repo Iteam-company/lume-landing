@@ -1,17 +1,15 @@
 import { buildFaq } from "../faq";
-// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: імпорти цін повернути разом із блоком offers нижче.
-// import {
-//   allOptions,
-//   discount,
-//   finalPrice,
-//   LAUNCH_UNTIL,
-//   perMinute,
-// } from "../pricing";
+import {
+  allOptions,
+  discount,
+  finalPrice,
+  LAUNCH_UNTIL,
+  perMinute,
+} from "../pricing";
 import { ORDER_EMAIL } from "../config";
 import { BRAND, SITE_URL } from "../site";
 import dict from "../content/dictionary";
-// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
-// import { formatMinutes, formatPrice } from "../content/format";
+import { formatMinutes, formatPrice } from "../content/format";
 
 /* ============================================================
    Структурована розмітка (JSON-LD).
@@ -35,48 +33,45 @@ export default function StructuredData() {
   const bcp47 = "uk-UA";
   const base = SITE_URL;
 
-  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
-  // const options = allOptions(STRUCTURED_DATA_CURRENCY);
+  const options = allOptions(STRUCTURED_DATA_CURRENCY);
 
-  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: обчислення пропозицій вимкнено разом із блоком offers.
-  // const offers = options.map(({ tier, option }) => {
-  //   const off = discount(option);
-  //   const minutes = formatMinutes(option.minutes);
-  //   return {
-  //     "@type": "Offer",
-  //     name: sd.offerName
-  //       .replace("{brand}", BRAND)
-  //       .replace("{tier}", tier.name)
-  //       .replace("{minutes}", minutes),
-  //     description: sd.offerDescription
-  //       .replace("{minutes}", minutes)
-  //       .replace("{rate}", formatPrice(perMinute(option), STRUCTURED_DATA_CURRENCY)),
-  //     price: String(finalPrice(option)),
-  //     priceCurrency: STRUCTURED_DATA_CURRENCY,
-  //     availability: "https://schema.org/InStock",
-  //     url: `${base}/#pricing`,
-  //     eligibleQuantity: {
-  //       "@type": "QuantitativeValue",
-  //       value: option.minutes,
-  //       unitCode: "MIN",
-  //       unitText: sd.unitText,
-  //     },
-  //     ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
-  //     ...(option.sale && off
-  //       ? {
-  //           priceSpecification: {
-  //             "@type": "PriceSpecification",
-  //             price: String(option.base),
-  //             priceCurrency: STRUCTURED_DATA_CURRENCY,
-  //             valueAddedTaxIncluded: true,
-  //           },
-  //         }
-  //       : {}),
-  //   };
-  // });
+  const offers = options.map(({ tier, option }) => {
+    const off = discount(option);
+    const minutes = formatMinutes(option.minutes);
+    return {
+      "@type": "Offer",
+      name: sd.offerName
+        .replace("{brand}", BRAND)
+        .replace("{tier}", tier.name)
+        .replace("{minutes}", minutes),
+      description: sd.offerDescription
+        .replace("{minutes}", minutes)
+        .replace("{rate}", formatPrice(perMinute(option), STRUCTURED_DATA_CURRENCY)),
+      price: String(finalPrice(option)),
+      priceCurrency: STRUCTURED_DATA_CURRENCY,
+      availability: "https://schema.org/InStock",
+      url: `${base}/#pricing`,
+      eligibleQuantity: {
+        "@type": "QuantitativeValue",
+        value: option.minutes,
+        unitCode: "MIN",
+        unitText: sd.unitText,
+      },
+      ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
+      ...(option.sale && off
+        ? {
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              price: String(option.base),
+              priceCurrency: STRUCTURED_DATA_CURRENCY,
+              valueAddedTaxIncluded: true,
+            },
+          }
+        : {}),
+    };
+  });
 
-  // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ
-  // const prices = options.map(({ option }) => finalPrice(option));
+  const prices = options.map(({ option }) => finalPrice(option));
 
   const graph = [
     {
@@ -124,15 +119,14 @@ export default function StructuredData() {
         audienceType: sd.audienceType,
       },
       hoursAvailable: sd.hoursAvailable,
-      // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: ціни не віддаємо пошуку й AI-асистентам.
-      // offers: {
-      //   "@type": "AggregateOffer",
-      //   priceCurrency: STRUCTURED_DATA_CURRENCY,
-      //   lowPrice: String(Math.min(...prices)),
-      //   highPrice: String(Math.max(...prices)),
-      //   offerCount: String(offers.length),
-      //   offers,
-      // },
+      offers: {
+        "@type": "AggregateOffer",
+        priceCurrency: STRUCTURED_DATA_CURRENCY,
+        lowPrice: String(Math.min(...prices)),
+        highPrice: String(Math.max(...prices)),
+        offerCount: String(offers.length),
+        offers,
+      },
     },
     {
       "@type": "FAQPage",

@@ -15,6 +15,7 @@ import { formatDateYmd, formatMinutes, formatPrice } from "../content/format";
 import type { TierCopy } from "../content/types";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
+import PlanPreview, { type PreviewLabels } from "./PlanPreview";
 import ScrollToFormLink from "./ScrollToFormLink";
 
 type Labels = {
@@ -25,6 +26,7 @@ type Labels = {
   songAdd: string;
   songIncluded: string;
   order: string;
+  preview: PreviewLabels;
 };
 
 export default function PlanCard({
@@ -42,6 +44,9 @@ export default function PlanCard({
 
   const [index, setIndex] = useState(tier.defaultOption ?? 0);
   const [song, setSong] = useState(false);
+  // Наведення тільки мишкою: на сенсорних екранах pointerenter
+  // спрацьовує від тапу й «залипає», там превʼю вмикає сама прокрутка.
+  const [hovered, setHovered] = useState(false);
   const option = options[index];
   const off = discount(option);
 
@@ -50,8 +55,19 @@ export default function PlanCard({
   const total = finalPrice(option) + songCost;
 
   return (
-    <article className={`plan${tier.featured ? " plan--featured" : ""}`}>
+    <article
+      className={`plan${tier.featured ? " plan--featured" : ""}`}
+      onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
       {copy.badge ? <span className="plan__badge">{copy.badge}</span> : null}
+
+      <PlanPreview
+        src={`/video/plan-${tier.slug}.mp4`}
+        poster={`/video/plan-${tier.slug}-poster.jpg`}
+        active={hovered}
+        labels={labels.preview}
+      />
 
       <h3 className="plan__name">{tier.name}</h3>
       <p className="plan__tagline">{copy.tagline}</p>

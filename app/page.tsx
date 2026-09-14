@@ -6,8 +6,7 @@ import { Icon, IconSprite } from "./components/Icons";
 import ChatLink from "./components/ChatLink";
 import ContactCta from "./components/ContactCta";
 import OfferCountdown from "./components/OfferCountdown";
-// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: секцію вимкнено. Повернути — розкоментувати імпорт і рендер нижче.
-// import Pricing from "./components/Pricing";
+import Pricing from "./components/Pricing";
 import Reveal from "./components/Reveal";
 import ScrollToFormLink from "./components/ScrollToFormLink";
 import StructuredData from "./components/StructuredData";
@@ -29,8 +28,7 @@ const REACTION_MEDIA: { src?: string; poster?: string }[] = [
 
 const STEP_NUMS = ["01", "02", "03", "04"] as const;
 
-// ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: якоря #pricing на сторінці немає, тож кнопки ведуть на форму.
-const pricingHref = "/#form";
+const pricingHref = "/#pricing";
 
 export default async function Home() {
   // Мова сайту завжди українська. Валюта — від Geo відвідувача
@@ -275,8 +273,7 @@ export default async function Home() {
       </section>
 
       {/* ============ ТАРИФИ ============ */}
-      {/* ЦІНИ ТИМЧАСОВО ПРИХОВАНІ */}
-      {/* <Pricing dict={dict} currency={currency} /> */}
+      <Pricing dict={dict} currency={currency} />
 
       {/* ============ ЦИФРИ ============ */}
       <section className="numbers" id="numbers">

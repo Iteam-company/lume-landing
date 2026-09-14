@@ -47,13 +47,10 @@ function priceAnswer(currency: Currency): string {
 
 export function buildFaq(currency: Currency): QA[] {
   const d = dict.faq;
-  return d.items
-    // ЦІНИ ТИМЧАСОВО ПРИХОВАНІ: питання про вартість не показуємо. Повернути — прибрати filter.
-    .filter((item) => !item.a.includes("{prices}"))
-    .map((item) => ({
+  return d.items.map((item) => ({
     q: item.q,
     a: item.a
       .replace("{prices}", priceAnswer(currency))
-      .replace("{currencyNote}", d.currencyNote),
-    }));
+      .replace("{currencyNote}", d.currencyNote[currency]),
+  }));
 }

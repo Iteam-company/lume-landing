@@ -79,8 +79,6 @@ export const TIERS: Tier[] = [
   {
     name: "STORY",
     slug: "story",
-    // Замовлення приймаємо від двох хвилин
-    minMinutes: 2,
     defaultOption: 0,
     // USD: 85 / звичайна 99 → знижка ~14%
     // UAH: 1499 / звичайна 3800 → знижка ~61%

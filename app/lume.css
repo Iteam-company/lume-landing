@@ -366,6 +366,49 @@ button{font:inherit;color:inherit;cursor:pointer}
   font-size:23px;letter-spacing:-.3px;margin:0;color:var(--maroon-text);
 }
 .plan{width:100%}
+
+/* ---------- приклад якості тарифу ---------- */
+/* Усі три ролики — одна сцена, тож картки порівнюються з одного погляду. */
+.plan__media{
+  position:relative;aspect-ratio:16/9;margin:0 0 22px;overflow:hidden;
+  border-radius:14px;background:#33101B;box-shadow:0 12px 28px rgba(25,24,23,.18);
+}
+.plan__media video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .9s var(--ease);
+}
+.plan:hover .plan__media video{transform:scale(1.04)}
+.plan__media::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(25,24,23,.35),transparent 32%,transparent 62%,rgba(25,24,23,.45));
+  transition:opacity .45s var(--ease);
+}
+.plan__media.is-playing::after{opacity:.4}
+.plan__media-tag{
+  position:absolute;left:10px;top:10px;z-index:1;padding:5px 10px;border-radius:999px;
+  background:rgba(25,24,23,.5);backdrop-filter:blur(6px);color:var(--ivory);
+  font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+}
+.plan__media-hint{
+  position:absolute;left:10px;bottom:10px;z-index:1;display:inline-flex;align-items:center;gap:6px;
+  padding:6px 11px 6px 8px;border-radius:999px;background:rgba(246,241,233,.92);
+  color:var(--charcoal);font-size:12px;font-weight:600;
+  transition:opacity .35s var(--ease),transform .35s var(--ease);
+}
+.plan__media-hint svg{width:14px;height:14px;fill:var(--wine)}
+.plan__media.is-playing .plan__media-hint{opacity:0;transform:translateY(6px)}
+.plan__sound{
+  position:absolute;right:10px;bottom:10px;z-index:1;display:grid;place-items:center;
+  width:36px;height:36px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:rgba(246,241,233,.92);box-shadow:0 6px 16px rgba(25,24,23,.25);
+  transition:transform .25s var(--ease),background .25s;
+}
+.plan__sound:hover{transform:scale(1.08);background:var(--ivory)}
+.plan__sound:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.plan__sound svg{width:18px;height:18px;fill:var(--wine);stroke:var(--wine)}
+.plan__sound svg path:first-child{stroke:none}
+@media (hover:none){.plan__media-hint{display:none}}
+@media (prefers-reduced-motion:reduce){.plan__media video{transition:none}.plan:hover .plan__media video{transform:none}}
 /* min-height тримає перемикач і ціну на одній лінії в усіх картках,
    навіть коли підзаголовок займає два рядки */
 .plan__tagline{margin:6px 0 20px;font-size:15px;line-height:1.4;min-height:2.8em;color:rgba(25,24,23,.72)}
