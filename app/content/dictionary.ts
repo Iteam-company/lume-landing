@@ -282,13 +282,22 @@ const dict = {
     offer: {
       title: "Персональна знижка на перше замовлення",
       note: "куратор назве її у чаті",
-      until: "діє до {date}",
+      until: "тримаємо за вами 30 хвилин",
       days: "дн",
       hours: "год",
       minutes: "хв",
       seconds: "с",
     },
     orderCtaAlt: "або у WhatsApp",
+    navCta: "Написати",
+    nav: [
+      { id: "pricing", label: "Вартість" },
+      { id: "works", label: "Роботи" },
+      { id: "reactions", label: "Реакції" },
+      { id: "process", label: "Як працюємо" },
+      { id: "audience", label: "Кому підійде" },
+      { id: "faq", label: "FAQ" },
+    ],
   },
 
   hero: {
@@ -355,7 +364,7 @@ const dict = {
       "Особистий куратор",
     ],
     // Валюта залежить від країни відвідувача (UA → гривні, решта → долари).
-    noteCurrency: { UAH: "Ціни вказані у гривнях.", USD: "Ціни вказані в доларах США." },
+    noteCurrency: { UAH: "Ціни вказані у гривнях.", EUR: "Ціни вказані в євро." },
     noteConfirm: "Точну вартість куратор підтвердить після брифу.",
     perMinute: "за хвилину",
     minutesShort: "хв",
@@ -424,7 +433,7 @@ const dict = {
     priceTo: "до",
     priceFor: "за",
     perMinuteWord: "за хвилину",
-    currencyNote: { UAH: "Ціни вказані у гривнях.", USD: "Ціни вказані в доларах США." },
+    currencyNote: { UAH: "Ціни вказані у гривнях.", EUR: "Ціни вказані в євро." },
     items: [
       {
         q: "Скільки часу займає створення?",

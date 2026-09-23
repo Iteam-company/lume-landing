@@ -12,8 +12,8 @@
    регістронезалежні, читаємо як "x-vercel-ip-country".
 
    app/page.tsx викликає getVisitorLocation(), щоб вибрати валюту цін
-   (UAH/USD) до першого рендеру — без цього довелося б визначати
-   валюту на клієнті й ловити "флеш" USD → UAH. Доступ до headers()
+   (UAH/EUR) до першого рендеру — без цього довелося б визначати
+   валюту на клієнті й ловити "флеш" EUR → UAH. Доступ до headers()
    робить головну сторінку динамічною (SSR на кожен запит) — свідомий
    компроміс заради коректної валюти з першого байта. /privacy та
    /terms цей модуль не викликають і лишаються статичними.
@@ -54,7 +54,7 @@ function devOverrideEnabled(): boolean {
  * Пріоритет:
  *   1. dev-override — лише коли NODE_ENV !== "production" AND LOCATION_DEBUG=1;
  *   2. заголовок x-vercel-ip-country від Vercel;
- *   3. fallback → international / USD.
+ *   3. fallback → international / EUR.
  */
 export async function getVisitorLocation(): Promise<VisitorLocation> {
   const headerList = await headers();

@@ -7,7 +7,7 @@
 
    Бізнес-правило:
      UA                    → market "ukraine",      currency "UAH"
-     будь-яка інша країна   → market "international", currency "USD"
+     будь-яка інша країна   → market "international", currency "EUR"
      країну не визначено    → те саме, що "international"
 
    Мова сайту сюди не входить: сайт завжди українською, незалежно
@@ -31,7 +31,7 @@ const UKRAINE_COUNTRIES: ReadonlySet<CountryCode> = new Set<CountryCode>(["UA"])
 /** Валюта для кожного ринку. */
 const MARKET_CURRENCY: Record<Market, Currency> = {
   ukraine: "UAH",
-  international: "USD",
+  international: "EUR",
 };
 
 /** Рівно дві латинські літери. */

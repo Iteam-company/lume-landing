@@ -11,6 +11,7 @@ import Reveal from "./components/Reveal";
 import ScrollToFormLink from "./components/ScrollToFormLink";
 import StructuredData from "./components/StructuredData";
 import SiteFooter from "./components/SiteFooter";
+import SiteNav from "./components/SiteNav";
 import VideoBox from "./components/VideoBox";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import { TELEGRAM_LINK, WHATSAPP_LINK } from "./config";
@@ -32,7 +33,7 @@ const pricingHref = "/#pricing";
 
 export default async function Home() {
   // Мова сайту завжди українська. Валюта — від Geo відвідувача
-  // (Location Observer): UA → UAH, решта країн і fallback → USD.
+  // (Location Observer): UA → UAH, решта країн і fallback → EUR.
   // headers() усередині робить цю сторінку динамічною (SSR на кожен
   // запит) — свідомий компроміс заради ціни без "флешу" валюти.
   const { currency } = await getVisitorLocation();
@@ -53,9 +54,10 @@ export default async function Home() {
     <>
       <StructuredData />
       <IconSprite />
+      <SiteNav items={dict.common.nav} cta={dict.common.navCta} />
 
       {/* ============ HERO ============ */}
-      <header className="hero">
+      <header className="hero" id="top">
         <div className="container hero__inner">
           <Reveal className="hero__left">
             <ScrollToFormLink href={pricingHref} className="logo" aria-label="LUME">
@@ -113,6 +115,9 @@ export default async function Home() {
           </Reveal>
         </div>
       </header>
+
+      {/* ============ ТАРИФИ ============ */}
+      <Pricing dict={dict} currency={currency} />
 
       {/* ============ НАШІ РОБОТИ ============ */}
       <section className="works section--dark" id="works">
@@ -271,9 +276,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {/* ============ ТАРИФИ ============ */}
-      <Pricing dict={dict} currency={currency} />
 
       {/* ============ ЦИФРИ ============ */}
       <section className="numbers" id="numbers">

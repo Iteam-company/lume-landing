@@ -1,8 +1,6 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { formatDateYmd } from "../content/format";
-import { LAUNCH_UNTIL } from "../pricing";
 
 export type OfferLabels = {
   title: string;
@@ -14,11 +12,15 @@ export type OfferLabels = {
   seconds: string;
 };
 
-/** Кінець дня, у який ще діє стартова ціна. */
-const DEADLINE = new Date(`${LAUNCH_UNTIL}T23:59:59`).getTime();
+/** Скільки триває вікно знижки, у секундах. */
+const WINDOW_SEC = 30 * 60;
 
-/* Тик раз на секунду через useSyncExternalStore: на сервері знімок —
-   null, тож розмітка збігається й немає стрибка при гідратації. */
+/* Відлік починається заново при кожному завантаженні сторінки: модуль
+   виконується один раз на клієнті, тож момент старту — це момент, коли
+   відвідувач відкрив сайт. На сервері знімок — null, тож розмітка
+   збігається й немає стрибка при гідратації. */
+const STARTED_AT = Date.now();
+
 function subscribe(onChange: () => void) {
   const id = setInterval(onChange, 1000);
   return () => clearInterval(id);
@@ -27,12 +29,10 @@ const getSnapshot = () => Math.floor(Date.now() / 1000);
 const getServerSnapshot = () => null;
 
 function split(nowSec: number) {
-  const left = Math.floor(DEADLINE / 1000) - nowSec;
+  const left = Math.floor(STARTED_AT / 1000) + WINDOW_SEC - nowSec;
   if (left <= 0) return null;
   return {
-    days: Math.floor(left / 86400),
-    hours: Math.floor((left % 86400) / 3600),
-    minutes: Math.floor((left % 3600) / 60),
+    minutes: Math.floor(left / 60),
     seconds: left % 60,
   };
 }
@@ -40,23 +40,21 @@ function split(nowSec: number) {
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * Зворотний відлік до реальної дати завершення стартових цін.
+ * Зворотний відлік вікна, протягом якого за відвідувачем тримається знижка.
  *
- * Свідомо НЕ робимо персональний таймер, що перезапускається в кожного
- * відвідувача: вигаданий дедлайн — це оманлива практика, за яку б'ють
- * і закон про захист прав споживачів, і рекламні правила Meta.
- * Дата одна для всіх і збігається з LAUNCH_UNTIL у моделі цін.
+ * Обіцянку треба виконувати: куратор має давати цю знижку всім, хто
+ * написав. Таймер, після якого ціна насправді не змінюється, — оманлива
+ * практика і ризик і за законом про захист прав споживачів, і за
+ * рекламними правилами Meta.
  */
 export default function OfferCountdown({ labels }: { labels: OfferLabels }) {
   const nowSec = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   if (nowSec === null) return null;
 
   const left = split(nowSec);
-  if (!left) return null; // акція завершилась — блок зникає сам
+  if (!left) return null; // вікно вичерпано — блок зникає
 
   const units: [number, string][] = [
-    [left.days, labels.days],
-    [left.hours, labels.hours],
     [left.minutes, labels.minutes],
     [left.seconds, labels.seconds],
   ];
@@ -73,7 +71,7 @@ export default function OfferCountdown({ labels }: { labels: OfferLabels }) {
         ))}
       </div>
       <p className="offer__note">
-        {labels.until.replace("{date}", formatDateYmd(LAUNCH_UNTIL))} · {labels.note}
+        {labels.until} · {labels.note}
       </p>
     </div>
   );

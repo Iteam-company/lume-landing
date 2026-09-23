@@ -3,7 +3,7 @@
 
    Мова сайту завжди українська і від Geo не залежить. Location
    Observer тепер відповідає лише за одне: якою валютою показувати
-   ціни (UAH для України, USD для решти світу).
+   ціни (UAH для України, EUR для решти світу).
    ============================================================ */
 
 /** Нормалізований ISO 3166-1 alpha-2 код країни у верхньому регістрі, напр. "UA". */
@@ -13,7 +13,7 @@ export type CountryCode = string;
 export type Market = "ukraine" | "international";
 
 /** Валюта відображення цін для ринку. */
-export type Currency = "UAH" | "USD";
+export type Currency = "UAH" | "EUR";
 
 /** Звідки взято країну — потрібно лише для діагностики. */
 export type VisitorLocationSource = "geo-header" | "dev-override" | "fallback";

@@ -2,7 +2,7 @@
    Тарифи. Числова модель цін — єдине джерело правди.
 
    Кожен тариф має ставку за хвилину в кожній валюті:
-     USD — міжнародний ринок;
+     EUR — міжнародний ринок (Європа й решта світу);
      UAH — окремі ціни для України, задані під ринок, а НЕ конвертовані
            за курсом. Жодних FX-API і жодної конвертації в рантаймі:
            дві валюти живуть незалежно одна від одної.
@@ -51,7 +51,7 @@ export type Tier = {
 /** Доплата за пісню на замовлення. Ціни задані під ринок, не за курсом. */
 export const SONG_PRICE: Record<Currency, number> = {
   UAH: 499,
-  USD: 25,
+  EUR: 25,
 };
 
 /** Скільки коштує пісня у валюті. */
@@ -80,10 +80,10 @@ export const TIERS: Tier[] = [
     name: "STORY",
     slug: "story",
     defaultOption: 0,
-    // USD: 85 / звичайна 99 → знижка ~14%
+    // EUR: 35 / звичайна 41 → знижка ~15%
     // UAH: 1499 / звичайна 3800 → знижка ~61%
     rates: {
-      USD: { rate: 85, regularRate: 99 },
+      EUR: { rate: 35, regularRate: 41 },
       UAH: { rate: 1499, regularRate: 3800 },
     },
   },
@@ -92,10 +92,10 @@ export const TIERS: Tier[] = [
     slug: "signature",
     defaultOption: 0,
     featured: true,
-    // USD: 120 / звичайна 141 → знижка ~15%
+    // EUR: 60 / звичайна 71 → знижка ~15%
     // UAH: 2200 / звичайна 5350 → знижка ~59%
     rates: {
-      USD: { rate: 120, regularRate: 141 },
+      EUR: { rate: 60, regularRate: 71 },
       UAH: { rate: 2200, regularRate: 5350 },
     },
   },
@@ -105,10 +105,10 @@ export const TIERS: Tier[] = [
     defaultOption: 0,
     // Пісня входить у тариф
     songIncluded: true,
-    // USD: 150 / звичайна 180 → знижка ~17%
+    // EUR: 110 / звичайна 132 → знижка ~17%
     // UAH: 3333 / звичайна 6700 → знижка ~50%
     rates: {
-      USD: { rate: 150, regularRate: 180 },
+      EUR: { rate: 110, regularRate: 132 },
       UAH: { rate: 3333, regularRate: 6700 },
     },
   },
