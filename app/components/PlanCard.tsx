@@ -11,6 +11,7 @@ import {
   type Tier,
 } from "../pricing";
 import type { Currency } from "../location/types";
+import type { Lang } from "../content/lang";
 import { formatDateYmd, formatMinutes, formatPrice } from "../content/format";
 import type { TierCopy } from "../content/types";
 import { trackPixel } from "../pixel";
@@ -32,11 +33,13 @@ type Labels = {
 export default function PlanCard({
   tier,
   currency,
+  lang,
   copy,
   labels,
 }: {
   tier: Tier;
   currency: Currency;
+  lang: Lang;
   copy: TierCopy;
   labels: Labels;
 }) {
@@ -91,22 +94,22 @@ export default function PlanCard({
       </div>
 
       <div className="plan__price">
-        <span className="plan__now">{formatPrice(total, currency)}</span>
+        <span className="plan__now">{formatPrice(total, currency, lang)}</span>
         {/* Стару ціну тримаємо одразу під новою: пара «було / стало»
             має читатися з одного погляду. */}
         {option.sale ? (
           <span className="plan__was">
-            <s>{formatPrice(option.base, currency)}</s>
+            <s>{formatPrice(option.base, currency, lang)}</s>
             {off ? <b className="plan__off">−{off}%</b> : null}
           </span>
         ) : null}
         <span className="plan__per">
-          {formatPrice(perMinute(option), currency)} {labels.perMinute} ·{" "}
-          {formatMinutes(option.minutes)}
+          {formatPrice(perMinute(option), currency, lang)} {labels.perMinute} ·{" "}
+          {formatMinutes(option.minutes, lang)}
         </span>
         {option.sale ? (
           <span className="plan__launch">
-            {labels.launchNote.replace("{date}", formatDateYmd(LAUNCH_UNTIL))}
+            {labels.launchNote.replace("{date}", formatDateYmd(LAUNCH_UNTIL, lang))}
           </span>
         ) : null}
       </div>
@@ -126,7 +129,7 @@ export default function PlanCard({
           <span className="plan__song-box" aria-hidden="true" />
           <span className="plan__song-text">{labels.songAdd}</span>
           <span className="plan__song-price">
-            +{formatPrice(songPrice(currency), currency)}
+            +{formatPrice(songPrice(currency), currency, lang)}
           </span>
         </label>
       )}

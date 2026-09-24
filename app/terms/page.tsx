@@ -5,9 +5,16 @@ import dict from "../content/dictionary";
 export const metadata: Metadata = {
   title: dict.meta.termsTitle,
   description: dict.meta.termsDescription,
-  alternates: { canonical: "/terms" },
+  alternates: {
+    canonical: "/terms",
+    languages: {
+      "uk-UA": "/terms",
+      "en-US": "/en/terms",
+      "ru-RU": "/ru/terms",
+    },
+  },
 };
 
 export default function TermsPage() {
-  return <LegalShell dict={dict} doc={dict.legal.terms} />;
+  return <LegalShell dict={dict} doc={dict.legal.terms} lang="uk" />;
 }

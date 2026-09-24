@@ -1,15 +1,18 @@
 import { TIERS } from "../pricing";
 import type { Dictionary } from "../content/dictionary";
 import type { Currency } from "../location/types";
+import type { Lang } from "../content/lang";
 import PlanCard from "./PlanCard";
 import Reveal from "./Reveal";
 
 export default function Pricing({
   dict,
   currency,
+  lang,
 }: {
   dict: Dictionary;
   currency: Currency;
+  lang: Lang;
 }) {
   const p = dict.pricing;
 
@@ -31,6 +34,7 @@ export default function Pricing({
               <PlanCard
                 tier={tier}
                 currency={currency}
+                lang={lang}
                 copy={p.tiers[tier.slug]}
                 labels={{
                   perMinute: p.perMinute,

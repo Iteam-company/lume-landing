@@ -8,7 +8,8 @@ import {
 } from "../pricing";
 import { ORDER_EMAIL } from "../config";
 import { BRAND, SITE_URL } from "../site";
-import dict from "../content/dictionary";
+import { getDictionary } from "../content/dictionaries";
+import { LANG_BCP47, langPath, type Lang } from "../content/lang";
 import { formatMinutes, formatPrice } from "../content/format";
 
 /* ============================================================
@@ -16,7 +17,7 @@ import { formatMinutes, formatPrice } from "../content/format";
    Дані беруться з тих самих content/dictionary і pricing.ts, що
    й видима частина сайту, тому розмітка не розʼїжджається з цінами.
 
-   Мова тут завжди uk-UA — сайт лише українською.
+   Мова розмітки збігається з мовою сторінки.
 
    Валюта — НЕ від Geo відвідувача. Ціна в pricing.ts залежить від
    ринку (UAH/EUR), але той самий бот (Google, AI-асистент) не має
@@ -28,16 +29,17 @@ import { formatMinutes, formatPrice } from "../content/format";
 
 const STRUCTURED_DATA_CURRENCY = "UAH" as const;
 
-export default function StructuredData() {
+export default function StructuredData({ lang }: { lang: Lang }) {
+  const dict = getDictionary(lang);
   const sd = dict.structuredData;
-  const bcp47 = "uk-UA";
-  const base = SITE_URL;
+  const bcp47 = LANG_BCP47[lang];
+  const base = SITE_URL + langPath("/", lang).replace(/\/$/, "");
 
   const options = allOptions(STRUCTURED_DATA_CURRENCY);
 
   const offers = options.map(({ tier, option }) => {
     const off = discount(option);
-    const minutes = formatMinutes(option.minutes);
+    const minutes = formatMinutes(option.minutes, lang);
     return {
       "@type": "Offer",
       name: sd.offerName
@@ -46,7 +48,7 @@ export default function StructuredData() {
         .replace("{minutes}", minutes),
       description: sd.offerDescription
         .replace("{minutes}", minutes)
-        .replace("{rate}", formatPrice(perMinute(option), STRUCTURED_DATA_CURRENCY)),
+        .replace("{rate}", formatPrice(perMinute(option), STRUCTURED_DATA_CURRENCY, lang)),
       price: String(finalPrice(option)),
       priceCurrency: STRUCTURED_DATA_CURRENCY,
       availability: "https://schema.org/InStock",
@@ -82,14 +84,14 @@ export default function StructuredData() {
       description: dict.meta.description,
       slogan: dict.meta.tagline,
       areaServed: { "@type": "Country", name: sd.countryName },
-      knowsLanguage: ["uk"],
+      knowsLanguage: ["uk", "en", "ru"],
       ...(ORDER_EMAIL
         ? {
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer service",
               email: ORDER_EMAIL,
-              availableLanguage: ["uk"],
+              availableLanguage: ["uk", "en", "ru"],
             },
           }
         : {}),
@@ -132,7 +134,7 @@ export default function StructuredData() {
       "@type": "FAQPage",
       "@id": `${base}#faq`,
       inLanguage: bcp47,
-      mainEntity: buildFaq(STRUCTURED_DATA_CURRENCY).map((item) => ({
+      mainEntity: buildFaq(STRUCTURED_DATA_CURRENCY, lang).map((item) => ({
         "@type": "Question",
         name: item.q,
         acceptedAnswer: { "@type": "Answer", text: item.a },

@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import SiteFooter from "./SiteFooter";
 import type { Dictionary } from "../content/dictionary";
+import { langPath, type Lang } from "../content/lang";
 import type { LegalBlock, LegalDoc } from "../content/types";
 
 /** Абзац з посиланням на «/privacy»: текст містить "{link}". */
@@ -50,13 +51,15 @@ function Block({ block, privacyHref }: { block: LegalBlock; privacyHref: string 
 export default function LegalShell({
   dict,
   doc,
+  lang,
 }: {
   dict: Dictionary;
   doc: LegalDoc;
+  lang: Lang;
 }) {
   const l = dict.legal;
-  const homeHref = "/";
-  const privacyHref = "/privacy";
+  const homeHref = langPath("/", lang);
+  const privacyHref = langPath("/privacy", lang);
 
   return (
     <>
@@ -102,7 +105,7 @@ export default function LegalShell({
           </p>
         </div>
       </main>
-      <SiteFooter dict={dict} />
+      <SiteFooter dict={dict} lang={lang} />
     </>
   );
 }

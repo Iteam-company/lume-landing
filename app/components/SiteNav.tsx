@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import ChatLink from "./ChatLink";
 import { TELEGRAM_LINK } from "../config";
+import LangSwitch from "./LangSwitch";
+import type { Lang } from "../content/lang";
 
 export type NavItem = { id: string; label: string };
 
@@ -20,9 +22,11 @@ export type NavItem = { id: string; label: string };
 export default function SiteNav({
   items,
   cta,
+  lang,
 }: {
   items: NavItem[];
   cta: string;
+  lang: Lang;
 }) {
   const [shown, setShown] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -74,6 +78,7 @@ export default function SiteNav({
             </li>
           ))}
         </ul>
+        <LangSwitch lang={lang} />
         <ChatLink href={TELEGRAM_LINK} channel="Telegram" className="nav__cta">
           {cta}
         </ChatLink>

@@ -4,8 +4,16 @@ import { Abhaya_Libre, Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import "./lume.css";
 import MetaPixel from "./components/MetaPixel";
+import { headers } from "next/headers";
 import { BRAND, SITE_URL } from "./site";
-import dict from "./content/dictionary";
+import { getDictionary } from "./content/dictionaries";
+import {
+  DEFAULT_LANG,
+  isLang,
+  LANG_HEADER,
+  LANG_OG,
+  langPath,
+} from "./content/lang";
 
 /* Типографіка за брендбуком:
    - Abhaya Libre SemiBold — тільки wordmark LUME (кирилиці у шрифті немає);
@@ -30,8 +38,22 @@ const sans = Inter({
   subsets: ["cyrillic", "latin"],
 });
 
-/* Сайт лише українською — жодного альтернативного hreflang. */
-export const metadata: Metadata = {
+/**
+ * Мову сторінки визначає proxy.ts і кладе в заголовок запиту: layout
+ * не знає маршруту, а <html lang> та метадані мають збігатися з тим,
+ * що бачить відвідувач. Через це layout рендериться на кожен запит.
+ */
+async function currentLang() {
+  const value = (await headers()).get(LANG_HEADER);
+  return isLang(value) ? value : DEFAULT_LANG;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await currentLang();
+  const dict = getDictionary(lang);
+  const home = langPath("/", lang);
+
+  return {
   metadataBase: new URL(SITE_URL),
   title: {
     default: dict.meta.title,
@@ -41,14 +63,16 @@ export const metadata: Metadata = {
   keywords: dict.meta.keywords,
   applicationName: BRAND,
   category: dict.meta.category,
+  // hreflang: обидві версії рівноправні, пошук сам покаже потрібну.
   alternates: {
-    canonical: "/",
+    canonical: home,
+    languages: { "uk-UA": "/", "en-US": "/en", "ru-RU": "/ru" },
   },
   openGraph: {
     type: "website",
-    locale: "uk_UA",
+    locale: LANG_OG[lang],
     siteName: BRAND,
-    url: "/",
+    url: home,
     title: dict.meta.title,
     description: dict.meta.description,
     // Прев'ю для месенджерів і соцмереж: без нього посилання, надіслане
@@ -79,12 +103,15 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-};
+  };
+}
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const lang = await currentLang();
+
   return (
     <html
-      lang="uk"
+      lang={lang}
       className={`${sans.variable} ${cormorant.variable} ${abhaya.variable}`}
     >
       <body>

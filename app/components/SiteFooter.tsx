@@ -1,16 +1,24 @@
 import Link from "next/link";
 import { TELEGRAM_LINK } from "../config";
 import type { Dictionary } from "../content/dictionary";
+import { langPath, type Lang } from "../content/lang";
+import LangSwitch from "./LangSwitch";
 
-export default function SiteFooter({ dict }: { dict: Dictionary }) {
+export default function SiteFooter({
+  dict,
+  lang,
+}: {
+  dict: Dictionary;
+  lang: Lang;
+}) {
   const f = dict.footer;
   return (
     <footer className="footer">
       <div className="container footer__bottom">
         <p>{f.rights}</p>
         <nav className="footer__nav">
-          <Link href="/terms">{f.terms}</Link>
-          <Link href="/privacy">{f.privacy}</Link>
+          <Link href={langPath("/terms", lang)}>{f.terms}</Link>
+          <Link href={langPath("/privacy", lang)}>{f.privacy}</Link>
           <a href={TELEGRAM_LINK} target="_blank" rel="noopener">
             {f.support}
           </a>
@@ -25,6 +33,7 @@ export default function SiteFooter({ dict }: { dict: Dictionary }) {
             </svg>
             {f.instagram}
           </a>
+          <LangSwitch lang={lang} />
         </nav>
       </div>
     </footer>
