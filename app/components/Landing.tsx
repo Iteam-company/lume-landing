@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import Audience from "./Audience";
 import Counter from "./Counter";
 import Faq from "./Faq";
@@ -23,18 +22,24 @@ import { buildFaq } from "../faq";
 import { getVisitorLocation } from "../location";
 
 /* Роботи в портфоліо. Для кожної потрібні public/video/<slug>.mp4 і
-   public/video/<slug>-poster.jpg — постер показуємо до запуску. */
-const WORKS = [
-  "work-example-one",
-  "work-example-two",
-  "work-example-three",
-  "work-example-four",
-  "work-example-five",
-  "work-example-six",
-  "work-love-story",
-  "work-how-we-met",
-  "work-birthday-surprise",
-] as const;
+   public/video/<slug>-poster.jpg — постер показуємо до запуску.
+   vertical — мультфільм знято у форматі 9:16. */
+/* Порядок не випадковий: вертикальні роботи рознесені по списку, щоб у
+   кладці вони потрапили в різні колонки й низ сітки лишався рівним. */
+const WORKS: { slug: string; vertical?: boolean }[] = [
+  { slug: "work-example-one" },
+  { slug: "work-example-two" },
+  { slug: "work-example-three" },
+  { slug: "work-one-love", vertical: true },
+  { slug: "work-example-four" },
+  { slug: "work-love-story" },
+  { slug: "work-example-five" },
+  { slug: "work-example-six" },
+  { slug: "work-how-we-met" },
+  { slug: "work-long-distance", vertical: true },
+  { slug: "work-for-my-beloved" },
+  { slug: "work-birthday-surprise" },
+];
 
 /* Медіа для секцій. Текст (підписи, кроки, підписи цифр) — у content/dictionary. */
 const REACTION_MEDIA: { src?: string; poster?: string }[] = [
@@ -173,20 +178,15 @@ export default async function Landing({ lang }: { lang: Lang }) {
           </Reveal>
 
           <div className="works__grid">
-            {WORKS.map((slug, i) => (
-              <Fragment key={slug}>
-                <Reveal delay={(i % 3) as 0 | 1 | 2}>
-                  <VideoBox
-                    variant="16x9"
-                    src={`/video/${slug}.mp4`}
-                    poster={`/video/${slug}-poster.jpg`}
-                    labels={dict.video}
-                  />
-                </Reveal>
-                {/* зірочка-роздільник стоїть МІЖ колонками, тож після
-                    третьої в рядку її немає */}
-                {i % 3 < 2 ? <Icon name="i-star" className="star star--sep" /> : null}
-              </Fragment>
+            {WORKS.map(({ slug, vertical }, i) => (
+              <Reveal key={slug} delay={(i % 3) as 0 | 1 | 2}>
+                <VideoBox
+                  variant={vertical ? "9x16" : "16x9"}
+                  src={`/video/${slug}.mp4`}
+                  poster={`/video/${slug}-poster.jpg`}
+                  labels={dict.video}
+                />
+              </Reveal>
             ))}
           </div>
         </div>
