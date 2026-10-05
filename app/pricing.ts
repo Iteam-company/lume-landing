@@ -80,10 +80,10 @@ export const TIERS: Tier[] = [
     name: "STORY",
     slug: "story",
     defaultOption: 0,
-    // EUR: 35 / звичайна 41 → знижка ~15%
+    // EUR: 65 / звичайна 76 → знижка ~14%
     // UAH: 1499 / звичайна 3800 → знижка ~61%
     rates: {
-      EUR: { rate: 35, regularRate: 41 },
+      EUR: { rate: 65, regularRate: 76 },
       UAH: { rate: 1499, regularRate: 3800 },
     },
   },
@@ -92,10 +92,10 @@ export const TIERS: Tier[] = [
     slug: "signature",
     defaultOption: 0,
     featured: true,
-    // EUR: 60 / звичайна 71 → знижка ~15%
+    // EUR: 95 / звичайна 112 → знижка ~15%
     // UAH: 2200 / звичайна 5350 → знижка ~59%
     rates: {
-      EUR: { rate: 60, regularRate: 71 },
+      EUR: { rate: 95, regularRate: 112 },
       UAH: { rate: 2200, regularRate: 5350 },
     },
   },
@@ -105,10 +105,10 @@ export const TIERS: Tier[] = [
     defaultOption: 0,
     // Пісня входить у тариф
     songIncluded: true,
-    // EUR: 110 / звичайна 132 → знижка ~17%
+    // EUR: 160 / звичайна 192 → знижка ~17%
     // UAH: 3333 / звичайна 6700 → знижка ~50%
     rates: {
-      EUR: { rate: 110, regularRate: 132 },
+      EUR: { rate: 160, regularRate: 192 },
       UAH: { rate: 3333, regularRate: 6700 },
     },
   },

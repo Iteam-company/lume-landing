@@ -69,8 +69,8 @@ export default async function Landing({ lang }: { lang: Lang }) {
   }));
 
   const numbers = [
-    { to: 200, suffix: "+", label: dict.numbers.labels[0] },
-    { to: 100, suffix: "+", label: dict.numbers.labels[1] },
+    { to: 1000, suffix: "+", label: dict.numbers.labels[0] },
+    { to: 1000, suffix: "+", label: dict.numbers.labels[1] },
     { text: dict.numbers.response, label: dict.numbers.labels[2] },
     { text: dict.numbers.delivery, label: dict.numbers.labels[3] },
   ] as const;

@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   description: ru.meta.termsDescription,
   alternates: {
     canonical: "/ru/terms",
-    languages: { "uk-UA": "/terms", "en-US": "/en/terms", "ru-RU": "/ru/terms" },
+    languages: {
+      "uk-UA": "/terms",
+      "en-US": "/en/terms",
+      "ru-RU": "/ru/terms",
+      "x-default": "/terms",
+    },
   },
 };
 

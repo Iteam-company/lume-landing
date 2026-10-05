@@ -11,6 +11,7 @@ export const metadata: Metadata = {
       "uk-UA": "/terms",
       "en-US": "/en/terms",
       "ru-RU": "/ru/terms",
+      "x-default": "/terms",
     },
   },
 };

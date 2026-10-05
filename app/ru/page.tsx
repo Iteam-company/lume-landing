@@ -9,7 +9,12 @@ export const metadata: Metadata = {
   keywords: ru.meta.keywords,
   alternates: {
     canonical: "/ru",
-    languages: { "uk-UA": "/", "en-US": "/en", "ru-RU": "/ru" },
+    languages: {
+      "uk-UA": "/",
+      "en-US": "/en",
+      "ru-RU": "/ru",
+      "x-default": "/",
+    },
   },
   openGraph: {
     locale: "ru_RU",

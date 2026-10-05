@@ -66,7 +66,13 @@ export async function generateMetadata(): Promise<Metadata> {
   // hreflang: обидві версії рівноправні, пошук сам покаже потрібну.
   alternates: {
     canonical: home,
-    languages: { "uk-UA": "/", "en-US": "/en", "ru-RU": "/ru" },
+    languages: {
+      "uk-UA": "/",
+      "en-US": "/en",
+      "ru-RU": "/ru",
+      // кого не впізнали за мовою — на українську версію
+      "x-default": "/",
+    },
   },
   openGraph: {
     type: "website",

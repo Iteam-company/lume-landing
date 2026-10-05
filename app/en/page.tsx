@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   title: { absolute: en.meta.title },
   description: en.meta.description,
   keywords: en.meta.keywords,
-  alternates: { canonical: "/en", languages: { "uk-UA": "/", "en-US": "/en", "ru-RU": "/ru" } },
+  alternates: { canonical: "/en", languages: {
+      "uk-UA": "/",
+      "en-US": "/en",
+      "ru-RU": "/ru",
+      "x-default": "/",
+    } },
   openGraph: {
     locale: "en_US",
     url: "/en",

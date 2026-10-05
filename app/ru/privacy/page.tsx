@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   description: ru.meta.privacyDescription,
   alternates: {
     canonical: "/ru/privacy",
-    languages: { "uk-UA": "/privacy", "en-US": "/en/privacy", "ru-RU": "/ru/privacy" },
+    languages: {
+      "uk-UA": "/privacy",
+      "en-US": "/en/privacy",
+      "ru-RU": "/ru/privacy",
+      "x-default": "/privacy",
+    },
   },
 };
 

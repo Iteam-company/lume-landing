@@ -11,6 +11,7 @@ export const metadata: Metadata = {
       "uk-UA": "/privacy",
       "en-US": "/en/privacy",
       "ru-RU": "/ru/privacy",
+      "x-default": "/privacy",
     },
   },
 };

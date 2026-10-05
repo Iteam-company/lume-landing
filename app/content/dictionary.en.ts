@@ -274,6 +274,14 @@ const en: Dictionary = {
       "animated proposal video",
       "milestone birthday video",
       "personalized video message",
+      "I want to give a unique gift",
+      "gender reveal gift idea",
+      "anniversary gift idea for her",
+      "unusual birthday gift idea",
+      "gift you cannot buy in a store",
+      "custom video greeting",
+      "gift for parents anniversary",
+      "romantic gift for girlfriend",
       "order a custom cartoon",
     ],
     category: "Gifts and personal animation",
@@ -289,7 +297,7 @@ const en: Dictionary = {
     offer: {
       title: "A personal discount on your first order",
       note: "your curator will name it in the chat",
-      until: "we’re holding it for you for 30 minutes",
+      until: "we’re holding it for you for 10 minutes",
       // Countdown units — kept to one or two characters.
       days: "d",
       hours: "h",
@@ -299,7 +307,7 @@ const en: Dictionary = {
     orderCtaAlt: "or on WhatsApp",
     navCta: "Message us",
     nav: [
-      { id: "pricing", label: "Pricing" },
+      { id: "pricing", label: "Pricing & quality" },
       { id: "works", label: "Our work" },
       { id: "reactions", label: "Reactions" },
       { id: "process", label: "How it works" },
@@ -312,7 +320,7 @@ const en: Dictionary = {
     titleLines: ["Give someone you love", "a cartoon", "made from your story"],
     sub: "For couples, parents, kids, friends, and loved ones",
     bullets: [
-      "200+ cartoons created",
+      "1000+ cartoons created",
       "Made in 1 day",
       "A personal curator",
     ],
@@ -476,8 +484,28 @@ const en: Dictionary = {
         a: "Yes, we work online: you send the brief and the photos in a messenger and receive the finished file by email. Orders come from Kyiv, Lviv, Odesa, Kharkiv, Dnipro, and from abroad.",
       },
       {
+        q: "I want to give someone a gift — why a cartoon?",
+        a: "Because you cannot buy this one in a store. The characters look like you, the story is yours, and it stays watchable for years. All we need is photos and a short account of what happened; the minimum order is one minute.",
+      },
+      {
+        q: "What should I give at a gender reveal?",
+        a: "A short animation that makes the announcement: we draw you, and the closing scene is the reveal itself. It plays on a screen in front of your guests, so you see the reaction right away. These usually run one to two minutes.",
+      },
+      {
+        q: "I am looking for an anniversary gift for my wife or husband — what do you offer?",
+        a: "A cartoon about your story: how you met, the first date, the trips you took, the small details that matter. You tell us in the brief, we turn it into animation, and we can add voice-over or your song.",
+      },
+      {
+        q: "What can I give my parents or grandparents?",
+        a: "A family chronicle with them as the main characters. We draw the characters from your family photos and tell the family story. It is the kind of gift the whole family watches together.",
+      },
+      {
+        q: "I need a custom video greeting — do you make those?",
+        a: "Yes. A personal video greeting with names, details and your own story, from one minute. You get a Full HD file you can forward in a messenger or play on a screen at the celebration.",
+      },
+      {
         q: "How do I start?",
-        a: "Send a request on the site — a curator will get in touch within 15 minutes.",
+        a: "Message us on Telegram or WhatsApp — a curator replies within 15 minutes, asks about your story and helps you pick a tier.",
       },
     ],
   },
@@ -498,7 +526,7 @@ const en: Dictionary = {
     emailPlaceholder: "you@example.com",
     emailError: "Enter a valid email",
     contactHeading: "Tell us your story",
-    contactProof: "200+ cartoons · 100+ clients · a reply in 15 minutes",
+    contactProof: "1000+ cartoons · 1000+ clients · a reply in 15 minutes",
     contactLead: "Message us — a curator will reply within 15 minutes.",
     whatsappCta: "Message us on WhatsApp",
     telegramCta: "Message us on Telegram",
