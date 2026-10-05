@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { Fragment, useSyncExternalStore } from "react";
 
 export type OfferLabels = {
   title: string;
@@ -32,7 +32,8 @@ function split(nowSec: number) {
   const left = Math.floor(STARTED_AT / 1000) + WINDOW_SEC - nowSec;
   if (left <= 0) return null;
   return {
-    minutes: Math.floor(left / 60),
+    hours: Math.floor(left / 3600),
+    minutes: Math.floor((left % 3600) / 60),
     seconds: left % 60,
   };
 }
@@ -54,7 +55,10 @@ export default function OfferCountdown({ labels }: { labels: OfferLabels }) {
   const left = split(nowSec);
   if (!left) return null; // вікно вичерпано — блок зникає
 
+  // Години показуємо завжди, навіть нульові: годинник 00:10:00 читається
+  // з одного погляду, а блок не стрибає по ширині, коли вони зникали б.
   const units: [number, string][] = [
+    [left.hours, labels.hours],
     [left.minutes, labels.minutes],
     [left.seconds, labels.seconds],
   ];
@@ -63,11 +67,14 @@ export default function OfferCountdown({ labels }: { labels: OfferLabels }) {
     <div className="offer" role="status">
       <p className="offer__title">{labels.title}</p>
       <div className="offer__clock" aria-hidden="true">
-        {units.map(([value, unit]) => (
-          <span className="offer__unit" key={unit}>
-            <b>{pad(value)}</b>
-            <i>{unit}</i>
-          </span>
+        {units.map(([value, unit], i) => (
+          <Fragment key={unit}>
+            {i > 0 ? <span className="offer__sep">:</span> : null}
+            <span className="offer__unit">
+              <b>{pad(value)}</b>
+              <i>{unit}</i>
+            </span>
+          </Fragment>
         ))}
       </div>
       <p className="offer__note">
