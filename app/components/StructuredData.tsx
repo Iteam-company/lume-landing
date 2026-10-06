@@ -84,14 +84,14 @@ export default function StructuredData({ lang }: { lang: Lang }) {
       description: dict.meta.description,
       slogan: dict.meta.tagline,
       areaServed: { "@type": "Country", name: sd.countryName },
-      knowsLanguage: ["uk", "en", "ru"],
+      knowsLanguage: ["uk", "en"],
       ...(ORDER_EMAIL
         ? {
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer service",
               email: ORDER_EMAIL,
-              availableLanguage: ["uk", "en", "ru"],
+              availableLanguage: ["uk", "en"],
             },
           }
         : {}),

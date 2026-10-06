@@ -1,7 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { langPath, splitLangPath, type Lang } from "../content/lang";
+import {
+  langPath,
+  PUBLIC_LANGS,
+  splitLangPath,
+  type Lang,
+} from "../content/lang";
 import { rememberLang } from "../content/remember-lang";
 
 const LABELS: Record<Lang, string> = { uk: "UA", en: "EN", ru: "RU" };
@@ -30,7 +35,7 @@ export default function LangSwitch({ lang }: { lang: Lang }) {
 
   return (
     <span className="lang" role="group" aria-label="Language">
-      {(Object.keys(LABELS) as Lang[]).map((code) => (
+      {PUBLIC_LANGS.map((code) => (
         <button
           key={code}
           type="button"

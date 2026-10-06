@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     languages: {
       "uk-UA": "/terms",
       "en-US": "/en/terms",
-      "ru-RU": "/ru/terms",
       "x-default": "/terms",
     },
   },

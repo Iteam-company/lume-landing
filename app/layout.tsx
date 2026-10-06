@@ -69,7 +69,6 @@ export async function generateMetadata(): Promise<Metadata> {
     languages: {
       "uk-UA": "/",
       "en-US": "/en",
-      "ru-RU": "/ru",
       // кого не впізнали за мовою — на українську версію
       "x-default": "/",
     },

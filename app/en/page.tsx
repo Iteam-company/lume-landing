@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/en", languages: {
       "uk-UA": "/",
       "en-US": "/en",
-      "ru-RU": "/ru",
       "x-default": "/",
     } },
   openGraph: {

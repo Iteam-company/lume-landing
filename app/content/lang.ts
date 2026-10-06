@@ -19,6 +19,21 @@ export type Lang = (typeof LANGS)[number];
 /** Мова кореневих шляхів. Український ринок — основний. */
 export const DEFAULT_LANG: Lang = "uk";
 
+/**
+ * Мови, які показуємо публічно: перемикач, hreflang, карта сайту.
+ *
+ * Російська сторінка лишається робочою за прямим посиланням /ru (щоб не
+ * ламати вже надіслані лінки й куки тих, хто її колись обрав), але її
+ * немає ні в перемикачі, ні в індексі пошуку. Щоб повернути — додати
+ * "ru" сюди.
+ */
+export const PUBLIC_LANGS: readonly Lang[] = ["uk", "en"];
+
+/** Чи показуємо цю мову публічно. */
+export function isPublicLang(lang: Lang): boolean {
+  return PUBLIC_LANGS.includes(lang);
+}
+
 /** Куди проксі кладе визначену мову для layout. */
 export const LANG_HEADER = "x-lume-lang";
 
