@@ -6,11 +6,12 @@ import type { ComponentProps, MouseEvent } from "react";
 
 const FORM_ID = "form";
 
-/** "/?tier=story&minutes=2#form" -> { path: "/", query: "tier=story&minutes=2" }. */
+/** "?tier=story&minutes=2#form" -> { path: "", query: "tier=story&minutes=2" }.
+ *  Порожній path означає поточну сторінку, включно з її мовним префіксом. */
 function parseHref(href: string): { path: string; query: string } {
   const withoutHash = href.split("#")[0];
   const [path, query = ""] = withoutHash.split("?");
-  return { path: path || "/", query };
+  return { path, query };
 }
 
 /**
@@ -51,7 +52,7 @@ export default function ScrollToFormLink({
 
     const { path, query } = parseHref(href);
     const targetSearch = query ? `?${query}` : window.location.search;
-    router.push(`${path}${targetSearch}#${FORM_ID}`, { scroll: false });
+    router.push(`${path || window.location.pathname}${targetSearch}#${FORM_ID}`, { scroll: false });
 
     form.scrollIntoView({ behavior: "smooth", block: "start" });
   }

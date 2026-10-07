@@ -293,7 +293,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
       </section>
 
       {/* ============ КОМУ ПІДІЙДЕ ============ */}
-      <Audience dict={dict} />
+      <Audience dict={dict} lang={lang} />
 
       {/* ============ FAQ ============ */}
       <section className="faq section--dark" id="faq">
@@ -311,7 +311,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
       <section className="formsec" id="form">
         <div className="container container--form">
           <Reveal>
-            <ContactCta dict={dict.form} />
+            <ContactCta dict={dict.form} lang={lang} />
           </Reveal>
         </div>
       </section>

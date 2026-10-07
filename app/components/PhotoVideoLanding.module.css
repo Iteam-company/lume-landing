@@ -1,0 +1,19 @@
+.heroTitle{font-size:clamp(30px,3.3vw,46px);line-height:1.12;overflow-wrap:anywhere}
+.lead{font-size:18px;line-height:1.65;margin:0 0 22px;max-width:70ch}
+.note{font-size:16px;line-height:1.6;margin:0 0 28px;max-width:70ch}
+.highlights{margin-bottom:28px}
+.heroActions :global(.btn){white-space:normal}
+.caption{font-size:14px;margin:14px 0 0;opacity:.8}
+.figure{margin:0}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:0;margin:0}
+.steps li:last-child{grid-column:1/-1}
+.stepNumber{display:block;color:var(--wine);font-weight:700;margin-bottom:12px}
+.service{background:var(--cream-2)}
+.contactContainer :global(.contact){grid-template-columns:minmax(0,1fr)}
+.contactContainer :global(.contact__actions .btn){min-width:0;white-space:normal}
+@media(max-width:960px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){
+  .heroTitle{font-size:clamp(26px,7.7vw,30px)}
+  .lead{font-size:17px}
+  .steps{grid-template-columns:1fr}
+}

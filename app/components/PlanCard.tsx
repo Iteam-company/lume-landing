@@ -144,7 +144,7 @@ export default function PlanCard({
       </ul>
 
       <ScrollToFormLink
-        href={`/?tier=${tier.slug}&minutes=${option.minutes}${
+        href={`?tier=${tier.slug}&minutes=${option.minutes}${
           song && !tier.songIncluded ? "&song=1" : ""
         }#form`}
         className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}

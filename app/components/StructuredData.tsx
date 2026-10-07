@@ -1,4 +1,4 @@
-import { buildFaq } from "../faq";
+import { buildFaq, type QA } from "../faq";
 import {
   allOptions,
   discount,
@@ -29,11 +29,13 @@ import { formatMinutes, formatPrice } from "../content/format";
 
 const STRUCTURED_DATA_CURRENCY = "UAH" as const;
 
-export default function StructuredData({ lang }: { lang: Lang }) {
+type PageData = { path: string; title: string; description: string; faq: QA[] };
+
+export default function StructuredData({ lang, page }: { lang: Lang; page?: PageData }) {
   const dict = getDictionary(lang);
   const sd = dict.structuredData;
   const bcp47 = LANG_BCP47[lang];
-  const base = SITE_URL + langPath("/", lang);
+  const base = SITE_URL + langPath(page?.path ?? "/", lang);
   // Одна студія та один сайт для всіх мовних версій.
   const organizationId = `${SITE_URL}/#organization`;
   const websiteId = `${SITE_URL}/#website`;
@@ -113,7 +115,7 @@ export default function StructuredData({ lang }: { lang: Lang }) {
       "@id": `${base}#service`,
       name: sd.serviceName,
       serviceType: sd.serviceType,
-      description: dict.meta.description,
+      description: page?.description ?? dict.meta.description,
       provider: { "@id": organizationId },
       areaServed: [
         { "@type": "Country", name: sd.countryName },
@@ -136,12 +138,23 @@ export default function StructuredData({ lang }: { lang: Lang }) {
       "@type": "FAQPage",
       "@id": `${base}#faq`,
       inLanguage: bcp47,
-      mainEntity: buildFaq(STRUCTURED_DATA_CURRENCY, lang).map((item) => ({
+      mainEntity: (page?.faq ?? buildFaq(STRUCTURED_DATA_CURRENCY, lang)).map((item) => ({
         "@type": "Question",
         name: item.q,
         acceptedAnswer: { "@type": "Answer", text: item.a },
       })),
     },
+    ...(page ? [{
+      "@type": "WebPage",
+      "@id": `${base}#webpage`,
+      url: base,
+      name: page.title,
+      description: page.description,
+      inLanguage: bcp47,
+      isPartOf: { "@id": websiteId },
+      mainEntity: { "@id": `${base}#service` },
+      hasPart: { "@id": `${base}#faq` },
+    }] : []),
   ];
 
   return (

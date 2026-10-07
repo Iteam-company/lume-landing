@@ -1,11 +1,14 @@
+import Link from "next/link";
 import type { Dictionary } from "../content/dictionary";
+import { PHOTO_VIDEO_PATH, photoVideoContent } from "../content/ai-video-from-photos";
+import { langPath, type Lang } from "../content/lang";
 import Reveal from "./Reveal";
 
 /* Текстовий блок під пошукові запити: описує приводи, аудиторію
    та географію звичайною мовою — це те, що читають і люди,
    і AI-асистенти, коли добирають, що порадити. */
 
-export default function Audience({ dict }: { dict: Dictionary }) {
+export default function Audience({ dict, lang }: { dict: Dictionary; lang: Lang }) {
   const a = dict.audience;
   const cities = a.cities.join(", ");
   const [citiesBefore, citiesAfter] = a.citiesParagraph.split("{cities}");
@@ -23,6 +26,9 @@ export default function Audience({ dict }: { dict: Dictionary }) {
             {a.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
+            {lang !== "ru" && (
+              <p><Link href={langPath(PHOTO_VIDEO_PATH, lang)}>{photoVideoContent[lang].homeLink}</Link></p>
+            )}
             <p>
               {citiesBefore}
               {cities}

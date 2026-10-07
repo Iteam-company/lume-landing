@@ -3,9 +3,10 @@ import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import type { Dictionary } from "../content/dictionary";
 import ChatLink from "./ChatLink";
 import { Icon } from "./Icons";
+import { DEFAULT_LANG, langPath, type Lang } from "../content/lang";
 
 /** Блок замість форми: замовлення оформлюється у месенджері. */
-export default function ContactCta({ dict }: { dict: Dictionary["form"] }) {
+export default function ContactCta({ dict, lang = DEFAULT_LANG }: { dict: Dictionary["form"]; lang?: Lang }) {
   return (
     <div className="contact">
       <h2 className="contact__title">{dict.contactHeading}</h2>
@@ -30,7 +31,7 @@ export default function ContactCta({ dict }: { dict: Dictionary["form"] }) {
 
       <p className="form__note">
         {dict.privacyNoteBefore}
-        <Link href="/privacy">{dict.privacyNoteLink}</Link>
+        <Link href={langPath("/privacy", lang)}>{dict.privacyNoteLink}</Link>
       </p>
     </div>
   );

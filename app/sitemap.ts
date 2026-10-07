@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "./site";
 import { LANG_BCP47, langPath, PUBLIC_LANGS } from "./content/lang";
+import { PHOTO_VIDEO_PATH } from "./content/ai-video-from-photos";
 
 /* Публічні мови: українська в корені, англійська під /en. Кожна адреса
    посилається на свого двійника через hreflang. Прихованих мов
@@ -8,6 +9,7 @@ import { LANG_BCP47, langPath, PUBLIC_LANGS } from "./content/lang";
 
 const PAGES = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: PHOTO_VIDEO_PATH, changeFrequency: "monthly", priority: 0.8 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
 ] as const;
