@@ -6,12 +6,12 @@
    Тут лише незмінні константи.
    ============================================================ */
 
-/** Бойова адреса сайту. Обовʼязково задайте NEXT_PUBLIC_SITE_URL перед деплоєм:
- *  від неї залежать canonical, sitemap.xml, robots.txt і OpenGraph. */
+/** Канонічна адреса сайту; NEXT_PUBLIC_SITE_URL дозволяє її перевизначити.
+ *  Від неї залежать canonical, sitemap.xml, robots.txt і OpenGraph. */
 const RAW_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
 export const SITE_URL = (
-  RAW_SITE_URL && RAW_SITE_URL.length > 0 ? RAW_SITE_URL : "http://localhost:3000"
+  RAW_SITE_URL && RAW_SITE_URL.length > 0 ? RAW_SITE_URL : "https://www.lume.kyiv.ua"
 ).replace(/\/$/, "");
 
 export const BRAND = "LUME";

@@ -33,7 +33,10 @@ export default function StructuredData({ lang }: { lang: Lang }) {
   const dict = getDictionary(lang);
   const sd = dict.structuredData;
   const bcp47 = LANG_BCP47[lang];
-  const base = SITE_URL + langPath("/", lang).replace(/\/$/, "");
+  const base = SITE_URL + langPath("/", lang);
+  // Одна студія та один сайт для всіх мовних версій.
+  const organizationId = `${SITE_URL}/#organization`;
+  const websiteId = `${SITE_URL}/#website`;
 
   const options = allOptions(STRUCTURED_DATA_CURRENCY);
 
@@ -52,7 +55,7 @@ export default function StructuredData({ lang }: { lang: Lang }) {
       price: String(finalPrice(option)),
       priceCurrency: STRUCTURED_DATA_CURRENCY,
       availability: "https://schema.org/InStock",
-      url: `${base}/#pricing`,
+      url: `${base}#pricing`,
       eligibleQuantity: {
         "@type": "QuantitativeValue",
         value: option.minutes,
@@ -78,10 +81,10 @@ export default function StructuredData({ lang }: { lang: Lang }) {
   const graph = [
     {
       "@type": "Organization",
-      "@id": `${base}#organization`,
+      "@id": organizationId,
       name: BRAND,
-      url: base,
-      description: dict.meta.description,
+      url: `${SITE_URL}/`,
+      description: dict.audience.lead,
       slogan: dict.meta.tagline,
       areaServed: { "@type": "Country", name: sd.countryName },
       knowsLanguage: ["uk", "en"],
@@ -98,12 +101,12 @@ export default function StructuredData({ lang }: { lang: Lang }) {
     },
     {
       "@type": "WebSite",
-      "@id": `${base}#website`,
-      url: base,
+      "@id": websiteId,
+      url: `${SITE_URL}/`,
       name: BRAND,
       description: dict.meta.description,
-      inLanguage: bcp47,
-      publisher: { "@id": `${base}#organization` },
+      inLanguage: ["uk-UA", "en-US"],
+      publisher: { "@id": organizationId },
     },
     {
       "@type": "Service",
@@ -111,7 +114,7 @@ export default function StructuredData({ lang }: { lang: Lang }) {
       name: sd.serviceName,
       serviceType: sd.serviceType,
       description: dict.meta.description,
-      provider: { "@id": `${base}#organization` },
+      provider: { "@id": organizationId },
       areaServed: [
         { "@type": "Country", name: sd.countryName },
         ...dict.audience.cities.map((city) => ({ "@type": "City", name: city })),
@@ -120,7 +123,6 @@ export default function StructuredData({ lang }: { lang: Lang }) {
         "@type": "Audience",
         audienceType: sd.audienceType,
       },
-      hoursAvailable: sd.hoursAvailable,
       offers: {
         "@type": "AggregateOffer",
         priceCurrency: STRUCTURED_DATA_CURRENCY,
@@ -146,7 +148,7 @@ export default function StructuredData({ lang }: { lang: Lang }) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }),
+        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c"),
       }}
     />
   );

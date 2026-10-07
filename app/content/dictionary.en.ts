@@ -249,12 +249,11 @@ const terms: LegalDoc = {
 
 const en: Dictionary = {
   meta: {
-    title: "LUME — a personal cartoon from your story",
+    title: "LUME — AI Videos & Personalized Cartoons from Photos",
     tagline: "A personal cartoon from your story",
     description:
-      "We create personal cartoons from your story and your photos: " +
-      "a gift for a birthday, anniversary, wedding, milestone birthday, or gender reveal. " +
-      "Ready in 1 day, Full HD, working online across Ukraine.",
+      "LUME creates personalized AI videos and cartoons from your photos and story. " +
+      "Scriptwriting, animation, voice-over and editing. Ready in as little as 1 day.",
     // Written for English search intent, not translated from the Ukrainian list.
     keywords: [
       "personalized cartoon from photos",
@@ -402,8 +401,9 @@ const en: Dictionary = {
 
   audience: {
     heading: "Who it’s for",
-    lead: "A personal cartoon is a gift you can’t buy in a store: we draw you from your own photos and tell your own story.",
+    lead: "LUME is a Ukrainian AI video and animation studio. We create personalized videos and cartoons from your photos and real-life stories.",
     paragraphs: [
+      "We take care of the script, storyboard, AI animation, music and editing, with voice-over available depending on your wishes and chosen tier. It’s a gift you can’t buy in a store: for a wedding, anniversary, birthday, or simply someone you love.",
       "You tell us how you met, what brought you together, and which moments you want to keep. We turn it into animation: the characters look like you, the plot is yours, and if you like we add voice-over or your favorite song. The finished cartoon arrives the next day in Full HD — you can show it on a screen at a restaurant, send it in a messenger, or post it on social media.",
     ],
     citiesParagraph:
@@ -580,8 +580,8 @@ const en: Dictionary = {
     offerName: "{brand} {tier} — {minutes} cartoon",
     offerDescription:
       "A personal cartoon from your story, {minutes} long. That’s {rate} per minute.",
-    serviceName: "Creating a personal cartoon from your story",
-    serviceType: "Custom personal animation",
+    serviceName: "Creating personalized AI videos and cartoons from photos and real-life stories",
+    serviceType: "Custom personalized AI video and AI animation",
     audienceType:
       "couples, parents, children, friends and loved ones looking for a gift for a birthday, anniversary, wedding, or milestone birthday",
     countryName: "Ukraine",

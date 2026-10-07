@@ -27,7 +27,7 @@ import {
 const GEO_HEADER = "x-vercel-ip-country";
 
 const CRAWLER_RE =
-  /bot|crawler|spider|crawling|slurp|facebookexternalhit|telegram|whatsapp|preview|embedly|quora|pinterest|vkshare|lighthouse/i;
+  /bot|crawler|spider|crawling|slurp|facebookexternalhit|telegram|whatsapp|preview|embedly|quora|pinterest|vkshare|lighthouse|chatgpt-user|claude-user|perplexity-user|mistralai-user|meta-externalfetcher|anthropic-ai|cohere-ai/i;
 
 export function proxy(request: NextRequest) {
   const { lang, path } = splitLangPath(request.nextUrl.pathname);
