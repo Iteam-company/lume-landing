@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# оригінали медіа (важкі вихідники, на сайт ідуть лише web-версії з public/)
+/media-src/

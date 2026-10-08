@@ -22,11 +22,16 @@ export default function VideoBox({
   src,
   poster,
   labels,
+  preload = "metadata",
 }: {
   variant: Variant;
   src?: string;
   poster?: string;
   labels: { play: string; placeholder: string };
+  /** "none" — не тягнути навіть початок файлу, доки відео не запустили
+   *  (постер показуємо однаково). Для сторінок, де роликів кілька нижче
+   *  першого екрана. */
+  preload?: "none" | "metadata";
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
@@ -50,7 +55,7 @@ export default function VideoBox({
         poster={poster}
         controls={started}
         playsInline
-        preload="metadata"
+        preload={preload}
       />
       {!started && (
         <button

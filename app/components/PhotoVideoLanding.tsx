@@ -1,4 +1,6 @@
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import {
   PHOTO_VIDEO_PATH,
@@ -7,15 +9,17 @@ import {
   type PhotoVideoLang,
 } from "../content/ai-video-from-photos";
 import { getDictionary } from "../content/dictionaries";
+import { formatPrice } from "../content/format";
 import { langPath } from "../content/lang";
 import { getVisitorLocation } from "../location";
+import { bestPerMinute, TIERS } from "../pricing";
 import ChatLink from "./ChatLink";
 import ContactCta from "./ContactCta";
 import Faq from "./Faq";
 import FilmEdge from "./FilmEdge";
 import { IconSprite } from "./Icons";
 import LangSwitch from "./LangSwitch";
-import Pricing from "./Pricing";
+import LoopVideo from "./LoopVideo";
 import Reveal from "./Reveal";
 import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
@@ -24,105 +28,349 @@ import VideoBox from "./VideoBox";
 import WhatsAppFloat from "./WhatsAppFloat";
 import styles from "./PhotoVideoLanding.module.css";
 
-// Добірка з наявного портфоліо головної. Усі файли вже є в public/video.
-const EXAMPLES = ["work-love-story", "work-how-we-met", "work-birthday-surprise"];
+/* ============================================================
+   Медіа реального кейсу. Web-версії лежать у public/video/pipeline-page,
+   важкі оригінали — у media-src/ (поза репозиторієм).
+   Готовий фільм — той самий work-long-distance.mp4, що й у портфоліо
+   головної: окрему копію не тримаємо.
+   ============================================================ */
+const CASE = "/video/pipeline-page";
+
+type Img = { src: string; w: number; h: number };
+const img = (name: string, w: number, h: number): Img => ({ src: `${CASE}/${name}.jpg`, w, h });
+const character = (n: number) => img(`character-${n}`, n === 8 ? 400 : 448, 1008);
+const still = (name: string) => img(name, 720, 1280);
+
+/**
+ * Постер для <video>. Атрибут poster браузер качає одразу, навіть для
+ * роликів далеко внизу, тож віддаємо його через оптимізатор next/image
+ * (WebP, ~640px) замість вихідного JPEG.
+ */
+const poster = (name: string) =>
+  getImageProps({ src: `${CASE}/${name}.jpg`, alt: "", width: 320, height: 569 }).props.src;
+
+const MEDIA = {
+  hero: { photo: img("photo-real-5", 900, 1350), cartoon: still("film-evening") },
+  story: [
+    img("photo-real-1", 900, 1200),
+    character(6),
+    img("moment-real-poster", 540, 960),
+    img("moment-ai-poster", 480, 854),
+    still("film-proposal"),
+    still("reaction-poster"),
+  ],
+  pairs: [
+    { photo: img("photo-real-2", 900, 1200), characters: [character(10), character(9)], scene: still("film-home") },
+    { photo: img("photo-real-4", 900, 1200), characters: [character(3), character(4)], scene: still("film-walk") },
+    { photo: img("photo-real-5", 900, 1350), characters: [character(5), character(7)], scene: still("film-evening") },
+    { photo: img("photo-real-7", 555, 793), characters: [character(8)], scene: still("film-dog") },
+  ],
+  sheet: img("sheet-3", 1600, 900),
+  looks: [character(6), character(10), character(3), character(5)],
+  pet: character(8),
+  moment: {
+    real: { src: `${CASE}/moment-real.mp4`, poster: poster("moment-real-poster") },
+    cartoon: { src: `${CASE}/moment-ai.mp4`, poster: poster("moment-ai-poster") },
+  },
+  // Постер — кадр із самою парою: портфоліо-постер (келихи) тут нічого не каже.
+  film: { src: "/video/work-long-distance.mp4", poster: poster("film-proposal") },
+  reaction: { src: `${CASE}/reaction.mp4`, poster: poster("reaction-poster") },
+};
+
+/** Порядковий номер для каскадної появи: CSS бере затримку з --i. */
+const order = (i: number) => ({ "--i": i }) as CSSProperties;
+const pad = (i: number) => String(i + 1).padStart(2, "0");
 
 export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang }) {
   const dict = getDictionary(lang);
   const copy = photoVideoContent[lang];
   const faq = photoVideoFaq(lang);
   const { currency } = await getVisitorLocation();
-  const nav = dict.common.nav.filter(({ id }) => ["works", "process", "audience", "pricing", "faq"].includes(id));
+  const priceFrom = formatPrice(Math.min(...TIERS.map((tier) => bestPerMinute(tier, currency))), currency, lang);
 
   return (
     <>
       <StructuredData lang={lang} page={{ path: PHOTO_VIDEO_PATH, ...copy.meta, faq }} />
       <IconSprite />
-      <SiteNav items={nav} cta={dict.common.navCta} lang={lang} />
-      <main>
-        <header className="hero" id="top">
-          <div className="container hero__inner">
-            <div className="hero__left">
+      <SiteNav items={copy.nav} cta={dict.common.navCta} lang={lang} />
+      <main className={styles.page}>
+        {/* ============ HERO: фото → мультфільм ============ */}
+        <header className={`hero ${styles.hero}`} id="top">
+          <div className={`container ${styles.heroInner}`}>
+            <Reveal className={styles.heroText}>
               <div className="hero__top">
                 <Link href={langPath("/", lang)} className="logo" aria-label={dict.legal.back}>
                   <span className="logo__text">LUME</span>
                 </Link>
                 <LangSwitch lang={lang} />
               </div>
-              <h1 className={`hero__title ${styles.heroTitle}`}>{copy.heading}</h1>
-              <p className={styles.lead}>{copy.lead}</p>
-              <p className={styles.note}>{copy.handsOff}</p>
-              <ul className={`chips ${styles.highlights}`}>
-                {dict.pricing.common.map((item) => <li className="chip" key={item}>{item}</li>)}
-              </ul>
+              <p className={`script ${styles.kicker}`}>{copy.hero.kicker}</p>
+              <h1 className={styles.heroTitle}>{copy.heading}</h1>
+              <p className={styles.heroLead}>{copy.hero.lead}</p>
+              <p className={styles.heroNote}>{copy.hero.note}</p>
               <div className={`hero__cta ${styles.heroActions}`}>
-                <ChatLink href={TELEGRAM_LINK} channel="Telegram" className="btn btn--dark">{copy.order}</ChatLink>
+                <ChatLink href={TELEGRAM_LINK} channel="Telegram" className="btn btn--dark">{copy.hero.order}</ChatLink>
                 <ChatLink href={WHATSAPP_LINK} channel="WhatsApp" className="hero__cta-alt">{dict.common.orderCtaAlt}</ChatLink>
               </div>
-            </div>
-            <div className="hero__right">
-              <VideoBox src="/video/hero.mp4" poster="/video/hero-poster.jpg" variant="wide" labels={dict.video} />
+            </Reveal>
+
+            <div className={styles.heroVisual}>
+              <figure className={`${styles.heroCard} ${styles.heroPhoto}`}>
+                <Image
+                  src={MEDIA.hero.photo.src}
+                  width={MEDIA.hero.photo.w}
+                  height={MEDIA.hero.photo.h}
+                  alt={copy.hero.photoAlt}
+                  sizes="(max-width: 960px) 50vw, 300px"
+                  preload
+                />
+                <figcaption className="script">{copy.hero.photoLabel}</figcaption>
+              </figure>
+              <span className={`script ${styles.heroArrow}`} aria-hidden="true">→</span>
+              <figure className={`${styles.heroCard} ${styles.heroCartoon}`}>
+                <Image
+                  src={MEDIA.hero.cartoon.src}
+                  width={MEDIA.hero.cartoon.w}
+                  height={MEDIA.hero.cartoon.h}
+                  alt={copy.hero.cartoonAlt}
+                  sizes="(max-width: 960px) 50vw, 300px"
+                  preload
+                />
+                <figcaption className="script">{copy.hero.cartoonLabel}</figcaption>
+              </figure>
             </div>
           </div>
         </header>
 
-        <section className="works section--dark" id="works">
+        {/* ============ ІСТОРІЯ: весь шлях одного кадру ============ */}
+        <section className={`section--dark ${styles.story}`} id="story">
           <FilmEdge side="top" />
           <FilmEdge side="bottom" />
           <div className="container">
-            <Reveal className="works__head">
-              <h2 className="h2">{copy.worksHeading}</h2>
+            <Reveal className={styles.storyHead}>
+              <p className={`script ${styles.kickerLight}`}>{copy.story.kicker}</p>
+              <h2 className={`h2 ${styles.h2}`}>{copy.story.heading}</h2>
+              <p className={styles.storyLead}>{copy.story.lead}</p>
             </Reveal>
-            <p className={styles.lead}>{copy.worksLead}</p>
-            <div className="works__grid">
-              {EXAMPLES.map((slug, i) => (
-                <Reveal as="figure" key={slug} className={styles.figure}>
-                  <VideoBox src={`/video/${slug}.mp4`} poster={`/video/${slug}-poster.jpg`} variant="16x9" labels={dict.video} />
-                  <figcaption className={styles.caption}>{copy.example} · {String(i + 1).padStart(2, "0")}</figcaption>
-                </Reveal>
-              ))}
+
+            <Reveal as="ol" className={styles.track}>
+              {copy.story.steps.map((step, i) => {
+                const media = MEDIA.story[i];
+                const frame = (
+                  <span className={styles.frame}>
+                    <Image src={media.src} width={media.w} height={media.h} alt={step.alt} sizes="(max-width: 760px) 46vw, (max-width: 1100px) 30vw, 190px" />
+                  </span>
+                );
+                return (
+                  <li key={step.label} className={styles.step} style={order(i)}>
+                    {/* Останній крок веде до самого відео реакції нижче. */}
+                    {i === copy.story.steps.length - 1 ? (
+                      <a href="#film" className={styles.frameLink}>{frame}</a>
+                    ) : frame}
+                    <span className={styles.stepText}>
+                      <span className={styles.stepNum}>{pad(i)}</span>
+                      <span className={`script ${styles.stepLabel}`}>{step.label}</span>
+                      <span className={styles.stepCaption}>{step.caption}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ============ З ФОТО — У ПЕРСОНАЖА ============ */}
+        <section className={styles.pairs} id="likeness">
+          <div className="container">
+            <Reveal className={styles.sectionHead}>
+              <h2 className={`h2 h2--dark ${styles.h2}`}>{copy.pairs.heading}</h2>
+              <p className={styles.sectionLead}>{copy.pairs.lead}</p>
+            </Reveal>
+
+            <div className={styles.pairGrid}>
+              {copy.pairs.items.map((pair, i) => {
+                const media = MEDIA.pairs[i];
+                return (
+                  <Reveal as="article" key={pair.title} className={styles.pair} delay={(i % 2) as 0 | 1}>
+                    <div className={styles.pairVisual}>
+                      <figure className={styles.pairPhoto}>
+                        <Image src={media.photo.src} width={media.photo.w} height={media.photo.h} alt={pair.photoAlt} sizes="(max-width: 760px) 56vw, 330px" />
+                        <figcaption>{copy.pairs.photoLabel}</figcaption>
+                      </figure>
+                      <div className={styles.pairCharacters} data-count={media.characters.length}>
+                        {media.characters.map((c, k) => (
+                          <Image
+                            key={c.src}
+                            src={c.src}
+                            width={c.w}
+                            height={c.h}
+                            alt={k === 0 ? pair.characterAlt : ""}
+                            sizes="(max-width: 760px) 26vw, 150px"
+                            style={order(k)}
+                          />
+                        ))}
+                      </div>
+                      <figure className={styles.pairScene}>
+                        <Image src={media.scene.src} width={media.scene.w} height={media.scene.h} alt={pair.sceneAlt} sizes="96px" />
+                        <figcaption>{copy.pairs.sceneLabel}</figcaption>
+                      </figure>
+                    </div>
+                    <h3 className={`script ${styles.pairTitle}`}>{pair.title}</h3>
+                    <ul className={styles.details}>
+                      {pair.details.map((d) => <li key={d}>{d}</li>)}
+                    </ul>
+                  </Reveal>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <section className="process" id="process">
+        {/* ============ ЩО ПОТРІБНО ВІД ВАС ============ */}
+        <section className={styles.brief} id="brief">
+          <div className={`container ${styles.briefInner}`}>
+            <Reveal className={styles.briefLead}>
+              <h2 className={`h2 h2--dark ${styles.h2}`}>{copy.brief.heading}</h2>
+              <p className={styles.briefCount}>
+                <span className={styles.bigNum}>{copy.brief.photosCount}</span>
+                <span>{copy.brief.photosText}</span>
+              </p>
+            </Reveal>
+            <Reveal className={styles.briefList} delay={1}>
+              <ol>
+                {copy.brief.items.map((item) => <li key={item}>{item}</li>)}
+              </ol>
+              <p className={`script ${styles.briefNote}`}>{copy.brief.note}</p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ============ ЯК МИ ЗБЕРІГАЄМО СХОЖІСТЬ ============ */}
+        <section className={styles.likeness}>
           <div className="container">
-            <Reveal as="h2" className="h2 h2--dark">{copy.processHeading}</Reveal>
-            <ol className={styles.steps}>
-              {copy.steps.map((step, i) => (
-                <li className="who" key={step.title}>
-                  <span className={styles.stepNumber} aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="who__title">{step.title}</h3>
-                  <p className="who__text">{step.text}</p>
-                </li>
-              ))}
-            </ol>
+            <Reveal as="h2" className={`h2 h2--dark ${styles.h2}`}>{copy.likeness.heading}</Reveal>
+            <div className={styles.likenessGrid}>
+              <Reveal as="figure" className={styles.sheet}>
+                <Image src={MEDIA.sheet.src} width={MEDIA.sheet.w} height={MEDIA.sheet.h} alt={copy.likeness.sheetAlt} sizes="(max-width: 960px) 100vw, 760px" />
+                <figcaption className={styles.angles}>
+                  {copy.likeness.angles.map((a) => <span key={a}>{a}</span>)}
+                </figcaption>
+              </Reveal>
+              <Reveal as="ol" className={styles.points} delay={1}>
+                {copy.likeness.points.map((p, i) => (
+                  <li key={p}><span className={styles.pointNum}>{pad(i)}</span>{p}</li>
+                ))}
+              </Reveal>
+            </div>
+
+            <Reveal className={styles.looks}>
+              <div className={styles.looksRow}>
+                {MEDIA.looks.map((c, i) => (
+                  <Image key={c.src} src={c.src} width={c.w} height={c.h} alt={copy.likeness.looksAlt[i]} sizes="(max-width: 760px) 22vw, 150px" style={order(i)} />
+                ))}
+                <span className={styles.looksPlus} aria-hidden="true">+</span>
+                <Image src={MEDIA.pet.src} width={MEDIA.pet.w} height={MEDIA.pet.h} alt={copy.likeness.petAlt} sizes="(max-width: 760px) 22vw, 150px" style={order(4)} />
+              </div>
+              <p className={styles.looksCaption}>
+                <span className="script">{copy.likeness.looksCaption}</span>
+                <span className="script">{copy.likeness.petCaption}</span>
+              </p>
+            </Reveal>
           </div>
         </section>
 
-        <section className={`audience ${styles.service}`} id="service">
-          <div className="container container--narrow">
-            <Reveal as="h2" className="h2 h2--dark">{copy.serviceHeading}</Reveal>
-            <p className={styles.lead}>{copy.serviceText}</p>
-            <p className={styles.note}>{copy.serviceNote}</p>
+        {/* ============ СПРАВЖНІЙ МОМЕНТ → СЦЕНА ============ */}
+        <section className={`section--dark ${styles.moment}`}>
+          <FilmEdge side="top" />
+          <FilmEdge side="bottom" />
+          <div className="container">
+            <Reveal className={styles.momentHead}>
+              <h2 className={`h2 ${styles.h2}`}>{copy.moment.heading}</h2>
+              <p className={styles.momentLead}>{copy.moment.lead}</p>
+            </Reveal>
+            <Reveal className={styles.momentPair}>
+              <figure className={styles.momentClip}>
+                <figcaption className="script">{copy.moment.real}</figcaption>
+                <LoopVideo src={MEDIA.moment.real.src} poster={MEDIA.moment.real.poster} label={copy.story.steps[2].alt} />
+              </figure>
+              <span className={`script ${styles.momentArrow}`} aria-hidden="true">→</span>
+              <figure className={styles.momentClip}>
+                <figcaption className="script">{copy.moment.cartoon}</figcaption>
+                <LoopVideo src={MEDIA.moment.cartoon.src} poster={MEDIA.moment.cartoon.poster} label={copy.story.steps[3].alt} />
+              </figure>
+            </Reveal>
           </div>
         </section>
 
-        <section className="audience" id="audience">
-          <div className="container container--narrow">
-            <Reveal as="h2" className="h2 h2--dark">{copy.occasionsHeading}</Reveal>
-            <p className={styles.lead}>{copy.occasionsLead}</p>
-            <ul className="chips">
-              {dict.audience.occasions.map((occasion) => <li className="chip" key={occasion}>{occasion}</li>)}
-            </ul>
+        {/* ============ ГОТОВИЙ ФІЛЬМ + РЕАКЦІЯ ============ */}
+        <section className={styles.film} id="film">
+          <div className={`container ${styles.filmInner}`}>
+            <Reveal className={styles.filmMain}>
+              <h2 className={`h2 h2--dark ${styles.h2}`}>{copy.film.heading}</h2>
+              <p className={styles.sectionLead}>{copy.film.lead}</p>
+              <figure className={styles.filmVideo}>
+                <VideoBox variant="9x16" src={MEDIA.film.src} poster={MEDIA.film.poster} labels={dict.video} preload="none" />
+                <figcaption>{copy.film.filmCaption}</figcaption>
+              </figure>
+            </Reveal>
+            <Reveal className={styles.filmReaction} delay={1}>
+              <p className={`script ${styles.reactionHeading}`}>{copy.film.reactionHeading}</p>
+              <figure className={styles.filmVideo}>
+                <VideoBox variant="9x16" src={MEDIA.reaction.src} poster={MEDIA.reaction.poster} labels={dict.video} preload="none" />
+                <figcaption>{copy.film.reactionCaption}</figcaption>
+              </figure>
+            </Reveal>
           </div>
         </section>
 
-        <Pricing dict={dict} currency={currency} lang={lang} />
+        {/* ============ СТУДІЯ, А НЕ ГЕНЕРАТОР ============ */}
+        <section className={styles.compare}>
+          <div className="container">
+            <Reveal as="h2" className={`h2 h2--dark ${styles.h2}`}>{copy.compare.heading}</Reveal>
+            <div className={styles.compareGrid}>
+              <Reveal className={styles.compareSelf}>
+                <h3>{copy.compare.selfTitle}</h3>
+                <ul>
+                  {copy.compare.self.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </Reveal>
+              <Reveal className={styles.compareLume} delay={1}>
+                <h3>{copy.compare.lumeTitle}</h3>
+                <ol>
+                  {copy.compare.lume.map((item, i) => (
+                    <li key={item}><span className={styles.pointNum}>{pad(i)}</span>{item}</li>
+                  ))}
+                </ol>
+              </Reveal>
+            </div>
+          </div>
+        </section>
 
+        {/* ============ ЩО ВИ ОТРИМУЄТЕ + ЦІНА ============ */}
+        {/* id="pricing": на цей якір посилаються пропозиції в JSON-LD. */}
+        <section className={styles.result} id="pricing">
+          <div className={`container ${styles.resultInner}`}>
+            <Reveal className={styles.resultList}>
+              <h2 className={`h2 h2--dark ${styles.h2}`}>{copy.result.heading}</h2>
+              <ul>
+                {copy.result.items.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </Reveal>
+            <Reveal className={styles.price} delay={1}>
+              <p className={styles.priceValue}>
+                <span>{copy.result.priceFrom}</span>
+                <strong>{priceFrom}</strong>
+                <span>{copy.result.perMinute}</span>
+              </p>
+              <Link href={`${langPath("/", lang)}#pricing`} className="btn btn--dark">{copy.result.compareLink}</Link>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ============ FAQ ============ */}
         <section className="faq section--dark" id="faq">
           <div className="container container--narrow">
-            <Reveal as="h2" className="h2 h2--sm">{dict.faq.heading}</Reveal>
+            <Reveal as="h2" className="h2 h2--sm">{copy.faqHeading}</Reveal>
             <Faq items={faq} />
           </div>
         </section>
