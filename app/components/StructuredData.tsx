@@ -7,7 +7,7 @@ import {
   perMinute,
 } from "../pricing";
 import { ORDER_EMAIL } from "../config";
-import { BRAND, SITE_URL } from "../site";
+import { BRAND, LOGO_PATH, SAME_AS, SITE_URL } from "../site";
 import { getDictionary } from "../content/dictionaries";
 import { LANG_BCP47, langPath, type Lang } from "../content/lang";
 import { formatMinutes, formatPrice } from "../content/format";
@@ -29,7 +29,29 @@ import { formatMinutes, formatPrice } from "../content/format";
 
 const STRUCTURED_DATA_CURRENCY = "UAH" as const;
 
-type PageData = { path: string; title: string; description: string; faq: QA[] };
+/** Відео на сторінці (VideoObject). Шляхи — від кореня сайту. */
+export type PageVideo = {
+  /** Якір у @id: `${url}#video-${id}` */
+  id: string;
+  name: string;
+  description: string;
+  thumbnail: string;
+  contentUrl: string;
+  /** ISO 8601, напр. "PT2M34S" */
+  duration: string;
+  /** Коли відео з'явилося на сайті, YYYY-MM-DD */
+  uploadDate: string;
+};
+
+type PageData = {
+  path: string;
+  title: string;
+  description: string;
+  faq: QA[];
+  /** Назва сторінки в хлібних крихтах: «LUME → назва». */
+  breadcrumb?: string;
+  videos?: PageVideo[];
+};
 
 export default function StructuredData({ lang, page }: { lang: Lang; page?: PageData }) {
   const dict = getDictionary(lang);
@@ -86,6 +108,16 @@ export default function StructuredData({ lang, page }: { lang: Lang; page?: Page
       "@id": organizationId,
       name: BRAND,
       url: `${SITE_URL}/`,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${SITE_URL}/#logo`,
+        url: SITE_URL + LOGO_PATH,
+        width: 512,
+        height: 512,
+        caption: BRAND,
+      },
+      image: { "@id": `${SITE_URL}/#logo` },
+      sameAs: SAME_AS,
       description: dict.audience.lead,
       slogan: dict.meta.tagline,
       areaServed: { "@type": "Country", name: sd.countryName },
@@ -154,7 +186,30 @@ export default function StructuredData({ lang, page }: { lang: Lang; page?: Page
       isPartOf: { "@id": websiteId },
       mainEntity: { "@id": `${base}#service` },
       hasPart: { "@id": `${base}#faq` },
+      ...(page.breadcrumb ? { breadcrumb: { "@id": `${base}#breadcrumb` } } : {}),
+      ...(page.videos?.length ? { video: page.videos.map((v) => ({ "@id": `${base}#video-${v.id}` })) } : {}),
     }] : []),
+    ...(page?.breadcrumb ? [{
+      "@type": "BreadcrumbList",
+      "@id": `${base}#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: BRAND, item: SITE_URL + langPath("/", lang) },
+        { "@type": "ListItem", position: 2, name: page.breadcrumb, item: base },
+      ],
+    }] : []),
+    ...(page?.videos ?? []).map((v) => ({
+      "@type": "VideoObject",
+      "@id": `${base}#video-${v.id}`,
+      name: v.name,
+      description: v.description,
+      thumbnailUrl: SITE_URL + v.thumbnail,
+      contentUrl: SITE_URL + v.contentUrl,
+      duration: v.duration,
+      uploadDate: v.uploadDate,
+      inLanguage: bcp47,
+      publisher: { "@id": organizationId },
+      isPartOf: { "@id": `${base}#webpage` },
+    })),
   ];
 
   return (

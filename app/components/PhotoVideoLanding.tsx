@@ -1,6 +1,5 @@
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import {
   PHOTO_VIDEO_PATH,
@@ -23,7 +22,7 @@ import LoopVideo from "./LoopVideo";
 import Reveal from "./Reveal";
 import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
-import StructuredData from "./StructuredData";
+import StructuredData, { type PageVideo } from "./StructuredData";
 import VideoBox from "./VideoBox";
 import WhatsAppFloat from "./WhatsAppFloat";
 import styles from "./PhotoVideoLanding.module.css";
@@ -51,23 +50,15 @@ const poster = (name: string) =>
 
 const MEDIA = {
   hero: { photo: img("photo-real-5", 900, 1350), cartoon: still("film-evening") },
-  story: [
-    img("photo-real-1", 900, 1200),
-    character(6),
-    img("moment-real-poster", 540, 960),
-    img("moment-ai-poster", 480, 854),
-    still("film-proposal"),
-    still("reaction-poster"),
-  ],
+  // Сам момент «освідчення → сцена» показано окремим блоком із відео,
+  // тож тут лише чотири опорні кадри.
+  story: [img("photo-real-1", 900, 1200), character(6), still("film-proposal"), still("reaction-poster")],
   pairs: [
     { photo: img("photo-real-2", 900, 1200), characters: [character(10), character(9)], scene: still("film-home") },
     { photo: img("photo-real-4", 900, 1200), characters: [character(3), character(4)], scene: still("film-walk") },
-    { photo: img("photo-real-5", 900, 1350), characters: [character(5), character(7)], scene: still("film-evening") },
     { photo: img("photo-real-7", 555, 793), characters: [character(8)], scene: still("film-dog") },
   ],
   sheet: img("sheet-3", 1600, 900),
-  looks: [character(6), character(10), character(3), character(5)],
-  pet: character(8),
   moment: {
     real: { src: `${CASE}/moment-real.mp4`, poster: poster("moment-real-poster") },
     cartoon: { src: `${CASE}/moment-ai.mp4`, poster: poster("moment-ai-poster") },
@@ -77,9 +68,30 @@ const MEDIA = {
   reaction: { src: `${CASE}/reaction.mp4`, poster: poster("reaction-poster") },
 };
 
-/** Порядковий номер для каскадної появи: CSS бере затримку з --i. */
-const order = (i: number) => ({ "--i": i }) as CSSProperties;
-const pad = (i: number) => String(i + 1).padStart(2, "0");
+
+/**
+ * VideoObject для фільму й реакції. uploadDate — коли ролик з'явився на сайті:
+ * фільм — у портфоліо з 2026-10-05, реакція — разом із цією сторінкою.
+ * Короткі кліпи-петлі в блоці «момент → сцена» не розмічаємо: це фрагменти.
+ */
+const CASE_VIDEOS = (copy: (typeof photoVideoContent)[PhotoVideoLang]): PageVideo[] => [
+  {
+    id: "film",
+    ...copy.schema.film,
+    thumbnail: `${CASE}/film-proposal.jpg`,
+    contentUrl: MEDIA.film.src,
+    duration: "PT2M34S",
+    uploadDate: "2026-10-05",
+  },
+  {
+    id: "reaction",
+    ...copy.schema.reaction,
+    thumbnail: `${CASE}/reaction-poster.jpg`,
+    contentUrl: MEDIA.reaction.src,
+    duration: "PT25S",
+    uploadDate: "2026-10-09",
+  },
+];
 
 export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang }) {
   const dict = getDictionary(lang);
@@ -90,7 +102,10 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
 
   return (
     <>
-      <StructuredData lang={lang} page={{ path: PHOTO_VIDEO_PATH, ...copy.meta, faq }} />
+      <StructuredData
+        lang={lang}
+        page={{ path: PHOTO_VIDEO_PATH, ...copy.meta, faq, breadcrumb: copy.schema.breadcrumb, videos: CASE_VIDEOS(copy) }}
+      />
       <IconSprite />
       <SiteNav items={copy.nav} cta={dict.common.navCta} lang={lang} />
       <main className={styles.page}>
@@ -158,17 +173,16 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
                 const media = MEDIA.story[i];
                 const frame = (
                   <span className={styles.frame}>
-                    <Image src={media.src} width={media.w} height={media.h} alt={step.alt} sizes="(max-width: 760px) 46vw, (max-width: 1100px) 30vw, 190px" />
+                    <Image src={media.src} width={media.w} height={media.h} alt={step.alt} sizes="(max-width: 760px) 46vw, (max-width: 1100px) 45vw, 280px" />
                   </span>
                 );
                 return (
-                  <li key={step.label} className={styles.step} style={order(i)}>
+                  <li key={step.label} className={styles.step}>
                     {/* Останній крок веде до самого відео реакції нижче. */}
                     {i === copy.story.steps.length - 1 ? (
                       <a href="#film" className={styles.frameLink}>{frame}</a>
                     ) : frame}
                     <span className={styles.stepText}>
-                      <span className={styles.stepNum}>{pad(i)}</span>
                       <span className={`script ${styles.stepLabel}`}>{step.label}</span>
                       <span className={styles.stepCaption}>{step.caption}</span>
                     </span>
@@ -191,11 +205,10 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
               {copy.pairs.items.map((pair, i) => {
                 const media = MEDIA.pairs[i];
                 return (
-                  <Reveal as="article" key={pair.title} className={styles.pair} delay={(i % 2) as 0 | 1}>
+                  <Reveal as="article" key={pair.title} className={styles.pair} delay={i as 0 | 1 | 2}>
                     <div className={styles.pairVisual}>
                       <figure className={styles.pairPhoto}>
                         <Image src={media.photo.src} width={media.photo.w} height={media.photo.h} alt={pair.photoAlt} sizes="(max-width: 760px) 56vw, 330px" />
-                        <figcaption>{copy.pairs.photoLabel}</figcaption>
                       </figure>
                       <div className={styles.pairCharacters} data-count={media.characters.length}>
                         {media.characters.map((c, k) => (
@@ -206,7 +219,6 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
                             height={c.h}
                             alt={k === 0 ? pair.characterAlt : ""}
                             sizes="(max-width: 760px) 26vw, 150px"
-                            style={order(k)}
                           />
                         ))}
                       </div>
@@ -216,9 +228,7 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
                       </figure>
                     </div>
                     <h3 className={`script ${styles.pairTitle}`}>{pair.title}</h3>
-                    <ul className={styles.details}>
-                      {pair.details.map((d) => <li key={d}>{d}</li>)}
-                    </ul>
+                    <p className={styles.details}>{pair.details.join(" · ")}</p>
                   </Reveal>
                 );
               })}
@@ -257,25 +267,12 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
                 </figcaption>
               </Reveal>
               <Reveal as="ol" className={styles.points} delay={1}>
-                {copy.likeness.points.map((p, i) => (
-                  <li key={p}><span className={styles.pointNum}>{pad(i)}</span>{p}</li>
+                {copy.likeness.points.map((p) => (
+                  <li key={p}>{p}</li>
                 ))}
               </Reveal>
             </div>
 
-            <Reveal className={styles.looks}>
-              <div className={styles.looksRow}>
-                {MEDIA.looks.map((c, i) => (
-                  <Image key={c.src} src={c.src} width={c.w} height={c.h} alt={copy.likeness.looksAlt[i]} sizes="(max-width: 760px) 22vw, 150px" style={order(i)} />
-                ))}
-                <span className={styles.looksPlus} aria-hidden="true">+</span>
-                <Image src={MEDIA.pet.src} width={MEDIA.pet.w} height={MEDIA.pet.h} alt={copy.likeness.petAlt} sizes="(max-width: 760px) 22vw, 150px" style={order(4)} />
-              </div>
-              <p className={styles.looksCaption}>
-                <span className="script">{copy.likeness.looksCaption}</span>
-                <span className="script">{copy.likeness.petCaption}</span>
-              </p>
-            </Reveal>
           </div>
         </section>
 
@@ -291,12 +288,12 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
             <Reveal className={styles.momentPair}>
               <figure className={styles.momentClip}>
                 <figcaption className="script">{copy.moment.real}</figcaption>
-                <LoopVideo src={MEDIA.moment.real.src} poster={MEDIA.moment.real.poster} label={copy.story.steps[2].alt} />
+                <LoopVideo src={MEDIA.moment.real.src} poster={MEDIA.moment.real.poster} label={copy.moment.realAlt} />
               </figure>
               <span className={`script ${styles.momentArrow}`} aria-hidden="true">→</span>
               <figure className={styles.momentClip}>
                 <figcaption className="script">{copy.moment.cartoon}</figcaption>
-                <LoopVideo src={MEDIA.moment.cartoon.src} poster={MEDIA.moment.cartoon.poster} label={copy.story.steps[3].alt} />
+                <LoopVideo src={MEDIA.moment.cartoon.src} poster={MEDIA.moment.cartoon.poster} label={copy.moment.cartoonAlt} />
               </figure>
             </Reveal>
           </div>
@@ -323,35 +320,13 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
           </div>
         </section>
 
-        {/* ============ СТУДІЯ, А НЕ ГЕНЕРАТОР ============ */}
-        <section className={styles.compare}>
-          <div className="container">
-            <Reveal as="h2" className={`h2 h2--dark ${styles.h2}`}>{copy.compare.heading}</Reveal>
-            <div className={styles.compareGrid}>
-              <Reveal className={styles.compareSelf}>
-                <h3>{copy.compare.selfTitle}</h3>
-                <ul>
-                  {copy.compare.self.map((item) => <li key={item}>{item}</li>)}
-                </ul>
-              </Reveal>
-              <Reveal className={styles.compareLume} delay={1}>
-                <h3>{copy.compare.lumeTitle}</h3>
-                <ol>
-                  {copy.compare.lume.map((item, i) => (
-                    <li key={item}><span className={styles.pointNum}>{pad(i)}</span>{item}</li>
-                  ))}
-                </ol>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* ============ ЩО ВИ ОТРИМУЄТЕ + ЦІНА ============ */}
+        {/* ============ ЩО ВИ ОТРИМУЄТЕ: студія, а не генератор + ціна ============ */}
         {/* id="pricing": на цей якір посилаються пропозиції в JSON-LD. */}
         <section className={styles.result} id="pricing">
           <div className={`container ${styles.resultInner}`}>
             <Reveal className={styles.resultList}>
               <h2 className={`h2 h2--dark ${styles.h2}`}>{copy.result.heading}</h2>
+              <p className={styles.resultLead}>{copy.result.lead}</p>
               <ul>
                 {copy.result.items.map((item) => <li key={item}>{item}</li>)}
               </ul>

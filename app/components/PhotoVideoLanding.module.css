@@ -1,8 +1,7 @@
 /* ============================================================
    «AI-відео з фотографій» — сторінка-історія одного реального кейсу.
    Базові токени, кнопки, .h2, .reveal, .video — з app/lume.css.
-   Анімації лише на transform/opacity; prefers-reduced-motion
-   прибирає їх у самому низу файлу.
+   Рух свідомо мінімальний: лише м'яка поява блоків (.reveal).
    ============================================================ */
 
 .page img{display:block;width:100%;height:auto}
@@ -25,7 +24,7 @@
 .heroNote{font-size:16px;margin:0 0 34px;color:rgba(25,24,23,.7)}
 .heroActions :global(.btn){white-space:normal}
 
-/* Дві картки внахльост: фото позаду, мультфільм виїжджає з-під нього. */
+/* Дві картки внахльост: фото позаду, мультфільм поверх. */
 .heroVisual{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:20px 0 40px}
 .heroCard{margin:0;position:relative}
 .heroCard img{aspect-ratio:3/4.4;object-fit:cover;border-radius:var(--radius);box-shadow:0 26px 60px rgba(25,24,23,.22)}
@@ -35,17 +34,15 @@
 }
 .heroPhoto{transform:rotate(-4deg) translateX(10%);z-index:1}
 .heroPhoto img{filter:saturate(.92)}
-.heroCartoon{transform:rotate(3deg) translate(-6%,30px);z-index:2;animation:heroSlide 1.2s var(--ease) .35s both}
+.heroCartoon{transform:rotate(3deg) translate(-6%,30px);z-index:2}
 .heroCartoon img{border:5px solid var(--ivory)}
 .heroCartoon figcaption{left:auto;right:18px}
 .heroArrow{
   position:absolute;left:50%;top:44%;z-index:3;transform:translate(-50%,-50%);
   width:64px;height:64px;display:grid;place-items:center;border-radius:50%;
   background:var(--wine);color:var(--ivory);font-size:34px;line-height:1;
-  box-shadow:0 14px 30px rgba(102,27,43,.35);animation:popIn .6s var(--ease) 1.1s both;
+  box-shadow:0 14px 30px rgba(102,27,43,.35);
 }
-@keyframes heroSlide{from{opacity:0;transform:rotate(-4deg) translate(-60%,10px)}to{opacity:1;transform:rotate(3deg) translate(-6%,30px)}}
-@keyframes popIn{from{opacity:0;transform:translate(-50%,-50%) scale(.4)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 
 /* ---------------- ІСТОРІЯ (кіноплівка) ---------------- */
 .story{padding:130px 0 120px;overflow:hidden}
@@ -55,86 +52,60 @@
 
 .track{
   list-style:none;margin:0;padding:0;position:relative;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:22px;align-items:start;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:28px;align-items:start;
 }
-/* лінія-«сюжет», що прокреслюється під кадрами */
+/* пунктир-«сюжет» за кадрами */
 .track::before{
-  content:"";position:absolute;left:4%;right:4%;top:150px;height:0;
-  border-top:2px dashed rgba(246,241,233,.45);
-  transform:scaleX(0);transform-origin:left;transition:transform 1.6s var(--ease) .2s;
+  content:"";position:absolute;left:6%;right:6%;top:180px;height:0;
+  border-top:2px dashed rgba(246,241,233,.4);
 }
-.track:global(.is-in)::before{transform:scaleX(1)}
-.step{
-  position:relative;display:grid;gap:16px;
-  opacity:0;transform:translateY(28px);
-  transition:opacity .7s var(--ease),transform .7s var(--ease);
-  transition-delay:calc(var(--i) * .16s + .15s);
-}
+.step{position:relative;display:grid;gap:16px}
 /* асиметрія: парні кадри трохи нижче — як кадри, розкладені на столі */
 .step:nth-child(even){margin-top:56px}
-.track:global(.is-in) .step{opacity:1;transform:none}
 .frame{display:block;border-radius:18px;overflow:hidden;background:rgba(0,0,0,.2);box-shadow:0 18px 40px rgba(0,0,0,.3)}
-.frame img{aspect-ratio:9/15;object-fit:cover;object-position:50% 30%;transition:transform .6s var(--ease)}
-.step:hover .frame img{transform:scale(1.05)}
+.frame img{aspect-ratio:3/4.2;object-fit:cover;object-position:50% 30%}
 .frameLink{display:block;border-radius:18px}
 .frameLink:focus-visible{outline:3px solid var(--rose);outline-offset:4px}
 .stepText{display:grid;gap:4px}
-.stepNum{font-size:13px;font-weight:700;letter-spacing:.14em;color:rgba(246,241,233,.55)}
-.stepLabel{font-size:28px;line-height:1.05;color:var(--ivory)}
+.stepLabel{font-size:30px;line-height:1.05;color:var(--ivory)}
 .stepCaption{font-size:15px;line-height:1.45;color:rgba(246,241,233,.82)}
 
 /* ---------------- З ФОТО — У ПЕРСОНАЖА ---------------- */
 .pairs{padding:120px 0 100px}
-.pairGrid{display:grid;grid-template-columns:1fr 1fr;gap:72px 64px;padding-top:40px}
-.pair:nth-child(even){margin-top:90px}
+.pairGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:72px 48px;padding-top:40px}
+.pair:nth-child(2){margin-top:90px}
 .pairVisual{position:relative;padding-right:8%;margin-bottom:26px}
 .pairPhoto{margin:0;width:62%;position:relative}
-.pairPhoto img{aspect-ratio:3/4;object-fit:cover;border-radius:var(--radius);box-shadow:0 20px 44px rgba(25,24,23,.18);transition:transform .6s var(--ease)}
-.pairPhoto figcaption,.pairScene figcaption{
-  position:absolute;top:12px;left:12px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  background:rgba(246,241,233,.92);color:var(--charcoal);padding:5px 10px;border-radius:999px;
-}
-/* персонажі «виходять» з-за фото праворуч */
+.pairPhoto img{aspect-ratio:3/4;object-fit:cover;border-radius:var(--radius);box-shadow:0 20px 44px rgba(25,24,23,.18)}
+/* персонажі стоять праворуч, впритул до фото */
 .pairCharacters{position:absolute;right:0;bottom:-6%;width:52%;display:flex;justify-content:flex-end;align-items:flex-end}
 .pairCharacters img{
   width:52%;aspect-ratio:448/1008;object-fit:cover;flex:none;
   background:#8d8784;border-radius:16px;border:4px solid var(--ivory);
   box-shadow:0 16px 34px rgba(25,24,23,.22);
-  transition:transform .6s var(--ease);
 }
 .pairCharacters img + img{margin-left:-14%}
 /* один персонаж стає туди ж, де починається пара: впритул до фото */
 .pairCharacters[data-count="1"]{justify-content:flex-start}
 .pairCharacters[data-count="1"] img{width:50%;margin-left:10%}
-.pair:global(.reveal) .pairCharacters img{opacity:0;transform:translateX(-40%);transition:opacity .8s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--i) * .15s + .35s)}
-.pair:global(.is-in) .pairCharacters img{opacity:1;transform:none}
-.pair:hover .pairCharacters img{transform:translateY(-8px)}
-.pair:hover .pairCharacters img + img{transform:translateY(-14px)}
-.pair:hover .pairPhoto img{transform:rotate(-1.5deg)}
 /* кадр «У фільмі» росте з карткою; зсув угору — щоб не накривав голови персонажів */
 .pairScene{position:absolute;top:0;right:3%;width:clamp(76px,26%,132px);margin:0;z-index:2;transform:translateY(-38%)}
 .pairScene img{aspect-ratio:1;object-fit:cover;object-position:50% 35%;border-radius:50%;border:4px solid var(--ivory);box-shadow:0 10px 24px rgba(25,24,23,.25)}
-.pairScene figcaption{position:static;display:block;text-align:center;margin-top:6px;background:none;padding:0;color:var(--wine);font-size:11px}
-.pairTitle{font-size:clamp(30px,3vw,40px);margin:0 0 10px;color:var(--wine);line-height:1.1;padding-top:12px}
-.details{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:16px;color:rgba(25,24,23,.8)}
-.details li{position:relative;padding-left:16px}
-.details li::before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;border-radius:50%;background:var(--rose)}
+.pairScene figcaption{
+  display:block;text-align:center;margin-top:6px;color:var(--wine);
+  font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+}
+.pairTitle{font-size:clamp(30px,3vw,40px);margin:0 0 8px;color:var(--wine);line-height:1.1;padding-top:12px}
+.details{margin:0;font-size:16px;line-height:1.5;color:rgba(25,24,23,.75)}
 
 /* ---------------- ЩО ПОТРІБНО ВІД ВАС ---------------- */
 .brief{padding:110px 0;background:var(--cream-2)}
 .briefInner{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:start}
 .briefCount{display:grid;gap:8px;margin:12px 0 0;font-size:21px;line-height:1.45;max-width:24ch;font-weight:500}
 .bigNum{font-family:var(--font-sans),sans-serif;font-weight:900;font-size:clamp(96px,12vw,170px);line-height:.85;color:var(--wine);letter-spacing:-4px}
-.briefList ol{list-style:none;margin:0;padding:0;counter-reset:brief}
-.briefList li{
-  counter-increment:brief;position:relative;padding:20px 0 20px 52px;
-  border-bottom:1px solid rgba(102,27,43,.18);font-size:18px;line-height:1.5;
-}
+.briefList ol{list-style:none;margin:0;padding:0}
+.briefList li{padding:20px 0;border-bottom:1px solid rgba(102,27,43,.18);font-size:18px;line-height:1.5}
 .briefList li:first-child{border-top:1px solid rgba(102,27,43,.18)}
-.briefList li::before{
-  content:counter(brief,decimal-leading-zero);position:absolute;left:0;top:22px;
-  font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--wine);
-}
 .briefNote{font-size:clamp(24px,2.3vw,30px);line-height:1.25;color:var(--wine);margin:30px 0 0}
 
 /* ---------------- СХОЖІСТЬ ---------------- */
@@ -144,22 +115,9 @@
 .sheet img{border-radius:var(--radius);box-shadow:0 22px 50px rgba(25,24,23,.18)}
 /* підписи стоять рівно під чвертями аркуша — по одній на ракурс */
 .angles{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;text-align:center;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(25,24,23,.7)}
-.points{list-style:none;margin:0;padding:0;display:grid;gap:22px}
-.points li{display:grid;grid-template-columns:44px 1fr;font-size:19px;line-height:1.45}
-.pointNum{font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--wine);padding-top:5px}
-.looks{margin-top:88px}
-.looksRow{display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,1.6vw,20px)}
-.looksRow img{
-  /* сжимаються разом із рядом: на 320px п'ять карток і «+» мають влізти */
-  flex:1 1 0;min-width:0;max-width:150px;aspect-ratio:448/1008;object-fit:cover;
-  background:#8d8784;border-radius:16px;
-  transition:transform .5s var(--ease),opacity .7s var(--ease);
-}
-.looksRow img:hover{transform:translateY(-10px)}
-.looks:global(.reveal) .looksRow img{opacity:0;transition-delay:calc(var(--i) * .12s + .2s)}
-.looks:global(.is-in) .looksRow img{opacity:1}
-.looksPlus{font-size:36px;font-weight:300;color:var(--wine);align-self:center}
-.looksCaption{display:flex;justify-content:center;gap:clamp(40px,10vw,160px);margin:18px 0 0;font-size:clamp(22px,2.4vw,30px);color:var(--wine)}
+.points{list-style:none;margin:0;padding:0}
+.points li{padding:18px 0;border-bottom:1px solid rgba(102,27,43,.18);font-size:19px;line-height:1.45}
+.points li:first-child{border-top:1px solid rgba(102,27,43,.18)}
 
 /* ---------------- МОМЕНТ → СЦЕНА ---------------- */
 /* та сама «кіноплівка», що й в історії: section--dark + перфорація FilmEdge */
@@ -182,28 +140,17 @@
 .filmInner{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
 .filmVideo{margin:28px 0 0;max-width:400px}
 .filmVideo :global(.video--9x16){aspect-ratio:9/16;border-width:0;border-radius:var(--radius)}
+/* сторінка спокійна — картки з відео не підстрибують під курсором */
+.filmVideo :global(.video:hover){transform:none}
 .filmVideo figcaption{margin-top:14px;font-size:14px;letter-spacing:.06em;color:rgba(25,24,23,.7)}
 .filmReaction{padding-top:150px}
 .filmReaction .filmVideo{max-width:340px}
 .reactionHeading{font-size:clamp(34px,3.6vw,48px);color:var(--wine);margin:0;line-height:1.05}
 
-/* ---------------- СТУДІЯ, А НЕ ГЕНЕРАТОР ---------------- */
-.compare{padding:110px 0;background:var(--cream-2)}
-.compareGrid{display:grid;grid-template-columns:1fr 1.15fr;gap:28px;align-items:stretch;margin-top:12px}
-.compareSelf,.compareLume{border-radius:var(--radius);padding:38px 40px}
-.compareSelf h3,.compareLume h3{margin:0 0 22px;font-size:15px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
-.compareSelf{color:rgba(25,24,23,.62)}
-.compareSelf ul{list-style:none;margin:0;padding:0;display:grid;gap:12px;font-size:18px}
-.compareSelf li{position:relative;padding-left:22px}
-.compareSelf li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:1.6px;background:currentColor}
-.compareLume{background:var(--wine);color:var(--ivory);box-shadow:0 22px 50px rgba(102,27,43,.28)}
-.compareLume ol{list-style:none;margin:0;padding:0;display:grid;gap:20px}
-.compareLume li{display:grid;grid-template-columns:44px 1fr;font-size:22px;line-height:1.35;font-weight:500}
-.compareLume .pointNum{color:var(--rose)}
-
 /* ---------------- ЩО ВИ ОТРИМУЄТЕ + ЦІНА ---------------- */
-.result{padding:110px 0}
+.result{padding:110px 0;background:var(--cream-2)}
 .resultInner{display:grid;grid-template-columns:1.3fr 1fr;gap:64px;align-items:end}
+.resultLead{font-size:20px;line-height:1.55;margin:0 0 28px;max-width:48ch}
 .resultList ul{list-style:none;margin:0;padding:0}
 .resultList li{padding:16px 0;border-bottom:1px solid rgba(25,24,23,.16);font-size:19px}
 .resultList li:first-child{border-top:1px solid rgba(25,24,23,.16)}
@@ -218,23 +165,23 @@
    АДАПТИВ
    ============================================================ */
 @media (max-width:1100px){
-  .track{grid-template-columns:repeat(3,1fr);gap:40px 24px}
+  .track{grid-template-columns:repeat(2,1fr);gap:48px 28px;max-width:640px}
   .track::before{display:none}
-  .step:nth-child(even){margin-top:0}
-  .step:nth-child(3n+2){margin-top:48px}
+  /* три пари — в одну колонку «зигзагом» */
+  .pairGrid{grid-template-columns:1fr;gap:80px}
+  .pair{width:min(100%,520px)}
+  .pair:nth-child(2){margin-top:0;justify-self:end}
 }
 @media (max-width:960px){
   .heroInner{grid-template-columns:1fr;gap:20px}
   .heroVisual{max-width:560px;width:100%;margin:0 auto}
-  .pairGrid{gap:72px 40px}
   .briefInner,.likenessGrid,.filmInner,.resultInner{grid-template-columns:1fr;gap:40px}
   .filmInner{grid-template-columns:1fr 1fr;gap:28px}
   .filmReaction{padding-top:110px}
-  .compareGrid{grid-template-columns:1fr}
 }
 @media (max-width:760px){
   .sectionHead{margin-bottom:40px}
-  .sectionLead,.storyLead,.momentLead{font-size:17px}
+  .sectionLead,.storyLead,.momentLead,.resultLead{font-size:17px}
   .hero{padding-bottom:80px}
   .heroLead{font-size:18px}
   .heroCard figcaption{font-size:26px;bottom:-20px;left:10px;padding:0 12px 2px}
@@ -244,14 +191,12 @@
   /* історія — вертикальна стрічка «зигзагом»: кадр і підпис чергуються */
   .story{padding:96px 0 90px}
   .storyHead{margin-bottom:44px}
-  .track{grid-template-columns:1fr;gap:28px}
+  .track{grid-template-columns:1fr;gap:28px;max-width:none}
   .track::before{
     display:block;left:50%;right:auto;top:20px;bottom:20px;height:auto;
     border-top:0;border-left:2px dashed rgba(246,241,233,.35);
-    transform:scaleY(0);transform-origin:top;
   }
-  .track:global(.is-in)::before{transform:scaleY(1)}
-  .step,.step:nth-child(even),.step:nth-child(3n+2){margin-top:0}
+  .step,.step:nth-child(even){margin-top:0}
   .step{grid-template-columns:1fr 1fr;align-items:center;gap:0 34px}
   .step:nth-child(even) .frame,.step:nth-child(even) .frameLink{order:2}
   .step:nth-child(even) .stepText{text-align:right}
@@ -259,15 +204,12 @@
   .stepCaption{font-size:14px}
 
   .pairs,.likeness{padding:84px 0 80px}
-  .pairGrid{grid-template-columns:1fr;gap:64px}
-  .pair:nth-child(even){margin-top:0}
+  .pairGrid{gap:64px}
+  .pair{width:100%}
 
-  .brief,.compare,.result{padding:80px 0}
-  .briefList li{font-size:17px;padding-left:44px}
+  .brief,.result{padding:80px 0}
+  .briefList li{font-size:17px}
   .points li,.resultList li{font-size:17px}
-  .looks{margin-top:56px}
-  /* підписи — під своїми групами карток: чотири образи й собака */
-  .looksCaption{display:grid;grid-template-columns:4fr 1fr;gap:10px;font-size:20px;line-height:1.15;text-align:center}
 
   .moment{padding:96px 0 110px}
   .momentHead{margin-bottom:36px}
@@ -276,9 +218,6 @@
   .filmInner{grid-template-columns:1fr}
   .filmVideo,.filmReaction .filmVideo{max-width:340px}
   .filmReaction{padding-top:0}
-
-  .compareSelf,.compareLume{padding:28px 24px}
-  .compareLume li{font-size:19px;grid-template-columns:38px 1fr}
 }
 @media (max-width:420px){
   .heroTitle{font-size:clamp(23px,7.4vw,30px)}
@@ -288,20 +227,5 @@
   .stepLabel{font-size:22px}
   .pairCharacters img{border-width:3px;border-radius:12px}
   .details{font-size:15px}
-  .looksPlus{font-size:24px}
-  .compareLume li{font-size:17px}
   .momentClip figcaption{font-size:19px;white-space:nowrap}
-}
-
-/* ============================================================
-   МЕНШЕ РУХУ
-   Глобальне правило в lume.css гасить анімації й тривалості, але не
-   стартові стани, з яких елементи «в'їжджають», — повертаємо їх тут.
-   ============================================================ */
-@media (prefers-reduced-motion:reduce){
-  .heroCartoon{animation:none;opacity:1}
-  .heroArrow{animation:none;opacity:1}
-  .step,.pair:global(.reveal) .pairCharacters img,.looks:global(.reveal) .looksRow img{opacity:1;transform:none;transition:none}
-  .track::before{transform:none;transition:none}
-  .pair:hover .pairCharacters img,.pair:hover .pairPhoto img,.step:hover .frame img,.looksRow img:hover{transform:none}
 }

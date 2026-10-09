@@ -2,6 +2,9 @@ import Link from "next/link";
 import { TELEGRAM_LINK } from "../config";
 import type { Dictionary } from "../content/dictionary";
 import { langPath, type Lang } from "../content/lang";
+import { PHOTO_VIDEO_PATH, photoVideoContent } from "../content/ai-video-from-photos";
+import { INSTAGRAM_URL } from "../site";
+import { GUIDE_PATH, guideContent } from "../content/cartoon-guide";
 import LangSwitch from "./LangSwitch";
 
 export default function SiteFooter({
@@ -17,6 +20,13 @@ export default function SiteFooter({
       <div className="container footer__bottom">
         <p>{f.rights}</p>
         <nav className="footer__nav">
+          {/* Кейс і гайд є лише українською та англійською */}
+          {lang !== "ru" && (
+            <>
+              <Link href={langPath(PHOTO_VIDEO_PATH, lang)}>{photoVideoContent[lang].footerLink}</Link>
+              <Link href={langPath(GUIDE_PATH, lang)}>{guideContent[lang].footerLink}</Link>
+            </>
+          )}
           <Link href={langPath("/terms", lang)}>{f.terms}</Link>
           <Link href={langPath("/privacy", lang)}>{f.privacy}</Link>
           <a href={TELEGRAM_LINK} target="_blank" rel="noopener">
@@ -24,7 +34,7 @@ export default function SiteFooter({
           </a>
           <a
             className="footer__ig"
-            href="https://www.instagram.com/lumestory.ua/"
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
           >

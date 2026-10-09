@@ -67,6 +67,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /* Усі сторінки, крім статики, API та службових файлів пошуку. */
-    "/((?!_next/|api/|video/|favicon|icon|robots.txt|sitemap.xml|llms.txt).*)",
+    "/((?!_next/|api/|video/|favicon|icon|robots.txt|sitemap.xml|llms.txt|indexnow.txt|logo.png).*)",
   ],
 };

@@ -15,3 +15,11 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 export const BRAND = "LUME";
+
+/** Логотип для структурованої розмітки (Organization.logo), 512×512. */
+export const LOGO_PATH = "/logo.png";
+
+/** Офіційні сторінки бренду: футер і Organization.sameAs у JSON-LD.
+ *  Додавайте сюди нові (YouTube, TikTok, профіль Google) — розмітка підхопить. */
+export const INSTAGRAM_URL = "https://www.instagram.com/lumestory.ua/";
+export const SAME_AS = [INSTAGRAM_URL];

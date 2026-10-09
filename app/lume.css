@@ -361,6 +361,13 @@ section[id],header[id]{scroll-margin-top:76px}
 .works__head{text-align:center;margin-bottom:56px}
 .heart-doodle{width:190px;height:78px;color:var(--cream);opacity:.9;margin-bottom:6px}
 .works__head .h2{margin-bottom:0}
+/* посилання під роботою, для якої є сторінка-кейс */
+.works__case{
+  display:inline-block;margin-top:12px;font-size:15px;font-weight:600;color:var(--cream);
+  text-decoration:none;border-bottom:1.5px solid rgba(246,241,233,.4);padding-bottom:2px;
+  transition:border-color .25s;
+}
+.works__case:hover{border-color:var(--cream)}
 /* Кладка «як у Pinterest»: колонки заповнюються згори вниз, тож
    горизонтальні й вертикальні роботи стикуються без порожнеч.
    Саме тому це columns, а не grid: у ґріді висоту рядка задає

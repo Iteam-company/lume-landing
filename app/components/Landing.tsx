@@ -19,6 +19,12 @@ import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import { getDictionary } from "../content/dictionaries";
 import { langPath, type Lang } from "../content/lang";
 import { buildFaq } from "../faq";
+import Link from "next/link";
+import {
+  PHOTO_VIDEO_PATH,
+  PHOTO_VIDEO_WORK,
+  photoVideoContent,
+} from "../content/ai-video-from-photos";
 import { getVisitorLocation } from "../location";
 
 /* Роботи в портфоліо. Для кожної потрібні public/video/<slug>.mp4 і
@@ -186,6 +192,12 @@ export default async function Landing({ lang }: { lang: Lang }) {
                   poster={`/video/${slug}-poster.jpg`}
                   labels={dict.video}
                 />
+                {/* Для цієї роботи є окрема сторінка-кейс (російської версії немає). */}
+                {slug === PHOTO_VIDEO_WORK && lang !== "ru" && (
+                  <Link href={langPath(PHOTO_VIDEO_PATH, lang)} className="works__case">
+                    {photoVideoContent[lang].caseLink}
+                  </Link>
+                )}
               </Reveal>
             ))}
           </div>
