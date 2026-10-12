@@ -78,7 +78,9 @@ export default function PlanPreview({
         muted
         loop
         playsInline
-        preload="metadata"
+        // Ролик стартує лише при наведенні (або коли картку видно на тач-екрані) —
+        // до того не качаємо, показуємо постер.
+        preload="none"
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       />

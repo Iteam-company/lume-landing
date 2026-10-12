@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { POSTER_WIDTH, videoPoster } from "./videoPoster";
 import {
   discount,
   finalPrice,
@@ -67,7 +68,7 @@ export default function PlanCard({
 
       <PlanPreview
         src={`/video/plan-${tier.slug}.mp4`}
-        poster={`/video/plan-${tier.slug}-poster.jpg`}
+        poster={videoPoster(`/video/plan-${tier.slug}-poster.jpg`, POSTER_WIDTH.vertical)}
         active={hovered}
         labels={labels.preview}
       />

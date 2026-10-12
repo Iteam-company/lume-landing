@@ -22,16 +22,11 @@ export default function VideoBox({
   src,
   poster,
   labels,
-  preload = "metadata",
 }: {
   variant: Variant;
   src?: string;
   poster?: string;
   labels: { play: string; placeholder: string };
-  /** "none" — не тягнути навіть початок файлу, доки відео не запустили
-   *  (постер показуємо однаково). Для сторінок, де роликів кілька нижче
-   *  першого екрана. */
-  preload?: "none" | "metadata";
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
@@ -55,7 +50,9 @@ export default function VideoBox({
         poster={poster}
         controls={started}
         playsInline
-        preload={preload}
+        // До кліку файл не качаємо зовсім: на головній 17 роликів, і
+        // preload="metadata" тягнув по 0,1–1 МБ кожного одразу.
+        preload="none"
       />
       {!started && (
         <button

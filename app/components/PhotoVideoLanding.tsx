@@ -1,4 +1,4 @@
-import Image, { getImageProps } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import {
@@ -24,6 +24,7 @@ import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
 import StructuredData, { type PageVideo } from "./StructuredData";
 import VideoBox from "./VideoBox";
+import { POSTER_WIDTH, videoPoster } from "./videoPoster";
 import WhatsAppFloat from "./WhatsAppFloat";
 import styles from "./PhotoVideoLanding.module.css";
 
@@ -40,13 +41,8 @@ const img = (name: string, w: number, h: number): Img => ({ src: `${CASE}/${name
 const character = (n: number) => img(`character-${n}`, n === 8 ? 400 : 448, 1008);
 const still = (name: string) => img(name, 720, 1280);
 
-/**
- * Постер для <video>. Атрибут poster браузер качає одразу, навіть для
- * роликів далеко внизу, тож віддаємо його через оптимізатор next/image
- * (WebP, ~640px) замість вихідного JPEG.
- */
-const poster = (name: string) =>
-  getImageProps({ src: `${CASE}/${name}.jpg`, alt: "", width: 320, height: 569 }).props.src;
+/** Постер ролика кейсу (вертикальний 9:16) через оптимізатор next/image. */
+const poster = (name: string) => videoPoster(`${CASE}/${name}.jpg`, POSTER_WIDTH.vertical);
 
 const MEDIA = {
   hero: { photo: img("photo-real-5", 900, 1350), cartoon: still("film-evening") },
@@ -306,14 +302,14 @@ export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang
               <h2 className={`h2 h2--dark ${styles.h2}`}>{copy.film.heading}</h2>
               <p className={styles.sectionLead}>{copy.film.lead}</p>
               <figure className={styles.filmVideo}>
-                <VideoBox variant="9x16" src={MEDIA.film.src} poster={MEDIA.film.poster} labels={dict.video} preload="none" />
+                <VideoBox variant="9x16" src={MEDIA.film.src} poster={MEDIA.film.poster} labels={dict.video} />
                 <figcaption>{copy.film.filmCaption}</figcaption>
               </figure>
             </Reveal>
             <Reveal className={styles.filmReaction} delay={1}>
               <p className={`script ${styles.reactionHeading}`}>{copy.film.reactionHeading}</p>
               <figure className={styles.filmVideo}>
-                <VideoBox variant="9x16" src={MEDIA.reaction.src} poster={MEDIA.reaction.poster} labels={dict.video} preload="none" />
+                <VideoBox variant="9x16" src={MEDIA.reaction.src} poster={MEDIA.reaction.poster} labels={dict.video} />
                 <figcaption>{copy.film.reactionCaption}</figcaption>
               </figure>
             </Reveal>

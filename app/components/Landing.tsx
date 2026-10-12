@@ -14,6 +14,7 @@ import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
 import LangSwitch from "./LangSwitch";
 import VideoBox from "./VideoBox";
+import { POSTER_WIDTH, videoPoster } from "./videoPoster";
 import WhatsAppFloat from "./WhatsAppFloat";
 import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import { getDictionary } from "../content/dictionaries";
@@ -149,7 +150,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
             </span>
             <VideoBox
               src="/video/hero.mp4"
-              poster="/video/hero-poster.jpg"
+              poster={videoPoster("/video/hero-poster.jpg", POSTER_WIDTH.hero)}
               variant="wide"
               labels={dict.video}
             />
@@ -189,7 +190,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
                 <VideoBox
                   variant={vertical ? "9x16" : "16x9"}
                   src={`/video/${slug}.mp4`}
-                  poster={`/video/${slug}-poster.jpg`}
+                  poster={videoPoster(`/video/${slug}-poster.jpg`, vertical ? POSTER_WIDTH.vertical : POSTER_WIDTH.wide)}
                   labels={dict.video}
                 />
                 {/* Для цієї роботи є окрема сторінка-кейс (російської версії немає). */}
@@ -221,7 +222,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
                 <VideoBox
                   variant="9x16"
                   src={r.src}
-                  poster={r.poster}
+                  poster={r.poster && videoPoster(r.poster, POSTER_WIDTH.vertical)}
                   labels={dict.video}
                 />
                 <figcaption className="script">{r.caption}</figcaption>
