@@ -24,11 +24,7 @@ import { getDictionary } from "../content/dictionaries";
 import { langPath, type Lang } from "../content/lang";
 import { buildFaq } from "../faq";
 import Link from "next/link";
-import {
-  PHOTO_VIDEO_PATH,
-  PHOTO_VIDEO_WORK,
-  photoVideoContent,
-} from "../content/ai-video-from-photos";
+import { PHOTO_VIDEO_PATH, photoVideoContent } from "../content/ai-video-from-photos";
 import { getVisitorLocation } from "../location";
 
 /* Роботи в портфоліо. Для кожної потрібні public/video/<slug>.mp4 і
@@ -40,15 +36,17 @@ const WORKS: { slug: string; vertical?: boolean }[] = [
   { slug: "work-example-one" },
   { slug: "work-example-two" },
   { slug: "work-example-three" },
-  { slug: "work-one-love", vertical: true },
   { slug: "work-example-four" },
   { slug: "work-love-story" },
   { slug: "work-example-five" },
+  { slug: "work-one-love", vertical: true },
+  { slug: "work-long-distance", vertical: true },
   { slug: "work-example-six" },
   { slug: "work-how-we-met" },
-  { slug: "work-long-distance", vertical: true },
   { slug: "work-for-my-beloved" },
   { slug: "work-birthday-surprise" },
+  { slug: "work-everyday-together" },
+  { slug: "work-anniversary" },
 ];
 
 /* Медіа для секцій. Текст (підписи, кроки, підписи цифр) — у content/dictionary. */
@@ -220,15 +218,21 @@ export default async function Landing({ lang }: { lang: Lang }) {
                   poster={videoPoster(`/video/${slug}-poster.jpg`, vertical ? POSTER_WIDTH.vertical : POSTER_WIDTH.wide)}
                   labels={dict.video}
                 />
-                {/* Для цієї роботи є окрема сторінка-кейс (російської версії немає). */}
-                {slug === PHOTO_VIDEO_WORK && lang !== "ru" && (
-                  <Link href={langPath(PHOTO_VIDEO_PATH, lang)} className="works__case">
-                    {photoVideoContent[lang].caseLink}
-                  </Link>
-                )}
               </Reveal>
             ))}
           </div>
+
+          {/* Посилання на сторінку-кейс — завжди під усією сіткою, а не під
+              однією карткою: у кладці картка може опинитися будь-де, а цей
+              рядок має читатися як підсумок секції. Російської версії кейсу
+              немає. */}
+          {lang !== "ru" && (
+            <Reveal className="works__case-row">
+              <Link href={langPath(PHOTO_VIDEO_PATH, lang)} className="works__case">
+                {photoVideoContent[lang].caseLink}
+              </Link>
+            </Reveal>
+          )}
         </div>
       </section>
 

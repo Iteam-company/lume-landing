@@ -394,9 +394,10 @@ section[id],header[id]{scroll-margin-top:76px}
 .works__head{text-align:center;margin-bottom:56px}
 .heart-doodle{width:190px;height:78px;color:var(--cream);opacity:.9;margin-bottom:6px}
 .works__head .h2{margin-bottom:0}
-/* посилання під роботою, для якої є сторінка-кейс */
+/* посилання на сторінку-кейс: окремий рядок під усією сіткою */
+.works__case-row{display:flex;justify-content:center;margin-top:34px}
 .works__case{
-  display:inline-block;margin-top:12px;font-size:15px;font-weight:600;color:var(--cream);
+  display:inline-block;font-size:16px;font-weight:600;color:var(--cream);
   text-decoration:none;border-bottom:1.5px solid rgba(246,241,233,.4);padding-bottom:2px;
   transition:border-color .25s;
 }
