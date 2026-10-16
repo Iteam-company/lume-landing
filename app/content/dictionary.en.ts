@@ -65,10 +65,11 @@ const privacy: LegalDoc = {
     {
       heading: "1. What data we collect",
       blocks: [
-        { kind: "p", text: "1.1. Data the User provides voluntarily when contacting us in a messenger: name, Telegram or WhatsApp contact, and the content of the correspondence. There is no data collection form on the Site." },
+        { kind: "p", text: "1.1. Data the User provides voluntarily when contacting us in a messenger: name, Telegram or WhatsApp contact, and the content of the correspondence. There is no contact collection form on the Site." },
         { kind: "p", text: "1.2. Data the User transfers to us during correspondence for the fulfillment of an order: photographs, texts, wishes regarding the storyline, and other materials." },
         { kind: "p", text: "1.3. Technical data collected automatically: IP address, browser and device type, operating system, referral source, the Site pages the User viewed, and their actions on them." },
         { kind: "p", text: "1.4. We do not collect special categories of data and do not ask for payment details through the Site’s forms." },
+        { kind: "p", text: "1.5. Photos the User uploads in the “See yourself as a cartoon” section to receive an automatically generated character image. They are processed solely to create one image at the User’s request." },
       ],
     },
     {
@@ -89,7 +90,7 @@ const privacy: LegalDoc = {
     {
       heading: "3. Legal grounds and consent",
       blocks: [
-        { kind: "p", text: "3.1. Processing is carried out on the basis of the User’s consent, given by filling in and submitting the form on the Site." },
+        { kind: "p", text: "3.1. Processing is carried out on the basis of the User’s consent, given by contacting us in a messenger and, for photos in the “See yourself as a cartoon” section, by uploading them." },
         { kind: "p", text: "3.2. Consent may be withdrawn at any time by contacting us using the contact details specified below. Withdrawal of consent does not affect the lawfulness of processing carried out before it." },
       ],
     },
@@ -98,6 +99,7 @@ const privacy: LegalDoc = {
       blocks: [
         { kind: "p", text: "4.1. Data is stored for as long as necessary to achieve the purposes of processing, and after the work on an order is completed — for the period established by law." },
         { kind: "p", text: "4.2. After this period expires, the data is deleted or anonymized." },
+        { kind: "p", text: "4.3. We do not store photos from the “See yourself as a cartoon” section: they are passed to the generation service provider and deleted on our side as soon as the result is produced. The finished image is shown to the User and is not stored on the Site." },
       ],
     },
     {
@@ -113,6 +115,8 @@ const privacy: LegalDoc = {
             "it concerns anonymized technical data transferred to advertising and analytics services, in particular Meta Platforms (see Section 6).",
           ],
         },
+        { kind: "p", text: "5.2. To run the “See yourself as a cartoon” section, uploaded photos are transferred to OpenAI, L.L.C. (USA), which provides the image generation service. The basis for the transfer is the User’s consent, given by uploading the photo. OpenAI processes them under its own privacy policy; under the API terms the User’s content is not used to train models, although the provider may retain it briefly for abuse monitoring." },
+        { kind: "p", text: "5.3. By uploading photos of other people, the User confirms that they have those people’s consent to such processing." },
       ],
     },
     {
@@ -167,7 +171,7 @@ const terms: LegalDoc = {
       heading: "2. Services and functionality of the Site",
       blocks: [
         { kind: "p", text: "2.1. The Site is intended to inform about the services of creating custom personal animated videos (cartoons), as well as for submitting requests and interacting with the Administration." },
-        { kind: "p", text: "2.2. A request left through the form on the Site is not a concluded contract. The scope of work, cost, and timeframes are agreed by the parties separately after the curator makes contact." },
+        { kind: "p", text: "2.2. Contacting us in a messenger is not a concluded contract. The scope of work, cost, and timeframes are agreed by the parties separately after the curator makes contact." },
         { kind: "p", text: "2.3. The list of the Site’s functions and capabilities may be changed by the Administration without prior notice." },
       ],
     },
@@ -292,7 +296,7 @@ const en: Dictionary = {
   },
 
   common: {
-    orderCta: "Order a cartoon",
+    orderCta: "Make an order",
     offer: {
       title: "A personal discount on your first order",
       note: "your curator will name it in the chat",
@@ -307,6 +311,7 @@ const en: Dictionary = {
     navCta: "Message us",
     nav: [
       { id: "pricing", label: "Pricing & quality" },
+      { id: "studio", label: "Try it" },
       { id: "works", label: "Our work" },
       { id: "reactions", label: "Reactions" },
       { id: "process", label: "How it works" },
@@ -397,6 +402,45 @@ const en: Dictionary = {
       soundOff: "Turn sound off",
     },
     tiers,
+  },
+
+  studio: {
+    eyebrow: "Free, no sign-up",
+    heading: "See yourself as a cartoon",
+    lead: "Upload a photo and in about a minute you will see the character drawn from you. One free try.",
+    dropTitle: "Drop a photo here",
+    dropHint: "Up to 3 photos · JPG, PNG or WEBP",
+    pick: "Choose photos",
+    clear: "Other photos",
+    peopleLabel: "How many people",
+    peopleMany: "3+",
+    formatLabel: "Format",
+    formats: { square: "Square", portrait: "Portrait" },
+    generate: "Create my character",
+    loading: [
+      "Looking at the faces…",
+      "Drawing the character…",
+      "Setting the light and colors…",
+      "Almost there…",
+    ],
+    resultTitle: "Your character",
+    resultNote: "This is an automatic sketch made in seconds. In a real cartoon an artist refines every character, so the likeness is far closer.",
+    download: "Save the image",
+    cta: "Order a cartoon",
+    usedNote: "One free generation per visitor. Want more — message us in the chat.",
+    privacy: "The photos are used only for this generation: we pass them to OpenAI and keep nothing on the site.",
+    errors: {
+      "no-key": "Generation is switched off right now. Message us and we will sketch it by hand.",
+      "no-photos": "Add a photo first.",
+      "too-many": "Three photos maximum.",
+      "bad-type": "JPG, PNG or WEBP work. iPhone HEIC photos need to be saved as JPG first.",
+      "too-large": "That photo is too large. Try another one.",
+      "visitor-limit": "Your free try is already used. Message us in the chat and we will make more.",
+      "ip-limit": "This device has already run a few generations today. Try tomorrow or message us.",
+      budget: "The free generation limit for this month is used up. Message us in the chat.",
+      upstream: "The generation failed. Please try again in a minute.",
+      timeout: "This is taking longer than usual. Please try again.",
+    },
   },
 
   audience: {
@@ -525,6 +569,18 @@ const en: Dictionary = {
     emailHint: "We’ll send the order details and the finished cartoon to this address",
     emailPlaceholder: "you@example.com",
     emailError: "Enter a valid email",
+    lead: {
+      placeholder: "+380 (00) 000-00-00",
+      submit: "Leave my number",
+      submitting: "Sending…",
+      success: "Done! A curator will call you. Opening the chat…",
+      hint: "Leave your number and we will call you back. Or message us right away.",
+      errors: {
+        phone: "Enter a valid phone number",
+        storage: "Could not send it. Try again or message us in a messenger.",
+        many: "Too many attempts. Try later or message us in a messenger.",
+      },
+    },
     contactHeading: "Tell us your story",
     contactProof: "1000+ cartoons · 1000+ clients · a reply in 15 minutes",
     contactLead: "Message us — a curator will reply within 15 minutes.",

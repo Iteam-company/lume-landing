@@ -1,4 +1,6 @@
 import Audience from "./Audience";
+// СЕКЦІЯ ТИМЧАСОВО ПРИХОВАНА
+// import CharacterStudio from "./CharacterStudio";
 import Counter from "./Counter";
 import Faq from "./Faq";
 import FilmEdge from "./FilmEdge";
@@ -13,6 +15,7 @@ import StructuredData from "./StructuredData";
 import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
 import LangSwitch from "./LangSwitch";
+import LeadForm from "./LeadForm";
 import VideoBox from "./VideoBox";
 import { POSTER_WIDTH, videoPoster } from "./videoPoster";
 import WhatsAppFloat from "./WhatsAppFloat";
@@ -58,6 +61,10 @@ const REACTION_MEDIA: { src?: string; poster?: string }[] = [
 
 const STEP_NUMS = ["01", "02", "03", "04"] as const;
 
+/** Розділи, яких зараз немає на сторінці: прибираємо їх і з меню, щоб
+ *  пункт не вів у порожнечу. */
+const HIDDEN_SECTIONS = ["studio"];
+
 /**
  * Лендинг. Мову задає маршрут ("/" — українська, "/en" — англійська),
  * валюту — країна відвідувача, тож обидві версії можуть показувати
@@ -91,7 +98,11 @@ export default async function Landing({ lang }: { lang: Lang }) {
     <>
       <StructuredData lang={lang} />
       <IconSprite />
-      <SiteNav items={dict.common.nav} cta={dict.common.navCta} lang={lang} />
+      <SiteNav
+        items={dict.common.nav.filter((item) => !HIDDEN_SECTIONS.includes(item.id))}
+        cta={dict.common.navCta}
+        lang={lang}
+      />
 
       {/* ============ HERO ============ */}
       <header className="hero" id="top">
@@ -140,6 +151,8 @@ export default async function Landing({ lang }: { lang: Lang }) {
                 {dict.common.orderCtaAlt}
               </ChatLink>
             </div>
+            {/* другий шлях: не писати, а лишити номер — тоді передзвонимо */}
+            <LeadForm copy={dict.form.lead} source="hero" className="hero__lead" />
           </Reveal>
 
           <Reveal className="hero__right" delay={1}>
@@ -160,6 +173,20 @@ export default async function Landing({ lang }: { lang: Lang }) {
 
       {/* ============ ТАРИФИ ============ */}
       <Pricing dict={dict} currency={currency} lang={lang} />
+
+      {/* ============ СТУДІЯ ПЕРСОНАЖІВ ============ */}
+      {/* СЕКЦІЯ ТИМЧАСОВО ПРИХОВАНА: повернути — розкоментувати блок нижче
+          і прибрати "studio" з HIDDEN_SECTIONS. Код, маршрут /api/character
+          і тексти лишаються на місці. */}
+      {/*
+      <section className="studio-sec" id="studio">
+        <div className="container">
+          <Reveal>
+            <CharacterStudio copy={dict.studio} />
+          </Reveal>
+        </div>
+      </section>
+      */}
 
       {/* ============ НАШІ РОБОТИ ============ */}
       <section className="works section--dark" id="works">

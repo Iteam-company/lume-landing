@@ -20,7 +20,7 @@
    ============================================================ */
 
 import "server-only";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import {
   fallbackVisitorLocation,
@@ -34,6 +34,11 @@ const GEO_HEADER = "x-vercel-ip-country";
 
 /** Dev-only заголовок для локальної підміни країни. */
 const DEV_OVERRIDE_HEADER = "x-vl-country";
+
+/** Те саме кукою — щоб країну можна було перемкнути прямо в браузері:
+ *  заголовок зі звичайної вкладки не надішлеш, а куку — одним рядком
+ *  у консолі. Працює під тією самою умовою, що й заголовок. */
+const DEV_OVERRIDE_COOKIE = "vl-country";
 
 /**
  * Чи дозволено читати dev-override у цьому середовищі.
@@ -52,7 +57,8 @@ function devOverrideEnabled(): boolean {
  * яку встановила edge-мережа Vercel.
  *
  * Пріоритет:
- *   1. dev-override — лише коли NODE_ENV !== "production" AND LOCATION_DEBUG=1;
+ *   1. dev-override (заголовок x-vl-country або кука vl-country) — лише
+ *      коли NODE_ENV !== "production" AND LOCATION_DEBUG=1;
  *   2. заголовок x-vercel-ip-country від Vercel;
  *   3. fallback → international / EUR.
  */
@@ -60,8 +66,13 @@ export async function getVisitorLocation(): Promise<VisitorLocation> {
   const headerList = await headers();
 
   if (devOverrideEnabled()) {
-    const override = normalizeCountry(headerList.get(DEV_OVERRIDE_HEADER));
-    if (override !== null) return toVisitorLocation(override, "dev-override");
+    const fromHeader = normalizeCountry(headerList.get(DEV_OVERRIDE_HEADER));
+    if (fromHeader !== null) return toVisitorLocation(fromHeader, "dev-override");
+
+    const fromCookie = normalizeCountry(
+      (await cookies()).get(DEV_OVERRIDE_COOKIE)?.value ?? null,
+    );
+    if (fromCookie !== null) return toVisitorLocation(fromCookie, "dev-override");
   }
 
   const country = normalizeCountry(headerList.get(GEO_HEADER));
