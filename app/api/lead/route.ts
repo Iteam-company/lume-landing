@@ -1,6 +1,18 @@
 import { cookies, headers } from "next/headers";
 import { appendLead, SHEET_CONFIGURED } from "../../../lib/sheet";
 import { dayKey, getCount, increment } from "../../../lib/generation-store";
+import { deliverToN8n } from "../../../lib/n8n";
+
+/** Час для повідомлення в групі: «пт, 16.10.2026, 18:42» за Києвом. */
+const kyivTime = new Intl.DateTimeFormat("uk-UA", {
+  timeZone: "Europe/Kyiv",
+  weekday: "short",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -70,24 +82,41 @@ export async function POST(request: Request) {
     userAgent: (headerList.get("user-agent") ?? "").slice(0, 300),
   };
 
-  /* Сховище необовʼязкове. Доки воно не налаштоване, заявки обробляє
-     бот у Telegram, куди людину веде наступний крок, тож відповідаємо
-     успіхом: показувати помилку там, де для відвідувача все гаразд, —
-     гірше, ніж не зберегти номер. Сам номер лишається в логах. */
-  if (!SHEET_CONFIGURED) {
-    console.info(`[lead] no storage configured · ${phone} · ${JSON.stringify(row)}`);
-    return Response.json({ ok: true, stored: false });
+  const now = new Date(row.createdAt);
+  const payload = {
+    event: "lume.lead.created" as const,
+    leadId: crypto.randomUUID(),
+    phone,
+    source: row.source,
+    page: row.page,
+    lang: row.lang,
+    country: row.country,
+    utm,
+    referrer: row.referrer,
+    device: /Mobi|Android|iPhone|iPad/i.test(row.userAgent) ? "mobile" : "desktop",
+    createdAt: row.createdAt,
+    createdAtKyiv: kyivTime.format(now),
+  };
+
+  /* Головний канал — n8n: бот пише номер у групу продажів. Таблиця —
+     необовʼязкова копія, її збій заявку не валить. */
+  const [delivery, sheet] = await Promise.all([
+    deliverToN8n(payload),
+    SHEET_CONFIGURED ? appendLead(row) : Promise.resolve(null),
+  ]);
+
+  if (sheet && !sheet.ok) {
+    console.error("[lead] sheet write failed:", sheet.reason);
   }
 
-  const delivery = await appendLead(row);
   if (!delivery.ok) {
     // Номер не губимо: лишається в логах, звідки його можна дістати.
-    console.error("[lead] sheet write failed:", delivery.reason, JSON.stringify(row));
-    return Response.json({ error: "storage", stored: false }, { status: 502 });
+    console.error("[lead] n8n delivery failed:", delivery.reason, JSON.stringify(row));
+    return Response.json({ error: "storage" }, { status: 502 });
   }
 
   console.info(`[lead] ok · ${phone} · ${row.source}`);
-  return Response.json({ ok: true, stored: true });
+  return Response.json({ ok: true });
 }
 
 /** Чи налаштована таблиця — щоб не показувати форму, яка нікуди не пише. */
