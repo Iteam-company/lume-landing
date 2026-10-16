@@ -19,6 +19,7 @@ import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 import PlanPreview, { type PreviewLabels } from "./PlanPreview";
 import ScrollToFormLink from "./ScrollToFormLink";
+import PayButton, { type PayCopy } from "./PayButton";
 
 type Labels = {
   perMinute: string;
@@ -29,6 +30,7 @@ type Labels = {
   songIncluded: string;
   order: string;
   preview: PreviewLabels;
+  pay: PayCopy;
 };
 
 export default function PlanCard({
@@ -144,11 +146,22 @@ export default function PlanCard({
         ))}
       </ul>
 
+      {/* Оплата карткою зʼявляється лише там, де справді працює:
+          гривневий ринок і налаштований WayForPay. */}
+      <PayButton
+        tier={tier.slug}
+        minutes={option.minutes}
+        song={song && !tier.songIncluded}
+        amount={total}
+        copy={labels.pay}
+        className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta plan__pay`}
+      />
+
       <ScrollToFormLink
         href={`?tier=${tier.slug}&minutes=${option.minutes}${
           song && !tier.songIncluded ? "&song=1" : ""
         }#form`}
-        className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
+        className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta plan__cta--secondary`}
         onClick={() =>
           trackPixel("ViewContent", {
             content_name: `${tier.name} · ${option.minutes} ${labels.minutesShort}`,

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { TELEGRAM_LINK } from "../config";
 import type { Dictionary } from "../content/dictionary";
 import { langPath, type Lang } from "../content/lang";
+import { OFFER_PATH } from "../content/offer";
 import { PHOTO_VIDEO_PATH, photoVideoContent } from "../content/ai-video-from-photos";
 import { INSTAGRAM_URL } from "../site";
 import { GUIDE_PATH, guideContent } from "../content/cartoon-guide";
@@ -28,6 +29,7 @@ export default function SiteFooter({
             </>
           )}
           <Link href={langPath("/terms", lang)}>{f.terms}</Link>
+          <Link href={langPath(OFFER_PATH, lang)}>{f.offer}</Link>
           <Link href={langPath("/privacy", lang)}>{f.privacy}</Link>
           <a href={TELEGRAM_LINK} target="_blank" rel="noopener">
             {f.support}

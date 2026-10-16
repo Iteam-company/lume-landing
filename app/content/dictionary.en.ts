@@ -288,6 +288,8 @@ const en: Dictionary = {
       "order a custom cartoon",
     ],
     category: "Gifts and personal animation",
+    offerTitle: "Public offer agreement",
+    offerDescription: "LUME public offer: terms of access to digital content and information services, payment, refunds and the provider\u2019s details. The binding text is in Ukrainian.",
     privacyTitle: "Privacy Policy",
     privacyDescription:
       "What data the LUME website collects, for what purpose it is processed, how it is stored, and to whom it is transferred.",
@@ -393,6 +395,14 @@ const en: Dictionary = {
     songAdd: "Add a custom song",
     songIncluded: "Custom song included",
     orderCard: "Order",
+    pay: {
+      pay: "Pay by card",
+      loading: "Opening payment…",
+      approved: "Payment received. A curator will write to you shortly.",
+      declined: "Payment declined. Try another card or message us in the chat.",
+      pending: "The payment is being processed — we will tell you once the bank confirms.",
+      error: "Could not open the payment. Try again or message us in the chat.",
+    },
     preview: {
       /* All three clips are the same scene, produced at each tier. */
       lead: "Each card shows the same scene, made at that tier’s quality.",
@@ -607,6 +617,7 @@ const en: Dictionary = {
   footer: {
     rights: "© LUME, 2026. All rights reserved.",
     terms: "Terms of Use",
+    offer: "Public offer (in Ukrainian)",
     privacy: "Privacy Policy",
     support: "Support",
     instagram: "Instagram",
@@ -628,6 +639,7 @@ const en: Dictionary = {
     contactName: "Legal name:",
     contactReg: "Registration number:",
     contactEmail: "E-mail:",
+    contactPhone: "Phone:",
     privacy,
     terms,
   },

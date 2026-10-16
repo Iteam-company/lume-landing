@@ -738,6 +738,14 @@ section[id],header[id]{scroll-margin-top:76px}
 .plan__list .star{margin-top:5px}
 .plan__list .star{width:13px;height:13px}
 .plan__cta{margin-top:auto;width:100%;padding:16px 24px;font-size:15px}
+/* коли є оплата карткою, кнопка-месенджер стає другорядною */
+.plan__pay{margin-bottom:10px}
+.plan__pay ~ .plan__cta--secondary{margin-top:0;background:transparent;color:var(--maroon-text);border:1.6px solid var(--maroon)}
+.plan--featured .plan__pay ~ .plan__cta--secondary{color:var(--cream);border-color:rgba(246,241,233,.6)}
+.plan__pay ~ .plan__cta--secondary:hover{background:rgba(102,27,43,.08)}
+.plan--featured .plan__pay ~ .plan__cta--secondary:hover{background:rgba(246,241,233,.12)}
+.plan__pay-note{margin:10px 0 0;font-size:13px;line-height:1.4;color:rgba(25,24,23,.72)}
+.plan--featured .plan__pay-note{color:rgba(246,241,233,.85)}
 .pricing__common{
   margin:34px 0 0;text-align:center;font-size:15px;font-weight:500;color:var(--maroon-text);
 }

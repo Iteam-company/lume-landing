@@ -14,6 +14,7 @@ const PAGES = [
   { path: GUIDE_PATH, changeFrequency: "monthly", priority: 0.7 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/offer", changeFrequency: "yearly", priority: 0.3 },
 ] as const;
 
 /** Українська версія — основна, переклади трохи нижче. */

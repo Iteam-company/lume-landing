@@ -4,6 +4,7 @@ import SiteFooter from "./SiteFooter";
 import type { Dictionary } from "../content/dictionary";
 import { langPath, type Lang } from "../content/lang";
 import type { LegalBlock, LegalDoc } from "../content/types";
+import { LEGAL_ENTITY } from "../legal-entity";
 
 /** Абзац з посиланням на «/privacy»: текст містить "{link}". */
 function LinkedParagraph({
@@ -52,10 +53,13 @@ export default function LegalShell({
   dict,
   doc,
   lang,
+  showContacts = true,
 }: {
   dict: Dictionary;
   doc: LegalDoc;
   lang: Lang;
+  /** У договорі оферти реквізити вже є окремим розділом — там блок зайвий. */
+  showContacts?: boolean;
 }) {
   const l = dict.legal;
   const homeHref = langPath("/", lang);
@@ -90,19 +94,21 @@ export default function LegalShell({
             </Fragment>
           ))}
 
-          <hr />
-          {/* ЗАПОВНІТЬ: назва юрособи / ФОП, реєстраційні дані та контактний e-mail */}
-          <h2>{l.contactHeading}</h2>
-          <p>
-            {l.contactName}{" "}
-            <span className="fill">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <br />
-            {l.contactReg}{" "}
-            <span className="fill">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <br />
-            {l.contactEmail}{" "}
-            <span className="fill">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          </p>
+          {showContacts ? (
+            <>
+              <hr />
+              <h2>{l.contactHeading}</h2>
+              <p>
+                {l.contactName} {LEGAL_ENTITY.name}
+                <br />
+                {l.contactReg} {LEGAL_ENTITY.registration}
+                <br />
+                {l.contactEmail} <a href={`mailto:${LEGAL_ENTITY.email}`}>{LEGAL_ENTITY.email}</a>
+                <br />
+                {l.contactPhone} <a href={`tel:${LEGAL_ENTITY.phone.replace(/[^+\d]/g, "")}`}>{LEGAL_ENTITY.phone}</a>
+              </p>
+            </>
+          ) : null}
         </div>
       </main>
       <SiteFooter dict={dict} lang={lang} />

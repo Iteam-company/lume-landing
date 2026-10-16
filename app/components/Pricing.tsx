@@ -45,6 +45,7 @@ export default function Pricing({
                   songIncluded: p.songIncluded,
                   order: p.orderCard,
                   preview: p.preview,
+                  pay: p.pay,
                 }}
               />
             </Reveal>
