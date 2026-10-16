@@ -70,15 +70,24 @@ export async function POST(request: Request) {
     userAgent: (headerList.get("user-agent") ?? "").slice(0, 300),
   };
 
+  /* Сховище необовʼязкове. Доки воно не налаштоване, заявки обробляє
+     бот у Telegram, куди людину веде наступний крок, тож відповідаємо
+     успіхом: показувати помилку там, де для відвідувача все гаразд, —
+     гірше, ніж не зберегти номер. Сам номер лишається в логах. */
+  if (!SHEET_CONFIGURED) {
+    console.info(`[lead] no storage configured · ${phone} · ${JSON.stringify(row)}`);
+    return Response.json({ ok: true, stored: false });
+  }
+
   const delivery = await appendLead(row);
   if (!delivery.ok) {
-    // Номер усе одно не губимо: лишається в логах, звідки його можна дістати.
+    // Номер не губимо: лишається в логах, звідки його можна дістати.
     console.error("[lead] sheet write failed:", delivery.reason, JSON.stringify(row));
     return Response.json({ error: "storage", stored: false }, { status: 502 });
   }
 
   console.info(`[lead] ok · ${phone} · ${row.source}`);
-  return Response.json({ ok: true });
+  return Response.json({ ok: true, stored: true });
 }
 
 /** Чи налаштована таблиця — щоб не показувати форму, яка нікуди не пише. */

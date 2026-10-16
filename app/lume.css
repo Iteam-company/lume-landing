@@ -168,24 +168,26 @@ section[id],header[id]{scroll-margin-top:76px}
   margin:0 0 34px;font-size:15px;font-weight:600;letter-spacing:.02em;
   color:var(--wine);opacity:.85;
 }
-.contact__actions{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:100%}
+.contact__actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;width:100%}
 
 /* Великі кнопки-месенджери: іконка в кружечку, помітний підйом на ховері.
    Обидві однакової ваги — це рівноцінні канали, а не головний і запасний. */
 .contact__actions .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:14px;
-  flex:1 1 300px;max-width:340px;margin:0;
-  min-height:72px;padding:20px 30px;
-  font-size:17px;font-weight:700;letter-spacing:.06em;
+  display:inline-flex;align-items:center;justify-content:center;gap:12px;
+  /* однакова основа + max-width: обидві кнопки виходять однакової ширини
+     незалежно від довжини напису */
+  flex:1 1 290px;max-width:320px;margin:0;
+  min-height:58px;padding:13px 22px;
+  font-size:16px;font-weight:700;letter-spacing:.04em;line-height:1.1;
   border-radius:999px;position:relative;isolation:isolate;
 }
 .contact__actions .btn svg{
-  width:24px;height:24px;fill:currentColor;flex:none;
+  width:20px;height:20px;fill:currentColor;flex:none;
   transition:transform .35s var(--ease);
 }
 /* кружечок під іконкою */
 .contact__actions .btn .icon-chip{
-  display:grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;width:34px;height:34px;border-radius:50%;
   background:rgba(246,241,233,.16);flex:none;
   transition:background .3s var(--ease);
 }
@@ -240,7 +242,7 @@ section[id],header[id]{scroll-margin-top:76px}
 @media (max-width:620px){
   .contact__actions{gap:14px}
   /* на 320px «НАПИСАТИ У WHATSAPP» в один рядок не влазить — дозволяємо перенос */
-  .contact__actions .btn{flex:1 1 100%;max-width:none;min-height:66px;font-size:16px;white-space:normal}
+  .contact__actions .btn{flex:1 1 100%;max-width:none;min-height:54px;font-size:15px;white-space:normal}
 }
 .btn--cta:hover{background:var(--wine-dark)}
 
