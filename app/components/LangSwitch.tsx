@@ -3,8 +3,8 @@
 import { usePathname } from "next/navigation";
 import {
   langPath,
-  PUBLIC_LANGS,
   splitLangPath,
+  SWITCHER_LANGS,
   type Lang,
 } from "../content/lang";
 import { rememberLang } from "../content/remember-lang";
@@ -13,6 +13,10 @@ const LABELS: Record<Lang, string> = { uk: "UA", en: "EN", ru: "RU" };
 
 /**
  * Перемикач мови.
+ *
+ * Показує лише SWITCHER_LANGS. Російську обрати не можна — але якщо
+ * людина вже на /ru (прийшла з пошуку), показуємо RU активною, щоб було
+ * видно, де вона, і можна було перейти на UA чи EN.
  *
  * Вибір записуємо в куку: після нього гео більше не перекидає людину
  * на іншу мову (логіка в proxy.ts).
@@ -33,9 +37,11 @@ export default function LangSwitch({ lang }: { lang: Lang }) {
     window.location.assign(langPath(path, next));
   }
 
+  const codes = SWITCHER_LANGS.includes(lang) ? SWITCHER_LANGS : [...SWITCHER_LANGS, lang];
+
   return (
     <span className="lang" role="group" aria-label="Language">
-      {PUBLIC_LANGS.map((code) => (
+      {codes.map((code) => (
         <button
           key={code}
           type="button"

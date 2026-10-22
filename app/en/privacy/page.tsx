@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "../../content/lang";
 import LegalShell from "../../components/LegalShell";
 import en from "../../content/dictionary.en";
 
@@ -7,11 +8,7 @@ export const metadata: Metadata = {
   description: en.meta.privacyDescription,
   alternates: {
     canonical: "/en/privacy",
-    languages: {
-      "uk-UA": "/privacy",
-      "en-US": "/en/privacy",
-      "x-default": "/privacy",
-    },
+    languages: languageAlternates("/privacy"),
   },
 };
 

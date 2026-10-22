@@ -13,6 +13,7 @@ import {
   LANG_HEADER,
   LANG_OG,
   langPath,
+  languageAlternates,
 } from "./content/lang";
 
 /* Типографіка за брендбуком:
@@ -63,15 +64,11 @@ export async function generateMetadata(): Promise<Metadata> {
   keywords: dict.meta.keywords,
   applicationName: BRAND,
   category: dict.meta.category,
-  // hreflang: обидві версії рівноправні, пошук сам покаже потрібну.
+  // hreflang: усі версії рівноправні, пошук сам покаже потрібну;
+  // кого не впізнали за мовою — на українську (x-default).
   alternates: {
     canonical: home,
-    languages: {
-      "uk-UA": "/",
-      "en-US": "/en",
-      // кого не впізнали за мовою — на українську версію
-      "x-default": "/",
-    },
+    languages: languageAlternates("/"),
   },
   openGraph: {
     type: "website",

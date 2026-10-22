@@ -5,11 +5,10 @@ import {
   PHOTO_VIDEO_PATH,
   photoVideoContent,
   photoVideoFaq,
-  type PhotoVideoLang,
 } from "../content/ai-video-from-photos";
 import { getDictionary } from "../content/dictionaries";
 import { formatPrice } from "../content/format";
-import { langPath } from "../content/lang";
+import { langPath, type Lang } from "../content/lang";
 import { getVisitorLocation } from "../location";
 import { bestPerMinute, TIERS } from "../pricing";
 import ChatLink from "./ChatLink";
@@ -70,7 +69,7 @@ const MEDIA = {
  * фільм — у портфоліо з 2026-10-05, реакція — разом із цією сторінкою.
  * Короткі кліпи-петлі в блоці «момент → сцена» не розмічаємо: це фрагменти.
  */
-const CASE_VIDEOS = (copy: (typeof photoVideoContent)[PhotoVideoLang]): PageVideo[] => [
+const CASE_VIDEOS = (copy: (typeof photoVideoContent)[Lang]): PageVideo[] => [
   {
     id: "film",
     ...copy.schema.film,
@@ -89,7 +88,7 @@ const CASE_VIDEOS = (copy: (typeof photoVideoContent)[PhotoVideoLang]): PageVide
   },
 ];
 
-export default async function PhotoVideoLanding({ lang }: { lang: PhotoVideoLang }) {
+export default async function PhotoVideoLanding({ lang }: { lang: Lang }) {
   const dict = getDictionary(lang);
   const copy = photoVideoContent[lang];
   const faq = photoVideoFaq(lang);

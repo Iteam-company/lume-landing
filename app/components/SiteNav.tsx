@@ -8,6 +8,12 @@ import type { Lang } from "../content/lang";
 
 export type NavItem = { id: string; label: string };
 
+const ARIA_LABEL: Record<Lang, string> = {
+  uk: "Розділи сайту",
+  en: "Site sections",
+  ru: "Разделы сайта",
+};
+
 /**
  * Панель навігації по секціях.
  *
@@ -60,7 +66,7 @@ export default function SiteNav({
   }, [items]);
 
   return (
-    <nav className={`nav${shown ? " is-shown" : ""}`} aria-label="Розділи сайту">
+    <nav className={`nav${shown ? " is-shown" : ""}`} aria-label={ARIA_LABEL[lang]}>
       <div className="container nav__inner">
         <a className="nav__logo" href="#top">
           LUME

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "../../content/lang";
 import LegalShell from "../../components/LegalShell";
 import en from "../../content/dictionary.en";
 
@@ -7,11 +8,7 @@ export const metadata: Metadata = {
   description: en.meta.termsDescription,
   alternates: {
     canonical: "/en/terms",
-    languages: {
-      "uk-UA": "/terms",
-      "en-US": "/en/terms",
-      "x-default": "/terms",
-    },
+    languages: languageAlternates("/terms"),
   },
 };
 

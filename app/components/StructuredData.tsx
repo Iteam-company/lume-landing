@@ -9,7 +9,7 @@ import {
 import { ORDER_EMAIL } from "../config";
 import { BRAND, LOGO_PATH, SAME_AS, SITE_URL } from "../site";
 import { getDictionary } from "../content/dictionaries";
-import { LANG_BCP47, langPath, type Lang } from "../content/lang";
+import { INDEXED_LANGS, LANG_BCP47, langPath, type Lang } from "../content/lang";
 import { formatMinutes, formatPrice } from "../content/format";
 
 /* ============================================================
@@ -121,14 +121,14 @@ export default function StructuredData({ lang, page }: { lang: Lang; page?: Page
       description: dict.audience.lead,
       slogan: dict.meta.tagline,
       areaServed: { "@type": "Country", name: sd.countryName },
-      knowsLanguage: ["uk", "en"],
+      knowsLanguage: INDEXED_LANGS,
       ...(ORDER_EMAIL
         ? {
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer service",
               email: ORDER_EMAIL,
-              availableLanguage: ["uk", "en"],
+              availableLanguage: INDEXED_LANGS,
             },
           }
         : {}),
@@ -139,7 +139,7 @@ export default function StructuredData({ lang, page }: { lang: Lang; page?: Page
       url: `${SITE_URL}/`,
       name: BRAND,
       description: dict.meta.description,
-      inLanguage: ["uk-UA", "en-US"],
+      inLanguage: INDEXED_LANGS.map((code) => LANG_BCP47[code]),
       publisher: { "@id": organizationId },
     },
     {

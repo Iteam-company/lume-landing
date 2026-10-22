@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
-import { GUIDE_PATH, guideContent, type GuideLang } from "../content/cartoon-guide";
+import { GUIDE_PATH, guideContent } from "../content/cartoon-guide";
 import { PHOTO_VIDEO_PATH } from "../content/ai-video-from-photos";
 import { getDictionary } from "../content/dictionaries";
 import { formatPrice } from "../content/format";
-import { langPath } from "../content/lang";
+import { langPath, type Lang } from "../content/lang";
 import { getVisitorLocation } from "../location";
 import { bestPerMinute, TIERS } from "../pricing";
 import ChatLink from "./ChatLink";
@@ -27,7 +27,7 @@ const HERO_IMAGE = { src: "/video/pipeline-page/og-case.jpg", w: 1200, h: 630 };
  * Гайд «Як зробити мультфільм з фото»: пряма відповідь на запит,
  * два способи, порівняння й посилання на реальний кейс.
  */
-export default async function GuidePage({ lang }: { lang: GuideLang }) {
+export default async function GuidePage({ lang }: { lang: Lang }) {
   const dict = getDictionary(lang);
   const copy = guideContent[lang];
   const { currency } = await getVisitorLocation();

@@ -3,7 +3,7 @@
    що сторінки оновилися, — замість чекати наступного обходу.
 
    Запускати ПІСЛЯ деплою (файл-ключ має бути вже доступний на сайті):
-     npm run indexnow                      — головні сторінки, кейс і гайд
+     npm run indexnow                      — головні сторінки, кейс і гайд (усі мови)
      npm run indexnow -- /privacy /en      — лише вказані шляхи
 
    Ключ лежить у public/indexnow.txt і віддається за адресою
@@ -22,6 +22,9 @@ const DEFAULT_PATHS = [
   "/en/ai-video-from-photos",
   "/how-to-make-a-cartoon-from-photos",
   "/en/how-to-make-a-cartoon-from-photos",
+  "/ru",
+  "/ru/ai-video-from-photos",
+  "/ru/how-to-make-a-cartoon-from-photos",
 ];
 const paths = process.argv.slice(2).length ? process.argv.slice(2) : DEFAULT_PATHS;
 

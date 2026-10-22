@@ -224,15 +224,12 @@ export default async function Landing({ lang }: { lang: Lang }) {
 
           {/* Посилання на сторінку-кейс — завжди під усією сіткою, а не під
               однією карткою: у кладці картка може опинитися будь-де, а цей
-              рядок має читатися як підсумок секції. Російської версії кейсу
-              немає. */}
-          {lang !== "ru" && (
-            <Reveal className="works__case-row">
-              <Link href={langPath(PHOTO_VIDEO_PATH, lang)} className="works__case">
-                {photoVideoContent[lang].caseLink}
-              </Link>
-            </Reveal>
-          )}
+              рядок має читатися як підсумок секції. */}
+          <Reveal className="works__case-row">
+            <Link href={langPath(PHOTO_VIDEO_PATH, lang)} className="works__case">
+              {photoVideoContent[lang].caseLink}
+            </Link>
+          </Reveal>
         </div>
       </section>
 

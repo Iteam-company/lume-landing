@@ -2,17 +2,14 @@ import type { Metadata } from "next";
 import Landing from "../components/Landing";
 import en from "../content/dictionary.en";
 import { BRAND } from "../site";
+import { languageAlternates } from "../content/lang";
 
 export const metadata: Metadata = {
   // шаблон layout додає "— LUME", а в заголовку бренд уже є
   title: { absolute: en.meta.title },
   description: en.meta.description,
   keywords: en.meta.keywords,
-  alternates: { canonical: "/en", languages: {
-      "uk-UA": "/",
-      "en-US": "/en",
-      "x-default": "/",
-    } },
+  alternates: { canonical: "/en", languages: languageAlternates("/") },
   openGraph: {
     // openGraph замінює весь об'єкт layout, тому прев'ю задаємо явно.
     type: "website",

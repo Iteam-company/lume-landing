@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "./site";
-import { LANG_BCP47, langPath, PUBLIC_LANGS } from "./content/lang";
+import { INDEXED_LANGS, langPath, languageAlternates } from "./content/lang";
 import { PHOTO_VIDEO_PATH } from "./content/ai-video-from-photos";
 import { GUIDE_PATH } from "./content/cartoon-guide";
 
-/* Публічні мови: українська в корені, англійська під /en. Кожна адреса
-   посилається на свого двійника через hreflang. Прихованих мов
-   (див. PUBLIC_LANGS) у карті немає. */
+/* Мови для пошуку (INDEXED_LANGS): українська в корені, англійська під
+   /en, російська під /ru. Кожна адреса посилається на своїх двійників
+   через hreflang. */
 
 const PAGES = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
@@ -23,11 +23,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
   return PAGES.flatMap(({ path, changeFrequency, priority }) => {
-    const languages = Object.fromEntries(
-      PUBLIC_LANGS.map((lang) => [LANG_BCP47[lang], `${SITE_URL}${langPath(path, lang)}`]),
-    );
+    const languages = languageAlternates(path, SITE_URL);
 
-    return PUBLIC_LANGS.map((lang) => ({
+    return INDEXED_LANGS.map((lang) => ({
       url: `${SITE_URL}${langPath(path, lang)}`,
       lastModified,
       changeFrequency,

@@ -4,9 +4,10 @@
    Українська живе в корені ("/"), англійська — під "/en",
    російська — під "/ru".
 
-   За країною вибираємо лише між українською та англійською:
-   російську відвідувач вмикає сам перемикачем, автоматично на неї
-   не переводимо нікого.
+   За країною вибираємо лише між українською та англійською.
+   Російська — для пошуку: її індексують і показують у видачі на
+   російськомовні запити, але в перемикачі її немає і автоматично
+   на неї не переводимо нікого.
    Мова НЕ звʼязана з валютою: валюту й далі визначає Location
    Observer за країною (UA → UAH, решта → EUR), тож киянин може
    читати сайт англійською й бачити гривні.
@@ -20,19 +21,13 @@ export type Lang = (typeof LANGS)[number];
 export const DEFAULT_LANG: Lang = "uk";
 
 /**
- * Мови, які показуємо публічно: перемикач, hreflang, карта сайту.
- *
- * Російська сторінка лишається робочою за прямим посиланням /ru (щоб не
- * ламати вже надіслані лінки й куки тих, хто її колись обрав), але її
- * немає ні в перемикачі, ні в індексі пошуку. Щоб повернути — додати
- * "ru" сюди.
+ * Мови в перемикачі. Російської тут немає навмисно: обрати її в
+ * інтерфейсі не можна, на /ru приходять лише з пошуку або за посиланням.
  */
-export const PUBLIC_LANGS: readonly Lang[] = ["uk", "en"];
+export const SWITCHER_LANGS: readonly Lang[] = ["uk", "en"];
 
-/** Чи показуємо цю мову публічно. */
-export function isPublicLang(lang: Lang): boolean {
-  return PUBLIC_LANGS.includes(lang);
-}
+/** Мови, які віддаємо пошуку: карта сайту, hreflang, індексація. */
+export const INDEXED_LANGS: readonly Lang[] = ["uk", "en", "ru"];
 
 /** Куди проксі кладе визначену мову для layout. */
 export const LANG_HEADER = "x-lume-lang";
@@ -49,6 +44,13 @@ export const LANG_BCP47: Record<Lang, string> = {
   en: "en-US",
   ru: "ru-RU",
 };
+/**
+ * Код для hreflang. Російська — без регіону: ця версія для всіх, хто
+ * шукає російською (в Україні й за кордоном), а не для ринку Росії.
+ * LANG_BCP47 лишаємо "ru-RU" — під нього форматуються числа ("2 800 ₴").
+ */
+const HREFLANG = { uk: "uk-UA", en: "en-US", ru: "ru" } as const satisfies Record<Lang, string>;
+
 export const LANG_OG: Record<Lang, string> = {
   uk: "uk_UA",
   en: "en_US",
@@ -78,4 +80,14 @@ export function splitLangPath(pathname: string): { lang: Lang; path: string } {
 export function langPath(path: string, lang: Lang): string {
   const clean = path === "/" ? "" : path;
   return `${PREFIX[lang]}${clean}` || "/";
+}
+
+/**
+ * hreflang для сторінки: усі мови з INDEXED_LANGS плюс x-default на
+ * українську. Однаковий набір на кожній мовній версії — пошук вимагає,
+ * щоб посилання були взаємними. `base` — для абсолютних адрес у sitemap.
+ */
+export function languageAlternates(path: string, base = "") {
+  const entries = INDEXED_LANGS.map((lang) => [HREFLANG[lang], base + langPath(path, lang)]);
+  return Object.fromEntries([...entries, ["x-default", base + langPath(path, DEFAULT_LANG)]]);
 }

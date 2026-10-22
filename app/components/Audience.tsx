@@ -26,9 +26,7 @@ export default function Audience({ dict, lang }: { dict: Dictionary; lang: Lang 
             {a.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
-            {lang !== "ru" && (
-              <p><Link href={langPath(PHOTO_VIDEO_PATH, lang)}>{photoVideoContent[lang].homeLink}</Link></p>
-            )}
+            <p><Link href={langPath(PHOTO_VIDEO_PATH, lang)}>{photoVideoContent[lang].homeLink}</Link></p>
             <p>
               {citiesBefore}
               {cities}
