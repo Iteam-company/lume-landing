@@ -13,6 +13,7 @@ import { getVisitorLocation } from "../location";
 import { bestPerMinute, TIERS } from "../pricing";
 import ChatLink from "./ChatLink";
 import ContactCta from "./ContactCta";
+import OrderQuiz from "./OrderQuiz";
 import Faq from "./Faq";
 import FilmEdge from "./FilmEdge";
 import { IconSprite } from "./Icons";
@@ -347,12 +348,13 @@ export default async function PhotoVideoLanding({ lang }: { lang: Lang }) {
 
         <section className="formsec" id="form">
           <div className={`container container--form ${styles.contactContainer}`}>
-            <ContactCta dict={dict.form} lang={lang} />
+            <ContactCta dict={dict.form} orderLabel={dict.common.orderCta} lang={lang} />
           </div>
         </section>
       </main>
       <SiteFooter dict={dict} lang={lang} />
       <WhatsAppFloat labels={dict.floats} />
+      <OrderQuiz copy={dict.quiz} pricing={dict.pricing} currency={currency} lang={lang} />
     </>
   );
 }

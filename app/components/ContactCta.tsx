@@ -4,10 +4,18 @@ import type { Dictionary } from "../content/dictionary";
 import ChatLink from "./ChatLink";
 import { Icon } from "./Icons";
 import { DEFAULT_LANG, langPath, type Lang } from "../content/lang";
-import LeadForm from "./LeadForm";
+import OrderButton from "./OrderButton";
 
-/** Блок замість форми: замовлення оформлюється у месенджері. */
-export default function ContactCta({ dict, lang = DEFAULT_LANG }: { dict: Dictionary["form"]; lang?: Lang }) {
+/** Блок звʼязку: головна дія — анкета замовлення, поруч — прямо в месенджер. */
+export default function ContactCta({
+  dict,
+  orderLabel,
+  lang = DEFAULT_LANG,
+}: {
+  dict: Dictionary["form"];
+  orderLabel: string;
+  lang?: Lang;
+}) {
   return (
     <div className="contact">
       <h2 className="contact__title">{dict.contactHeading}</h2>
@@ -15,7 +23,7 @@ export default function ContactCta({ dict, lang = DEFAULT_LANG }: { dict: Dictio
 
       <p className="contact__proof">{dict.contactProof}</p>
 
-      <LeadForm copy={dict.lead} source="contact" className="contact__lead-form" />
+      <OrderButton className="btn btn--dark contact__order">{orderLabel}</OrderButton>
 
       <div className="contact__actions">
         <ChatLink href={TELEGRAM_LINK} channel="Telegram" className="btn btn--tg">

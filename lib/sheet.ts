@@ -17,7 +17,18 @@ export type LeadRow = {
   lang: string;
   page: string;
   country: string;
+  region: string;
+  city: string;
+  timeZone: string;
   source: string;
+  email: string;
+  messenger: string;
+  tier: string;
+  minutes: number | null;
+  song: boolean;
+  total: number | null;
+  currency: string;
+  offer: boolean;
   utm: Record<string, string>;
   fbp: string;
   fbc: string;

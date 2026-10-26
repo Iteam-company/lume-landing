@@ -5,8 +5,8 @@ import Counter from "./Counter";
 import Faq from "./Faq";
 import FilmEdge from "./FilmEdge";
 import { Icon, IconSprite } from "./Icons";
-import ChatLink from "./ChatLink";
 import ContactCta from "./ContactCta";
+import OrderQuiz from "./OrderQuiz";
 import OfferCountdown from "./OfferCountdown";
 import Pricing from "./Pricing";
 import Reveal from "./Reveal";
@@ -15,11 +15,10 @@ import StructuredData from "./StructuredData";
 import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
 import LangSwitch from "./LangSwitch";
-import LeadForm from "./LeadForm";
+import OrderButton from "./OrderButton";
 import VideoBox from "./VideoBox";
 import { POSTER_WIDTH, videoPoster } from "./videoPoster";
 import WhatsAppFloat from "./WhatsAppFloat";
-import { TELEGRAM_LINK, WHATSAPP_LINK } from "../config";
 import { getDictionary } from "../content/dictionaries";
 import { langPath, type Lang } from "../content/lang";
 import { buildFaq } from "../faq";
@@ -133,24 +132,8 @@ export default async function Landing({ lang }: { lang: Lang }) {
             </ul>
             <OfferCountdown labels={dict.common.offer} />
             <div className="hero__cta">
-              <ChatLink
-                href={TELEGRAM_LINK}
-                channel="Telegram"
-                className="btn btn--dark"
-              >
-                {dict.common.orderCta}
-              </ChatLink>
-              {/* Не всі користуються Telegram — даємо другий канал одразу. */}
-              <ChatLink
-                href={WHATSAPP_LINK}
-                channel="WhatsApp"
-                className="hero__cta-alt"
-              >
-                {dict.common.orderCtaAlt}
-              </ChatLink>
+              <OrderButton className="btn btn--dark">{dict.common.orderCta}</OrderButton>
             </div>
-            {/* другий шлях: не писати, а лишити номер — тоді передзвонимо */}
-            <LeadForm copy={dict.form.lead} source="hero" className="hero__lead" />
           </Reveal>
 
           <Reveal className="hero__right" delay={1}>
@@ -270,13 +253,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
               {dict.process.headingPrefix}
               <span className="script script--xl">{dict.process.headingAccent}</span>
             </h2>
-            <ChatLink
-              href={TELEGRAM_LINK}
-              channel="Telegram"
-              className="btn btn--light"
-            >
-              {dict.common.orderCta}
-            </ChatLink>
+            <OrderButton className="btn btn--light">{dict.common.orderCta}</OrderButton>
           </Reveal>
 
           <div className="process__track">
@@ -352,13 +329,14 @@ export default async function Landing({ lang }: { lang: Lang }) {
       <section className="formsec" id="form">
         <div className="container container--form">
           <Reveal>
-            <ContactCta dict={dict.form} lang={lang} />
+            <ContactCta dict={dict.form} orderLabel={dict.common.orderCta} lang={lang} />
           </Reveal>
         </div>
       </section>
 
       <SiteFooter dict={dict} lang={lang} />
       <WhatsAppFloat labels={dict.floats} />
+      <OrderQuiz copy={dict.quiz} pricing={dict.pricing} currency={currency} lang={lang} />
     </>
   );
 }

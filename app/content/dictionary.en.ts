@@ -298,9 +298,9 @@ const en: Dictionary = {
   common: {
     orderCta: "Make an order",
     offer: {
-      title: "A personal discount on your first order",
-      note: "your curator will name it in the chat",
-      until: "we’re holding it for you for 10 minutes",
+      title: "Order now — get the script as a gift",
+      note: "place your order in time",
+      until: "the offer lasts 10 minutes",
       // Countdown units — kept to one or two characters.
       days: "d",
       hours: "h",
@@ -602,6 +602,39 @@ const en: Dictionary = {
     okSentTitle: "Thank you! Your request has been sent.",
     okSentText: "A curator will get in touch with you within 15 minutes.",
     leadContentName: "Request form",
+  },
+
+  /* Order questionnaire: a multi-step modal. */
+  quiz: {
+    title: "Order a cartoon",
+    step: "Step {n} of {total}",
+    stepLabels: ["Plan", "Length", "Contacts", "Messenger"],
+    back: "Back",
+    next: "Next",
+    close: "Close",
+    tierTitle: "Choose a plan",
+    choose: "Choose",
+    fromPerMinute: "from {price} per minute",
+    minutesTitle: "How many minutes?",
+    minutesHint: "You can fine-tune the length with your curator later.",
+    contactsTitle: "How can we reach you?",
+    phoneLabel: "Phone",
+    phonePlaceholder: "+380 (00) 000-00-00",
+    phoneError: "Enter a valid phone number",
+    phoneNote: "This number should have Telegram or WhatsApp — that’s where your curator will message you.",
+    emailLabel: "E-mail",
+    emailOptional: "optional",
+    emailPlaceholder: "you@example.com",
+    emailError: "Check the e-mail or leave the field empty",
+    messengerTitle: "Where would you like to chat?",
+    messengerHint: "We’ll open a chat with your curator — your request will already be there.",
+    total: "Total",
+    doneTitle: "Request sent!",
+    doneText: "Your curator will message you within 15 minutes. If the chat didn’t open, ",
+    doneLink: "open it here",
+    errorStorage: "We couldn’t save the request. Message us in the chat — your curator will sort it out.",
+    errorMany: "Too many attempts. Message us in the chat — your curator will sort it out.",
+    chatText: "Hi! I’d like to order a cartoon: {summary}",
   },
 
   footer: {
