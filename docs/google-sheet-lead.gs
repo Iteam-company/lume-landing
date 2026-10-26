@@ -29,7 +29,20 @@ var HEADERS = [
   '_fbp',
   '_fbc',
   'Реферер',
-  'Браузер'
+  'Браузер',
+  // Нові колонки — в кінці, щоб старі рядки не зсунулися.
+  // У вже створеній таблиці допишіть ці заголовки в рядок 1 вручну.
+  'Регіон',
+  'Місто',
+  'Часовий пояс',
+  'E-mail',
+  'Месенджер',
+  'Тариф',
+  'Хвилини',
+  'Пісня',
+  'Сума',
+  'Валюта',
+  'Сценарій у подарунок'
 ];
 
 function doPost(e) {
@@ -64,7 +77,18 @@ function doPost(e) {
       data.fbp || '',
       data.fbc || '',
       data.referrer || '',
-      data.userAgent || ''
+      data.userAgent || '',
+      data.region || '',
+      data.city || '',
+      data.timeZone || '',
+      data.email || '',
+      data.messenger || '',
+      data.tier || '',
+      data.minutes || '',
+      data.tier ? (data.song ? 'так' : 'ні') : '',
+      data.total || '',
+      data.currency || '',
+      data.offer ? 'так' : ''
     ]);
 
     return ContentService

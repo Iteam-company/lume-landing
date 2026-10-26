@@ -276,25 +276,25 @@ section[id],header[id]{scroll-margin-top:76px}
 }
 /* ---------- пропозиція з відліком біля кнопки ---------- */
 .offer{
-  display:inline-grid;justify-items:start;gap:8px;margin:0 0 20px;
-  padding:14px 20px;border-radius:18px;
+  display:inline-grid;justify-items:start;justify-self:start;gap:12px;margin:0 0 28px;
+  padding:20px 24px;border-radius:22px;
   background:rgba(215,166,162,.22);border:1.4px solid rgba(215,166,162,.7);
 }
-.offer__title{margin:0;font-size:16px;font-weight:700;color:var(--wine);letter-spacing:.01em}
-.offer__clock{display:flex;gap:6px;align-items:center}
+.offer__title{margin:0;font-size:22px;font-weight:800;line-height:1.2;color:var(--wine);letter-spacing:.01em}
+.offer__clock{display:flex;gap:8px;align-items:center}
 .offer__unit{
-  display:grid;justify-items:center;gap:3px;min-width:86px;padding:12px 14px;
-  border-radius:14px;background:var(--wine);color:var(--ivory);
+  display:grid;justify-items:center;gap:6px;min-width:124px;padding:16px 18px 14px;
+  border-radius:18px;background:var(--wine);color:var(--ivory);
 }
 /* цифри — головне у блоці: вікно коротке, його має бути видно одразу */
-.offer__unit b{font-size:44px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.offer__unit i{font-size:11px;font-style:normal;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.offer__unit b{font-size:76px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.offer__unit i{font-size:13px;font-style:normal;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
 /* двокрапка стоїть на рівні цифр, а не підписів під ними */
 .offer__sep{
-  font-size:36px;font-weight:800;line-height:1;color:var(--wine);
-  padding-bottom:18px;
+  font-size:58px;font-weight:800;line-height:1;color:var(--wine);
+  padding-bottom:24px;
 }
-.offer__note{margin:0;font-size:13px;color:rgba(25,24,23,.7)}
+.offer__note{margin:0;font-size:15px;color:rgba(25,24,23,.7)}
 
 .hero__cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .hero__cta-alt{
@@ -956,9 +956,12 @@ section[id],header[id]{scroll-margin-top:76px}
 @media (max-width:620px){
   body{font-size:16px}
   .works__grid{columns:1}
-  .offer__unit{min-width:70px;padding:10px}
-  .offer__unit b{font-size:36px}
-  .offer__sep{font-size:30px;padding-bottom:16px}
+  .offer{display:grid;width:100%;padding:16px}
+  .offer__title{font-size:19px}
+  .offer__clock{width:100%;gap:6px}
+  .offer__unit{flex:1 1 0;min-width:0;padding:12px 6px 10px}
+  .offer__unit b{font-size:52px}
+  .offer__sep{font-size:40px;padding-bottom:18px}
   .container,.container--narrow,.container--form{width:min(100% - 32px,var(--wrap))}
   .btn{padding:18px 30px;font-size:15px;width:100%}
   .hero__title{font-size:30px}
@@ -982,4 +985,356 @@ section[id],header[id]{scroll-margin-top:76px}
   .floats{right:16px;bottom:16px;gap:10px}
   .film{height:30px;background-size:34px 30px;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='30'%3E%3Crect x='5' y='9' width='24' height='12' rx='4' fill='%23F3F0EA'/%3E%3C/svg%3E")}
+}
+
+
+/* ============================================================
+   Анкета замовлення (OrderQuiz)
+   ============================================================ */
+html:has(dialog[open]){overflow:hidden}
+.btn{font-family:inherit;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.contact__order{margin:0 auto 24px}
+
+.quiz,.langpick{
+  border:0;padding:0;background:transparent;color:var(--charcoal);
+  width:min(100% - 32px,680px);max-height:calc(100dvh - 32px);
+}
+/* Скидання стилів обнуляє margin у <dialog> — без цього вікно
+   прилипає до лівого верхнього кута. Центруємо явно. */
+.quiz,.langpick{position:fixed;inset:0;margin:auto;height:fit-content}
+
+/* Поява й зникнення: @starting-style задає стан до відкриття, а
+   allow-discrete дає браузеру дограти перехід перед display:none. */
+.quiz,.langpick{
+  opacity:0;transform:translateY(18px) scale(.97);
+  transition:
+    opacity .3s var(--ease),
+    transform .35s var(--ease),
+    overlay .35s allow-discrete,
+    display .35s allow-discrete;
+}
+.quiz[open],.langpick[open]{opacity:1;transform:none}
+@starting-style{
+  .quiz[open],.langpick[open]{opacity:0;transform:translateY(18px) scale(.97)}
+}
+.quiz::backdrop,.langpick::backdrop{
+  background:rgba(25,24,23,0);backdrop-filter:blur(0);
+  transition:
+    background .35s var(--ease),
+    backdrop-filter .35s var(--ease),
+    overlay .35s allow-discrete,
+    display .35s allow-discrete;
+}
+.quiz[open]::backdrop,.langpick[open]::backdrop{background:rgba(25,24,23,.55);backdrop-filter:blur(3px)}
+@starting-style{
+  .quiz[open]::backdrop,.langpick[open]::backdrop{background:rgba(25,24,23,0);backdrop-filter:blur(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .quiz,.langpick,.quiz::backdrop,.langpick::backdrop{transition:none}
+}
+
+.quiz__card{
+  background:var(--ivory);border-radius:28px;overflow:hidden;
+  box-shadow:0 30px 80px rgba(25,24,23,.35);
+  display:flex;flex-direction:column;max-height:calc(100dvh - 32px);
+}
+.quiz__head{display:flex;align-items:center;gap:12px;padding:20px 20px 14px}
+.quiz__heading{flex:1;text-align:center}
+.quiz__title{margin:0;font-size:20px;font-weight:800;color:var(--wine);letter-spacing:.01em}
+.quiz__icon-btn,.quiz__icon-spacer{flex:none;width:40px;height:40px}
+.quiz__icon-btn{
+  display:grid;place-items:center;border:0;border-radius:50%;
+  background:rgba(102,27,43,.08);color:var(--wine);font-size:22px;line-height:1;
+  transition:background .2s;
+}
+.quiz__icon-btn:hover{background:rgba(102,27,43,.16)}
+/* ---------- степер ---------- */
+.quiz__steps{
+  --dot:34px;
+  position:relative;display:grid;grid-template-columns:repeat(4,1fr);
+  margin:4px 24px 0;padding-bottom:16px;border-bottom:1px solid rgba(102,27,43,.1);
+}
+/* лінія йде від центру першої крапки до центру останньої; винна частина
+   росте зі змінною --done (0…1) */
+.quiz__steps-line{
+  position:absolute;top:calc(var(--dot) / 2 - 1px);left:12.5%;right:12.5%;height:2px;
+  background:rgba(102,27,43,.14);border-radius:2px;
+}
+.quiz__steps-line::after{
+  content:"";position:absolute;inset:0;transform-origin:left;transform:scaleX(var(--done,0));
+  background:var(--wine);border-radius:2px;transition:transform .45s var(--ease);
+}
+.quiz__steps-item{
+  position:relative;z-index:1;display:grid;justify-items:center;gap:7px;
+  padding:0;border:0;background:none;color:rgba(25,24,23,.45);
+}
+.quiz__steps-item:disabled{cursor:default}
+.quiz__steps-dot{
+  display:grid;place-items:center;width:var(--dot);height:var(--dot);border-radius:50%;
+  font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;
+  background:var(--ivory);border:2px solid rgba(102,27,43,.2);color:rgba(102,27,43,.5);
+  transition:background .3s,border-color .3s,color .3s,transform .3s var(--ease),box-shadow .3s;
+}
+.quiz__steps-dot svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.quiz__steps-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:color .3s}
+
+.quiz__steps-item.is-current{color:var(--wine)}
+.quiz__steps-item.is-current .quiz__steps-dot{
+  background:var(--wine);border-color:var(--wine);color:var(--ivory);
+  box-shadow:0 0 0 5px rgba(102,27,43,.14);transform:scale(1.08);
+}
+.quiz__steps-item.is-done{color:var(--wine)}
+.quiz__steps-item.is-done .quiz__steps-dot{background:var(--rose);border-color:var(--rose);color:var(--wine)}
+.quiz__steps-item.is-done:hover .quiz__steps-dot{transform:scale(1.08);border-color:var(--wine)}
+.quiz__steps-item:focus-visible{outline:none}
+.quiz__steps-item:focus-visible .quiz__steps-dot{outline:3px solid var(--rose);outline-offset:3px}
+
+.quiz__body{padding:22px 24px 26px;overflow-y:auto}
+.quiz__q{margin:0 0 6px;font-size:24px;font-weight:800;line-height:1.2}
+.quiz__hint{margin:0 0 18px;font-size:14px;color:rgba(25,24,23,.65)}
+.quiz__hint a{color:var(--wine);font-weight:600}
+.quiz__error{display:block;margin:6px 0 0;font-size:13px;font-weight:600;color:var(--wine-dark)}
+
+/* ---------- крок 1: тарифи з роликами ---------- */
+.quiz--plans{width:min(100% - 32px,1040px)}
+.quiz--plans .quiz__body{padding-bottom:24px}
+.quiz--plans .quiz__q{margin-bottom:16px}
+
+.quiz__plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch;padding-top:10px}
+.quiz__plan{
+  position:relative;display:flex;flex-direction:column;padding:10px 10px 14px;
+  border:1.5px solid rgba(102,27,43,.12);border-radius:22px;
+  background:linear-gradient(180deg,#fff 0%,#FBF8F3 100%);
+  text-align:left;color:var(--charcoal);
+  box-shadow:0 10px 30px rgba(102,27,43,.07);
+  transition:transform .35s var(--ease),border-color .25s,box-shadow .35s var(--ease);
+}
+.quiz__plan:hover{transform:translateY(-5px);border-color:rgba(102,27,43,.35);box-shadow:0 22px 44px rgba(102,27,43,.16)}
+.quiz__plan.is-active{border-color:var(--wine);box-shadow:0 0 0 3px rgba(102,27,43,.16),0 22px 44px rgba(102,27,43,.16)}
+.quiz__plan:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+
+/* рекомендований тариф — винний, як у секції тарифів, і трохи вищий */
+.quiz__plan--featured{
+  background:radial-gradient(120% 70% at 50% 0%,#7A2336 0%,var(--wine) 45%,var(--wine-dark) 100%);
+  border-color:transparent;color:var(--ivory);
+  box-shadow:0 24px 50px rgba(102,27,43,.35);
+  transform:translateY(-8px);
+}
+.quiz__plan--featured:hover{transform:translateY(-12px);border-color:transparent;box-shadow:0 30px 60px rgba(102,27,43,.42)}
+.quiz__plan--featured.is-active{box-shadow:0 0 0 3px var(--gold),0 30px 60px rgba(102,27,43,.42)}
+
+/* превʼю: рамка 4:3 з легким затемненням по краях */
+.quiz__plan-media{
+  position:relative;display:block;aspect-ratio:4/3;overflow:hidden;
+  border-radius:14px;background:#33101B;
+}
+.quiz__plan-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.quiz__plan:hover .quiz__plan-media video{transform:scale(1.05)}
+.quiz__plan-media::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(25,24,23,.3),transparent 35%,transparent 70%,rgba(25,24,23,.3));
+}
+.quiz__plan-badge{position:absolute;top:10px;left:10px;z-index:1;background:var(--gold)!important;color:var(--charcoal)!important}
+
+.quiz__plan-info{display:grid;gap:2px;padding:14px 8px 0}
+.quiz__plan-name{font-size:15px;font-weight:800;letter-spacing:.18em;color:var(--wine)}
+/* слоган — акцентним шрифтом брендбуку */
+.quiz__plan-tagline{
+  font-family:var(--font-cormorant),Georgia,serif;font-style:italic;font-weight:700;
+  font-size:19px;line-height:1.15;color:rgba(25,24,23,.78);
+}
+.quiz__badge{
+  font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 11px;border-radius:999px;background:var(--wine);color:var(--ivory);
+}
+
+/* ціна — головне число картки */
+.quiz__price{display:grid;gap:2px;margin-top:10px}
+.quiz__price-was{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(25,24,23,.45)}
+.quiz__price-was b{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(102,27,43,.1);color:var(--wine)}
+.quiz__price-now{display:flex;align-items:baseline;gap:6px}
+.quiz__price-now strong{font-size:40px;font-weight:900;line-height:1;letter-spacing:-.02em;color:var(--wine);font-variant-numeric:tabular-nums}
+.quiz__price-now span{font-size:14px;font-weight:600;color:rgba(25,24,23,.6)}
+
+.quiz__features{
+  list-style:none;margin:14px 0 0;padding:12px 0 0;border-top:1px dashed rgba(102,27,43,.2);
+  display:grid;gap:6px;
+}
+.quiz__features li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.3;color:rgba(25,24,23,.75)}
+.quiz__features .star{width:10px;height:10px;flex:none;margin-top:3px;color:var(--wine)}
+.quiz__feature-accent{font-weight:700;color:var(--wine)!important}
+
+/* кнопка-підпис унизу: картки однакової висоти, кнопки на одній лінії */
+.quiz__plan-cta{
+  margin:16px 4px 0;margin-top:auto;padding:13px 18px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--wine);color:var(--ivory);
+  font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  transition:background .25s,gap .3s var(--ease);
+}
+.quiz__plan-info{margin-bottom:16px}
+.quiz__plan:hover .quiz__plan-cta{background:var(--wine-dark);gap:16px}
+.quiz__plan-arrow{transition:transform .3s var(--ease)}
+
+/* тексти на винному тлі */
+.quiz__plan--featured .quiz__plan-name{color:var(--gold)}
+.quiz__plan--featured .quiz__plan-tagline{color:var(--ivory)}
+.quiz__plan--featured .quiz__price-was{color:rgba(246,241,233,.6)}
+.quiz__plan--featured .quiz__price-was b{background:var(--gold);color:var(--charcoal)}
+.quiz__plan--featured .quiz__price-now strong{color:var(--ivory)}
+.quiz__plan--featured .quiz__price-now span{color:rgba(246,241,233,.7)}
+.quiz__plan--featured .quiz__features{border-top-color:rgba(246,241,233,.25)}
+.quiz__plan--featured .quiz__features li{color:rgba(246,241,233,.9)}
+.quiz__plan--featured .quiz__features .star{color:var(--gold)}
+.quiz__plan--featured .quiz__feature-accent{color:var(--gold)!important}
+.quiz__plan--featured .quiz__plan-cta{background:var(--ivory);color:var(--wine)}
+.quiz__plan--featured:hover .quiz__plan-cta{background:#fff}
+
+.quiz__tabs{display:none}
+
+/* Телефон: тарифи вкладками — одна картка на всю висоту шторки. Ролик
+   стискається першим, тож ціна, переваги й кнопка завжди вміщаються
+   без прокрутки. */
+@media (max-width:760px){
+  .quiz--plans .quiz__card{height:min(100dvh - 24px,860px)}
+  .quiz--plans .quiz__body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:12px 16px 16px}
+  .quiz--plans .quiz__q{display:none}
+
+  .quiz__tabs{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 0 12px;padding:4px;
+    border-radius:999px;background:rgba(102,27,43,.08);
+  }
+  .quiz__tab{
+    position:relative;padding:10px 4px;border:0;border-radius:999px;background:none;
+    font-size:12px;font-weight:800;letter-spacing:.1em;color:rgba(102,27,43,.6);
+    transition:background .25s,color .25s,box-shadow .25s;
+  }
+  .quiz__tab.is-active{background:#fff;color:var(--wine);box-shadow:0 4px 12px rgba(102,27,43,.14)}
+  .quiz__tab-dot{position:absolute;top:7px;right:10px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+  .quiz__plans{display:flex;flex:1;min-height:0;padding:0;gap:0}
+  .quiz__plan{display:none;flex:1;min-height:0;padding:8px 8px 12px}
+  .quiz__plan,.quiz__plan:hover,.quiz__plan--featured,.quiz__plan--featured:hover{transform:none}
+  .quiz__plan.is-tab{display:flex;animation:plan-in .35s var(--ease)}
+  .quiz__plan-media{flex:1 1 auto;min-height:110px;aspect-ratio:auto}
+  .quiz__plan-info{flex:none;padding:12px 6px 0;margin-bottom:12px}
+  .quiz__plan-name{font-size:13px}
+  .quiz__plan-tagline{font-size:16px}
+  .quiz__price{margin-top:6px}
+  .quiz__price-now strong{font-size:32px}
+  .quiz__features{margin-top:10px;padding-top:10px;gap:4px}
+  .quiz__features li{font-size:12px}
+  .quiz__plan-cta{flex:none;margin-top:0;padding:13px 16px}
+}
+@keyframes plan-in{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+
+.quiz__minutes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.quiz__minute{
+  display:grid;justify-items:center;gap:2px;padding:14px 4px 12px;border-radius:16px;
+  border:1.5px solid rgba(102,27,43,.18);background:#fff;transition:border-color .2s,background .2s,color .2s;
+}
+.quiz__minute b{font-size:28px;font-weight:800;line-height:1}
+.quiz__minute span{font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.quiz__minute small{font-size:12px;font-weight:600;margin-top:4px}
+.quiz__minute:hover{border-color:var(--wine)}
+.quiz__minute.is-active{background:var(--wine);border-color:var(--wine);color:var(--ivory)}
+
+.quiz__song{display:flex;align-items:center;gap:10px;margin:18px 0 0;font-size:14px;cursor:pointer}
+.quiz__song input{width:18px;height:18px;accent-color:var(--wine)}
+.quiz__song b{margin-left:auto}
+.quiz__song--included{cursor:default;font-weight:600;color:var(--wine)}
+.quiz__song .star{width:16px;height:16px;flex:none}
+
+.quiz__field{display:grid;gap:6px;margin-top:16px}
+.quiz__label{font-size:14px;font-weight:600}
+.quiz__input-wrap{position:relative;display:block}
+.quiz__input-wrap .lead__input{padding-left:52px}
+.quiz__input-icon{
+  position:absolute;left:20px;top:50%;width:20px;height:20px;transform:translateY(-50%);
+  fill:none;stroke:rgba(102,27,43,.55);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  pointer-events:none;transition:stroke .2s;
+}
+.quiz__input-wrap:focus-within .quiz__input-icon{stroke:var(--wine)}
+
+/* підказка про месенджер на номері — помітна, але не тривожна */
+.quiz__callout{
+  display:flex;align-items:center;gap:12px;margin-top:4px;padding:12px 14px;
+  border-radius:16px;background:rgba(215,166,162,.24);border:1px solid rgba(215,166,162,.65);
+  font-size:14px;font-weight:600;line-height:1.35;color:var(--wine-dark);
+}
+.quiz__callout-icons{display:flex;flex:none}
+.quiz__callout-icon{
+  display:grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  border:2px solid #FBF2EE;color:#fff;
+}
+.quiz__callout-icon + .quiz__callout-icon{margin-left:-9px}
+.quiz__callout-icon svg{width:15px;height:15px;fill:currentColor}
+.quiz__callout-icon--tg{background:#1C7FB3}
+.quiz__callout-icon--wa{background:#25D366}
+.quiz__label i{font-style:normal;font-weight:400;color:rgba(25,24,23,.55)}
+.quiz__field .lead__input{width:100%}
+
+.quiz__foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px}
+.quiz__total{font-size:14px;color:rgba(25,24,23,.75)}
+.quiz__total b{font-size:18px;color:var(--wine)}
+.quiz__next{padding:16px 34px;font-size:15px}
+
+.quiz__messengers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quiz__messengers .btn{gap:10px;padding:18px 20px;font-size:15px}
+.quiz__messengers .icon-chip{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2)}
+.quiz__messengers svg{width:16px;height:16px}
+.quiz__summary{margin:16px 0 0;text-align:center;font-size:14px;color:rgba(25,24,23,.65)}
+
+.quiz__done{display:grid;justify-items:center;text-align:center;gap:8px;padding:10px 0}
+.quiz__done .star{width:34px;height:34px;color:var(--wine)}
+
+@media (max-width:620px){
+  /* по центру екрана з рівними полями, а не прилиплим до низу */
+  .quiz,.langpick{width:calc(100% - 24px);max-width:none;margin:auto;max-height:calc(100dvh - 24px);transform:translateY(24px) scale(.98)}
+  .quiz--plans{width:calc(100% - 24px)}
+  .quiz[open],.langpick[open]{transform:none}
+  .quiz__card{border-radius:24px;max-height:calc(100dvh - 24px)}
+  .quiz__body{padding:18px 18px 24px}
+  .quiz__steps{--dot:28px;margin:0 18px}
+  .quiz__steps-label{font-size:10.5px;letter-spacing:.03em}
+  .quiz__steps-item:not(.is-current) .quiz__steps-label{opacity:0}
+  .quiz__q{font-size:21px}
+  .quiz__minute b{font-size:24px}
+  .quiz__messengers{grid-template-columns:1fr}
+  .quiz__foot .quiz__next{width:auto}
+}
+
+/* ============================================================
+   Вибір мови при першому візиті (LangModal)
+   ============================================================ */
+.langpick{width:min(100% - 32px,440px)}
+.langpick__card{
+  display:grid;justify-items:center;gap:16px;padding:32px 26px 28px;text-align:center;
+  background:var(--ivory);border-radius:28px;box-shadow:0 30px 80px rgba(25,24,23,.35);
+}
+.langpick__logo{font-family:var(--font-abhaya),serif;font-size:34px;color:var(--wine);letter-spacing:.08em}
+.langpick__title{margin:0;font-size:16px;font-weight:600;line-height:1.4;color:rgba(25,24,23,.75)}
+.langpick__list{display:grid;gap:10px;width:100%}
+.langpick__btn{
+  padding:16px;border-radius:999px;border:1.5px solid rgba(102,27,43,.25);background:#fff;
+  font-size:17px;font-weight:700;color:var(--wine);transition:background .2s,color .2s,border-color .2s;
+}
+.langpick__btn:hover{border-color:var(--wine)}
+.langpick__btn:focus-visible,.quiz__minute:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.langpick__btn.is-current{background:var(--wine);border-color:var(--wine);color:var(--ivory)}
+@media (max-width:620px){
+  .langpick__card{border-radius:24px}
+}
+
+/* Телефон: хронометраж — вертикальним списком, ціна праворуч */
+@media (max-width:620px){
+  .quiz__minutes{grid-template-columns:1fr;gap:8px}
+  .quiz__minute{
+    grid-template-columns:auto auto 1fr;align-items:baseline;justify-items:start;
+    gap:8px;padding:14px 18px;text-align:left;
+  }
+  .quiz__minute b{font-size:22px}
+  .quiz__minute span{font-size:13px}
+  .quiz__minute small{justify-self:end;margin:0;font-size:16px;font-weight:700}
 }

@@ -2,6 +2,8 @@ import { cookies, headers } from "next/headers";
 import { appendLead, SHEET_CONFIGURED } from "../../../lib/sheet";
 import { dayKey, getCount, increment } from "../../../lib/generation-store";
 import { deliverToN8n } from "../../../lib/n8n";
+import { getVisitorLocation } from "../../location";
+import { priceFor, songPrice, TIERS } from "../../pricing";
 
 /** Час для повідомлення в групі: «пт, 16.10.2026, 18:42» за Києвом. */
 const kyivTime = new Intl.DateTimeFormat("uk-UA", {
@@ -26,6 +28,99 @@ function normalizePhone(raw: string): string | null {
     : `+${digits}`;
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Vercel кодує місто в URL-форматі ("Kyiv", "S%C3%A3o%20Paulo"). */
+function geoHeader(list: Headers, name: string): string {
+  const raw = list.get(name) ?? "";
+  try {
+    return decodeURIComponent(raw).slice(0, 80);
+  } catch {
+    return raw.slice(0, 80);
+  }
+}
+
+/**
+ * Вибір з анкети. Довіряємо лише тому, що можна перевірити: тариф і
+ * хвилини мають існувати, а суму рахуємо самі за pricing.ts — у тій
+ * валюті, яку відвідувач бачив на сторінці.
+ */
+async function readOrder(body: Record<string, unknown>) {
+  const tier = TIERS.find((t) => t.slug === body.tier);
+  const minutes = typeof body.minutes === "number" ? body.minutes : NaN;
+  const { currency } = await getVisitorLocation();
+  const base = tier ? priceFor(tier, minutes, currency) : 0;
+  if (!tier || !base) return null;
+
+  const song = body.song === true && !tier.songIncluded;
+  return {
+    tier: tier.name,
+    minutes,
+    song: song || Boolean(tier.songIncluded),
+    total: base + (song ? songPrice(currency) : 0),
+    currency,
+  };
+}
+
+const MESSENGER_LABEL: Record<string, string> = { telegram: "Telegram", whatsapp: "WhatsApp" };
+
+/**
+ * Готовий текст для групи продажів у Telegram (HTML-розмітка бота).
+ * n8n шле його як є — шаблон у воркфлоу не треба правити під кожне нове
+ * поле: {{ $json.body.message }} з parse_mode = HTML.
+ */
+function leadMessage(p: {
+  phone: string;
+  email: string;
+  messenger: string;
+  tier: string;
+  minutes: number | null;
+  song: boolean;
+  total: number | null;
+  currency: string;
+  offer: boolean;
+  source: string;
+  country: string;
+  region: string;
+  city: string;
+  timeZone: string;
+  lang: string;
+  device: string;
+  utm: Record<string, string>;
+  createdAtKyiv: string;
+}): string {
+  const esc = (v: string) => v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const money =
+    p.total != null
+      ? new Intl.NumberFormat("uk-UA", { style: "currency", currency: p.currency, maximumFractionDigits: 0 }).format(p.total)
+      : "";
+  const place = [p.city, p.region, p.country].filter(Boolean).join(", ");
+  const ad = [p.utm.utm_source, p.utm.utm_campaign].filter(Boolean).join(" / ");
+
+  // null — поля немає (рядок пропускаємо), "" — навмисний порожній рядок-розділювач.
+  const lines: (string | null)[] = [
+    p.tier ? "🎬 <b>Нова заявка з анкети</b>" : "📞 <b>Нова заявка</b>",
+    "",
+    `📱 <b>${esc(p.phone)}</b>`,
+    p.messenger ? `💬 Пише в: <b>${MESSENGER_LABEL[p.messenger] ?? esc(p.messenger)}</b>` : null,
+    p.email ? `✉️ ${esc(p.email)}` : null,
+    p.tier ? "" : null,
+    p.tier ? `🎞 Тариф: <b>${esc(p.tier)}</b> · ${p.minutes} хв${p.song ? " · пісня ✓" : ""}` : null,
+    money ? `💰 Сума: <b>${money}</b>` : null,
+    p.offer ? "🎁 Встиг за таймером — <b>сценарій у подарунок</b>" : null,
+    "",
+    place ? `📍 ${esc(place)}${p.timeZone ? ` (${esc(p.timeZone)})` : ""}` : null,
+    `🌐 Мова: ${esc(p.lang || "—")} · ${p.device} · ${esc(p.source || "—")}`,
+    ad ? `📣 ${esc(ad)}` : null,
+    `🕒 ${p.createdAtKyiv}`,
+  ];
+  return lines
+    .filter((l): l is string => l !== null)
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 /** Скільки заявок приймаємо з однієї IP за добу — захист від спаму. */
 const LEADS_PER_IP_PER_DAY = 20;
 
@@ -39,6 +134,13 @@ export async function POST(request: Request) {
 
   const phone = normalizePhone(typeof body.phone === "string" ? body.phone : "");
   if (!phone) return Response.json({ error: "bad-phone" }, { status: 400 });
+
+  // E-mail необовʼязковий; кривий не валить заявку — просто не пишемо його.
+  const emailRaw = typeof body.email === "string" ? body.email.trim().slice(0, 200) : "";
+  const email = EMAIL_RE.test(emailRaw) ? emailRaw : "";
+  const messenger =
+    body.messenger === "telegram" || body.messenger === "whatsapp" ? body.messenger : "";
+  const order = await readOrder(body);
 
   const headerList = await headers();
   const ip =
@@ -73,7 +175,18 @@ export async function POST(request: Request) {
     lang: cookie("lume_lang") || String(body.lang ?? ""),
     page: String(body.page ?? "").slice(0, 300),
     country: headerList.get("x-vercel-ip-country") ?? "",
+    region: geoHeader(headerList, "x-vercel-ip-country-region"),
+    city: geoHeader(headerList, "x-vercel-ip-city"),
+    timeZone: String(body.timeZone ?? "").slice(0, 60),
     source: String(body.source ?? "").slice(0, 40),
+    email,
+    messenger,
+    tier: order?.tier ?? "",
+    minutes: order?.minutes ?? null,
+    song: order?.song ?? false,
+    total: order?.total ?? null,
+    currency: order?.currency ?? "",
+    offer: body.offer === true,
     utm,
     // Куки Meta: дають звʼязати заявку з рекламним кліком у звітах.
     fbp: cookie("_fbp"),
@@ -90,18 +203,32 @@ export async function POST(request: Request) {
     source: row.source,
     page: row.page,
     lang: row.lang,
+    // Локація: країна, регіон і місто — з гео Vercel, часовий пояс — з браузера.
     country: row.country,
+    region: row.region,
+    city: row.city,
+    timeZone: row.timeZone,
+    // Анкета (source: "quiz"); для інших джерел поля порожні.
+    email: row.email,
+    messenger: row.messenger,
+    tier: row.tier,
+    minutes: row.minutes,
+    song: row.song,
+    total: row.total,
+    currency: row.currency,
+    offer: row.offer,
     utm,
     referrer: row.referrer,
     device: /Mobi|Android|iPhone|iPad/i.test(row.userAgent) ? "mobile" : "desktop",
     createdAt: row.createdAt,
     createdAtKyiv: kyivTime.format(now),
   };
+  const message = leadMessage({ ...row, device: payload.device, createdAtKyiv: payload.createdAtKyiv });
 
   /* Головний канал — n8n: бот пише номер у групу продажів. Таблиця —
      необовʼязкова копія, її збій заявку не валить. */
   const [delivery, sheet] = await Promise.all([
-    deliverToN8n(payload),
+    deliverToN8n({ ...payload, message }),
     SHEET_CONFIGURED ? appendLead(row) : Promise.resolve(null),
   ]);
 

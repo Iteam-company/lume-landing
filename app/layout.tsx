@@ -4,6 +4,7 @@ import { Abhaya_Libre, Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import "./lume.css";
 import MetaPixel from "./components/MetaPixel";
+import LangModal from "./components/LangModal";
 import { headers } from "next/headers";
 import { BRAND, SITE_URL } from "./site";
 import { getDictionary } from "./content/dictionaries";
@@ -118,6 +119,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     >
       <body>
         {children}
+        <LangModal lang={lang} />
         <MetaPixel />
       </body>
     </html>

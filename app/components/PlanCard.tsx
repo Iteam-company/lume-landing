@@ -18,7 +18,7 @@ import type { TierCopy } from "../content/types";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
 import PlanPreview, { type PreviewLabels } from "./PlanPreview";
-import ScrollToFormLink from "./ScrollToFormLink";
+import OrderButton from "./OrderButton";
 
 type Labels = {
   perMinute: string;
@@ -144,10 +144,10 @@ export default function PlanCard({
         ))}
       </ul>
 
-      <ScrollToFormLink
-        href={`?tier=${tier.slug}&minutes=${option.minutes}${
-          song && !tier.songIncluded ? "&song=1" : ""
-        }#form`}
+      {/* Вибір із картки переходить в анкету: людина одразу потрапляє на
+          крок контактів, а назад до тарифу й хвилин може повернутися. */}
+      <OrderButton
+        prefill={{ tier: tier.slug, minutes: option.minutes, song: song && !tier.songIncluded }}
         className={`btn ${tier.featured ? "btn--light" : "btn--dark"} plan__cta`}
         onClick={() =>
           trackPixel("ViewContent", {
@@ -159,7 +159,7 @@ export default function PlanCard({
         }
       >
         {labels.order}
-      </ScrollToFormLink>
+      </OrderButton>
     </article>
   );
 }
