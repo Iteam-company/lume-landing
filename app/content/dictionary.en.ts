@@ -297,22 +297,12 @@ const en: Dictionary = {
 
   common: {
     orderCta: "Make an order",
-    offer: {
-      title: "Order now — get the script as a gift",
-      note: "place your order in time",
-      until: "the offer lasts 10 minutes",
-      // Countdown units — kept to one or two characters.
-      days: "d",
-      hours: "h",
-      minutes: "m",
-      seconds: "s",
-    },
     orderCtaAlt: "or on WhatsApp",
     navCta: "Message us",
     nav: [
       { id: "pricing", label: "Pricing & quality" },
       { id: "studio", label: "Try it" },
-      { id: "works", label: "Our work" },
+      { id: "themes", label: "Themes" },
       { id: "reactions", label: "Reactions" },
       { id: "process", label: "How it works" },
       { id: "audience", label: "Who it’s for" },
@@ -324,14 +314,44 @@ const en: Dictionary = {
     titleLines: ["Give someone you love", "a cartoon", "made from your story"],
     sub: "For couples, parents, kids, friends, and loved ones",
     bullets: [
-      "1000+ cartoons created",
       "Made in 1 day",
       "A personal curator",
     ],
   },
 
-  works: {
-    heading: "Our work",
+  /* Themes: tabs with work for different occasions. Videos live in Landing (THEMES). */
+  themes: {
+    heading: "A cartoon for any occasion",
+    lead: "Pick a theme to see examples. Every cartoon is made from scratch around your story.",
+    order: "I want one like this",
+    tabsAria: "Cartoon themes",
+    items: {
+      love: {
+        tag: "Love Story",
+        title: "Love stories",
+        text: "How you met, your first date, the proposal — your story as a cartoon.",
+      },
+      wedding: {
+        tag: "Wedding Story",
+        title: "Wedding stories",
+        text: "A cartoon for the wedding: play it for the guests or give it to the newlyweds.",
+      },
+      family: {
+        tag: "Family Story",
+        title: "Family stories",
+        text: "Your family’s story — a gift for parents or grandparents, or a way to announce a new arrival.",
+      },
+      birthday: {
+        tag: "Birthday Story",
+        title: "Greetings and gifts",
+        text: "A personal birthday greeting — for a best friend, a friend or the whole team.",
+      },
+      baby: {
+        tag: "Baby Story",
+        title: "Kids’ stories",
+        text: "A fairy tale where your child is the hero.",
+      },
+    },
   },
 
   reactions: {
@@ -387,9 +407,9 @@ const en: Dictionary = {
     noteCurrency: { UAH: "Prices are shown in hryvnia.", EUR: "Prices are shown in euro." },
     noteConfirm: "The curator will confirm the exact price after the brief.",
     perMinute: "per minute",
+    perMinuteShort: "min",
     minutesShort: "min",
     durationAria: "Length, {name} tier",
-    launchNote: "Launch price valid until {date}",
     songAdd: "Add a custom song",
     songIncluded: "Custom song included",
     orderCard: "Order",
@@ -489,9 +509,6 @@ const en: Dictionary = {
 
   faq: {
     heading: "FAQ:",
-    priceFrom: "from",
-    priceTo: "to",
-    priceFor: "for",
     perMinuteWord: "per minute",
     currencyNote: { UAH: "Prices are shown in hryvnia.", EUR: "Prices are shown in euro." },
     items: [
@@ -582,7 +599,6 @@ const en: Dictionary = {
       },
     },
     contactHeading: "Tell us your story",
-    contactProof: "1000+ cartoons · 1000+ clients · a reply in 15 minutes",
     contactLead: "Message us — a curator will reply within 15 minutes.",
     whatsappCta: "Message us on WhatsApp",
     telegramCta: "Message us on Telegram",

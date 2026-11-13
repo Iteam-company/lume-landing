@@ -3,9 +3,7 @@
 import { useState } from "react";
 import { POSTER_WIDTH, videoPoster } from "./videoPoster";
 import {
-  discount,
   finalPrice,
-  LAUNCH_UNTIL,
   optionsFor,
   perMinute,
   songPrice,
@@ -13,7 +11,7 @@ import {
 } from "../pricing";
 import type { Currency } from "../location/types";
 import type { Lang } from "../content/lang";
-import { formatDateYmd, formatMinutes, formatPrice } from "../content/format";
+import { formatMinutes, formatPrice } from "../content/format";
 import type { TierCopy } from "../content/types";
 import { trackPixel } from "../pixel";
 import { Icon } from "./Icons";
@@ -22,9 +20,9 @@ import OrderButton from "./OrderButton";
 
 type Labels = {
   perMinute: string;
+  perMinuteShort: string;
   minutesShort: string;
   durationAria: string;
-  launchNote: string;
   songAdd: string;
   songIncluded: string;
   order: string;
@@ -52,7 +50,6 @@ export default function PlanCard({
   // спрацьовує від тапу й «залипає», там превʼю вмикає сама прокрутка.
   const [hovered, setHovered] = useState(false);
   const option = options[index];
-  const off = discount(option);
 
   // У CINEMA пісня входить у тариф, тож доплати немає.
   const songCost = tier.songIncluded || !song ? 0 : songPrice(currency);
@@ -95,24 +92,15 @@ export default function PlanCard({
       </div>
 
       <div className="plan__price">
-        <span className="plan__now">{formatPrice(total, currency, lang)}</span>
-        {/* Стару ціну тримаємо одразу під новою: пара «було / стало»
-            має читатися з одного погляду. */}
-        {option.sale ? (
-          <span className="plan__was">
-            <s>{formatPrice(option.base, currency, lang)}</s>
-            {off ? <b className="plan__off">−{off}%</b> : null}
-          </span>
-        ) : null}
-        <span className="plan__per">
-          {formatPrice(perMinute(option), currency, lang)} {labels.perMinute} ·{" "}
-          {formatMinutes(option.minutes, lang)}
+        {/* Як у чаті з менеджером: ставка за хвилину і сума за обраний
+            хронометраж («2 хвилини = 5 600 ₴»). */}
+        <span className="plan__now">
+          {formatPrice(perMinute(option), currency, lang)}
+          <small>/ {labels.perMinuteShort}</small>
         </span>
-        {option.sale ? (
-          <span className="plan__launch">
-            {labels.launchNote.replace("{date}", formatDateYmd(LAUNCH_UNTIL, lang))}
-          </span>
-        ) : null}
+        <span className="plan__per">
+          {formatMinutes(option.minutes, lang)} = <b>{formatPrice(total, currency, lang)}</b>
+        </span>
       </div>
 
       {tier.songIncluded ? (

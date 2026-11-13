@@ -28,7 +28,6 @@ export type LeadRow = {
   song: boolean;
   total: number | null;
   currency: string;
-  offer: boolean;
   utm: Record<string, string>;
   fbp: string;
   fbc: string;

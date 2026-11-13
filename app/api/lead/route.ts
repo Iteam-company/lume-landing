@@ -2,7 +2,8 @@ import { cookies, headers } from "next/headers";
 import { appendLead, SHEET_CONFIGURED } from "../../../lib/sheet";
 import { dayKey, getCount, increment } from "../../../lib/generation-store";
 import { deliverToN8n } from "../../../lib/n8n";
-import { getVisitorLocation } from "../../location";
+import { getDisplayCurrency } from "../../location";
+import type { Currency } from "../../location/types";
 import { priceFor, songPrice, TIERS } from "../../pricing";
 
 /** Час для повідомлення в групі: «пт, 16.10.2026, 18:42» за Києвом. */
@@ -42,13 +43,17 @@ function geoHeader(list: Headers, name: string): string {
 
 /**
  * Вибір з анкети. Довіряємо лише тому, що можна перевірити: тариф і
- * хвилини мають існувати, а суму рахуємо самі за pricing.ts — у тій
- * валюті, яку відвідувач бачив на сторінці.
+ * хвилини мають існувати, а суму рахуємо самі за pricing.ts.
  */
 async function readOrder(body: Record<string, unknown>) {
   const tier = TIERS.find((t) => t.slug === body.tier);
   const minutes = typeof body.minutes === "number" ? body.minutes : NaN;
-  const { currency } = await getVisitorLocation();
+  // Валюта — та, що була на сторінці (її задає мова); суму все одно
+  // рахуємо самі за pricing.ts.
+  const currency: Currency =
+    body.currency === "UAH" || body.currency === "EUR"
+      ? body.currency
+      : getDisplayCurrency(String(body.lang ?? "").slice(0, 2));
   const base = tier ? priceFor(tier, minutes, currency) : 0;
   if (!tier || !base) return null;
 
@@ -78,7 +83,6 @@ function leadMessage(p: {
   song: boolean;
   total: number | null;
   currency: string;
-  offer: boolean;
   source: string;
   country: string;
   region: string;
@@ -107,7 +111,6 @@ function leadMessage(p: {
     p.tier ? "" : null,
     p.tier ? `🎞 Тариф: <b>${esc(p.tier)}</b> · ${p.minutes} хв${p.song ? " · пісня ✓" : ""}` : null,
     money ? `💰 Сума: <b>${money}</b>` : null,
-    p.offer ? "🎁 Встиг за таймером — <b>сценарій у подарунок</b>" : null,
     "",
     place ? `📍 ${esc(place)}${p.timeZone ? ` (${esc(p.timeZone)})` : ""}` : null,
     `🌐 Мова: ${esc(p.lang || "—")} · ${p.device} · ${esc(p.source || "—")}`,
@@ -186,7 +189,6 @@ export async function POST(request: Request) {
     song: order?.song ?? false,
     total: order?.total ?? null,
     currency: order?.currency ?? "",
-    offer: body.offer === true,
     utm,
     // Куки Meta: дають звʼязати заявку з рекламним кліком у звітах.
     fbp: cookie("_fbp"),
@@ -216,7 +218,6 @@ export async function POST(request: Request) {
     song: row.song,
     total: row.total,
     currency: row.currency,
-    offer: row.offer,
     utm,
     referrer: row.referrer,
     device: /Mobi|Android|iPhone|iPad/i.test(row.userAgent) ? "mobile" : "desktop",

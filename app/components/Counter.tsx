@@ -2,7 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/** Лічильник, який добігає до значення, коли блок зʼявляється на екрані. */
+/**
+ * Число з анімацією «добігання».
+ *
+ * Сервер віддає фінальне значення («1000+») прямо в HTML: його бачать
+ * пошуковики, превʼю посилань і всі, у кого JS вимкнений або ще не
+ * завантажився. Анімація — лише прикраса: якщо блок ще не на екрані,
+ * скидаємо число й даємо йому добігти, коли людина до нього доскролить.
+ */
 export default function Counter({
   to,
   suffix = "",
@@ -13,46 +20,43 @@ export default function Counter({
   duration?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [value, setValue] = useState(0);
-  const [done, setDone] = useState(false);
+  const [value, setValue] = useState(to);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Блок уже видно (відкрили сторінку посередині) — лишаємо фінальне число.
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) return;
 
+    let frame = 0;
     const io = new IntersectionObserver(
       (entries) => {
         if (!entries[0].isIntersecting) return;
         io.disconnect();
-
-        // за увімкненого «зменшити рух» показуємо підсумок без анімації
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          setValue(to);
-          setDone(true);
-          return;
-        }
-
         let start: number | null = null;
         const tick = (ts: number) => {
           if (start === null) start = ts;
           const p = Math.min((ts - start) / duration, 1);
           setValue(Math.round(to * (1 - Math.pow(1 - p, 3))));
-          if (p < 1) requestAnimationFrame(tick);
-          else setDone(true);
+          if (p < 1) frame = requestAnimationFrame(tick);
         };
-        requestAnimationFrame(tick);
+        frame = requestAnimationFrame(tick);
       },
-      { threshold: 0.6 }
+      { threshold: 0.6 },
     );
-
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, [to, duration]);
 
   return (
     <span ref={ref} className="num__val">
       {value}
-      {done ? suffix : ""}
+      {suffix}
     </span>
   );
 }

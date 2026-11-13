@@ -27,7 +27,7 @@ import {
   normalizeCountry,
   toVisitorLocation,
 } from "./markets";
-import type { VisitorLocation } from "./types";
+import type { Currency, VisitorLocation } from "./types";
 
 /** Країна відвідувача від edge-мережі Vercel (Preview + Production). */
 const GEO_HEADER = "x-vercel-ip-country";
@@ -94,4 +94,13 @@ export async function readGeoHeader(): Promise<{
 }> {
   const raw = (await headers()).get(GEO_HEADER);
   return { headerSeen: raw !== null, headerRaw: raw };
+}
+
+/**
+ * Валюта, в якій сторінка показує ціни: її задає мова сайту.
+ * Українська й російська версії — гривні (ті ж ціни, що менеджер
+ * називає в чаті), англійська — євро.
+ */
+export function getDisplayCurrency(lang: string): Currency {
+  return lang === "en" ? "EUR" : "UAH";
 }

@@ -21,8 +21,6 @@ export default function ContactCta({
       <h2 className="contact__title">{dict.contactHeading}</h2>
       <p className="contact__lead">{dict.contactLead}</p>
 
-      <p className="contact__proof">{dict.contactProof}</p>
-
       <OrderButton className="btn btn--dark contact__order">{orderLabel}</OrderButton>
 
       <div className="contact__actions">

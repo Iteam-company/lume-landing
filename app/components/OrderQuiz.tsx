@@ -8,7 +8,6 @@ import type { Lang } from "../content/lang";
 import type { Currency } from "../location/types";
 import { trackPixel } from "../pixel";
 import {
-  discount,
   optionsFor,
   priceFor,
   songPrice,
@@ -17,7 +16,6 @@ import {
 } from "../pricing";
 import { Icon } from "./Icons";
 import { POSTER_WIDTH, videoPoster } from "./videoPoster";
-import { offerActive } from "./OfferCountdown";
 import { ORDER_EVENT, type OrderPrefill } from "./order-events";
 
 type Channel = "telegram" | "whatsapp";
@@ -194,9 +192,9 @@ export default function OrderQuiz({
         email: email.trim(),
         tier: tier.slug,
         minutes,
+        currency,
         song: song && !tier.songIncluded,
         messenger: channel,
-        offer: offerActive(),
         timeZone: timeZone(),
         page: window.location.pathname,
         referrer: document.referrer,
@@ -401,7 +399,7 @@ export default function OrderQuiz({
                   >
                     <b>{o.minutes}</b>
                     <span>{pricing.minutesShort}</span>
-                    <small>{formatPrice(o.sale ?? o.base, currency, lang)}</small>
+                    <small>{formatPrice(o.price, currency, lang)}</small>
                   </button>
                 ))}
               </div>
@@ -557,10 +555,7 @@ export default function OrderQuiz({
   );
 }
 
-/**
- * Ставка тарифу за хвилину — крупно, як головне число картки. Над нею —
- * та сама пара «було / стало», що й у секції тарифів.
- */
+/** Ставка тарифу за хвилину — крупно, як головне число картки. */
 function TierPrice({
   tier,
   currency,
@@ -574,17 +569,10 @@ function TierPrice({
 }) {
   // Ставка однакова для будь-якого хронометражу — беремо одну хвилину.
   const one = optionsFor(tier, currency)[0];
-  const off = discount(one);
   return (
     <span className="quiz__price">
-      {one.sale ? (
-        <span className="quiz__price-was">
-          <s>{formatPrice(one.base, currency, lang)}</s>
-          {off ? <b>−{off}%</b> : null}
-        </span>
-      ) : null}
       <span className="quiz__price-now">
-        <strong>{formatPrice(one.sale ?? one.base, currency, lang)}</strong>
+        <strong>{formatPrice(one.price, currency, lang)}</strong>
         <span>/ {perMinute}</span>
       </span>
     </span>

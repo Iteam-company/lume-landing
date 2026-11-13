@@ -9,7 +9,7 @@ import {
 import { getDictionary } from "../content/dictionaries";
 import { formatPrice } from "../content/format";
 import { langPath, type Lang } from "../content/lang";
-import { getVisitorLocation } from "../location";
+import { getDisplayCurrency } from "../location";
 import { bestPerMinute, TIERS } from "../pricing";
 import ChatLink from "./ChatLink";
 import ContactCta from "./ContactCta";
@@ -93,7 +93,7 @@ export default async function PhotoVideoLanding({ lang }: { lang: Lang }) {
   const dict = getDictionary(lang);
   const copy = photoVideoContent[lang];
   const faq = photoVideoFaq(lang);
-  const { currency } = await getVisitorLocation();
+  const currency = getDisplayCurrency(lang);
   const priceFrom = formatPrice(Math.min(...TIERS.map((tier) => bestPerMinute(tier, currency))), currency, lang);
 
   return (

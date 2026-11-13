@@ -7,11 +7,11 @@ import FilmEdge from "./FilmEdge";
 import { Icon, IconSprite } from "./Icons";
 import ContactCta from "./ContactCta";
 import OrderQuiz from "./OrderQuiz";
-import OfferCountdown from "./OfferCountdown";
 import Pricing from "./Pricing";
 import Reveal from "./Reveal";
 import ScrollToFormLink from "./ScrollToFormLink";
 import StructuredData from "./StructuredData";
+import ThemeStories from "./ThemeStories";
 import SiteFooter from "./SiteFooter";
 import SiteNav from "./SiteNav";
 import LangSwitch from "./LangSwitch";
@@ -22,30 +22,43 @@ import WhatsAppFloat from "./WhatsAppFloat";
 import { getDictionary } from "../content/dictionaries";
 import { langPath, type Lang } from "../content/lang";
 import { buildFaq } from "../faq";
-import Link from "next/link";
 import { PHOTO_VIDEO_PATH, photoVideoContent } from "../content/ai-video-from-photos";
-import { getVisitorLocation } from "../location";
+import { getDisplayCurrency } from "../location";
 
-/* Роботи в портфоліо. Для кожної потрібні public/video/<slug>.mp4 і
-   public/video/<slug>-poster.jpg — постер показуємо до запуску.
-   vertical — мультфільм знято у форматі 9:16. */
-/* Порядок не випадковий: вертикальні роботи рознесені по списку, щоб у
-   кладці вони потрапили в різні колонки й низ сітки лишався рівним. */
-const WORKS: { slug: string; vertical?: boolean }[] = [
-  { slug: "work-example-one" },
-  { slug: "work-example-two" },
-  { slug: "work-example-three" },
-  { slug: "work-example-four" },
-  { slug: "work-love-story" },
-  { slug: "work-example-five" },
-  { slug: "work-one-love", vertical: true },
-  { slug: "work-long-distance", vertical: true },
-  { slug: "work-example-six" },
-  { slug: "work-how-we-met" },
-  { slug: "work-for-my-beloved" },
-  { slug: "work-birthday-surprise" },
-  { slug: "work-everyday-together" },
-  { slug: "work-anniversary" },
+/* Тематики (папки «Работы Люм» на Drive клієнта) — єдиний блок робіт на
+   сторінці. Для кожного ролика потрібні public/video/<slug>.mp4 і
+   <slug>-poster.jpg. vertical — ролик 9:16. Тема без роликів на сторінці не
+   показується. Порядок в «Історіях кохання» не випадковий: вертикальні
+   рознесені, щоб у кладці вони потрапили в різні колонки. */
+type ThemeId = "love" | "wedding" | "family" | "birthday" | "baby";
+const THEMES: { id: ThemeId; videos: { slug: string; vertical?: boolean }[] }[] = [
+  {
+    id: "love",
+    videos: [
+      { slug: "theme-love-since-2016" },
+      { slug: "theme-love-7-years" },
+      { slug: "theme-love-summits" },
+      { slug: "work-how-we-met" },
+      { slug: "theme-love-30-years" },
+      { slug: "work-anniversary" },
+      { slug: "theme-love-distance", vertical: true },
+      { slug: "theme-love-service-couple" },
+      { slug: "work-for-my-beloved" },
+      { slug: "theme-love-waiting-home" },
+      { slug: "work-love-story" },
+      { slug: "work-one-love", vertical: true },
+    ],
+  },
+  {
+    id: "wedding",
+    videos: [{ slug: "theme-wedding-part-1" }, { slug: "theme-wedding-part-2" }],
+  },
+  { id: "family", videos: [{ slug: "theme-family-little-one" }] },
+  {
+    id: "birthday",
+    videos: [{ slug: "theme-birthday-best-friends" }, { slug: "theme-birthday-game-hero" }],
+  },
+  { id: "baby", videos: [] },
 ];
 
 /* Медіа для секцій. Текст (підписи, кроки, підписи цифр) — у content/dictionary. */
@@ -58,6 +71,11 @@ const REACTION_MEDIA: { src?: string; poster?: string }[] = [
 
 const STEP_NUMS = ["01", "02", "03", "04"] as const;
 
+/** Блок «Цифри» на основній сторінці приховано, доки клієнт не підтвердить
+ *  реальні числа (ТЗ, пункти 4 і 9). На /demo він показаний — щоб клієнт
+ *  подивився й вирішив. Підтвердили — true (і можна прибрати /demo). */
+const SHOW_NUMBERS = false;
+
 /** Розділи, яких зараз немає на сторінці: прибираємо їх і з меню, щоб
  *  пункт не вів у порожнечу. */
 const HIDDEN_SECTIONS = ["studio"];
@@ -67,14 +85,12 @@ const HIDDEN_SECTIONS = ["studio"];
  * валюту — країна відвідувача, тож обидві версії можуть показувати
  * і гривні, і євро.
  */
-export default async function Landing({ lang }: { lang: Lang }) {
+export default async function Landing({ lang, demo = false }: { lang: Lang; demo?: boolean }) {
+  const showNumbers = SHOW_NUMBERS || demo;
   const dict = getDictionary(lang);
 
-  // Валюта — від Geo відвідувача (Location Observer): UA → UAH,
-  // решта країн і fallback → EUR. headers() усередині робить сторінку
-  // динамічною (SSR на кожен запит) — свідомий компроміс заради ціни
-  // без "флешу" валюти.
-  const { currency } = await getVisitorLocation();
+  // Валюту задає мова: UA і RU — гривні, EN — євро.
+  const currency = getDisplayCurrency(lang);
 
   const home = langPath("/", lang);
   const pricingHref = `${home}#pricing`;
@@ -96,7 +112,11 @@ export default async function Landing({ lang }: { lang: Lang }) {
       <StructuredData lang={lang} />
       <IconSprite />
       <SiteNav
-        items={dict.common.nav.filter((item) => !HIDDEN_SECTIONS.includes(item.id))}
+        items={dict.common.nav.filter(
+          (item) =>
+            !HIDDEN_SECTIONS.includes(item.id) &&
+            (item.id !== "themes" || THEMES.some((t) => t.videos.length > 0)),
+        )}
         cta={dict.common.navCta}
         lang={lang}
       />
@@ -130,7 +150,6 @@ export default async function Landing({ lang }: { lang: Lang }) {
                 </li>
               ))}
             </ul>
-            <OfferCountdown labels={dict.common.offer} />
             <div className="hero__cta">
               <OrderButton className="btn btn--dark">{dict.common.orderCta}</OrderButton>
             </div>
@@ -169,52 +188,28 @@ export default async function Landing({ lang }: { lang: Lang }) {
       </section>
       */}
 
-      {/* ============ НАШІ РОБОТИ ============ */}
-      <section className="works section--dark" id="works">
-        <FilmEdge side="top" />
-        <FilmEdge side="bottom" />
-        <div className="container">
-          <Reveal className="works__head">
-            <svg className="heart-doodle" viewBox="0 0 220 90" fill="none" aria-hidden="true">
-              <path
-                d="M62 46c-14 14-31 3-31-12C31 22 41 14 52 16c8 1.5 12 8 12 15 0 14-13 26-27 33 44 14 106 13 160-1"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M62 46c9-9 18-19 18-29 0-8-6-13-13-12"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-            </svg>
-            <h2 className="h2">{dict.works.heading}</h2>
-          </Reveal>
-
-          <div className="works__grid">
-            {WORKS.map(({ slug, vertical }, i) => (
-              <Reveal key={slug} delay={(i % 3) as 0 | 1 | 2}>
-                <VideoBox
-                  variant={vertical ? "9x16" : "16x9"}
-                  src={`/video/${slug}.mp4`}
-                  poster={videoPoster(`/video/${slug}-poster.jpg`, vertical ? POSTER_WIDTH.vertical : POSTER_WIDTH.wide)}
-                  labels={dict.video}
-                />
-              </Reveal>
-            ))}
-          </div>
-
-          {/* Посилання на сторінку-кейс — завжди під усією сіткою, а не під
-              однією карткою: у кладці картка може опинитися будь-де, а цей
-              рядок має читатися як підсумок секції. */}
-          <Reveal className="works__case-row">
-            <Link href={langPath(PHOTO_VIDEO_PATH, lang)} className="works__case">
-              {photoVideoContent[lang].caseLink}
-            </Link>
-          </Reveal>
-        </div>
-      </section>
+      {/* ============ ТЕМАТИКИ ============ */}
+      <ThemeStories
+        themes={THEMES.filter((t) => t.videos.length > 0).map((t) => ({
+          id: t.id,
+          ...dict.themes.items[t.id],
+          videos: t.videos.map(({ slug, vertical }) => ({
+            src: `/video/${slug}.mp4`,
+            poster: videoPoster(
+              `/video/${slug}-poster.jpg`,
+              vertical ? POSTER_WIDTH.vertical : POSTER_WIDTH.wide,
+            ),
+            vertical,
+          })),
+        }))}
+        heading={dict.themes.heading}
+        lead={dict.themes.lead}
+        order={dict.themes.order}
+        tabsAria={dict.themes.tabsAria}
+        videoLabels={dict.video}
+        // Посилання на сторінку-кейс раніше стояло під «Нашими роботами».
+        caseLink={{ href: langPath(PHOTO_VIDEO_PATH, lang), label: photoVideoContent[lang].caseLink }}
+      />
 
       {/* ============ РЕАКЦІЇ КЛІЄНТІВ ============ */}
       <section className="reactions" id="reactions">
@@ -289,6 +284,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
       </section>
 
       {/* ============ ЦИФРИ ============ */}
+      {showNumbers ? (
       <section className="numbers" id="numbers">
         <div className="container">
           <Reveal as="h2" className="h2 h2--dark">
@@ -309,6 +305,7 @@ export default async function Landing({ lang }: { lang: Lang }) {
           </div>
         </div>
       </section>
+      ) : null}
 
       {/* ============ КОМУ ПІДІЙДЕ ============ */}
       <Audience dict={dict} lang={lang} />

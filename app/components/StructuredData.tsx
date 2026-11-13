@@ -1,9 +1,7 @@
 import { buildFaq, type QA } from "../faq";
 import {
   allOptions,
-  discount,
   finalPrice,
-  LAUNCH_UNTIL,
   perMinute,
 } from "../pricing";
 import { ORDER_EMAIL } from "../config";
@@ -65,7 +63,6 @@ export default function StructuredData({ lang, page }: { lang: Lang; page?: Page
   const options = allOptions(STRUCTURED_DATA_CURRENCY);
 
   const offers = options.map(({ tier, option }) => {
-    const off = discount(option);
     const minutes = formatMinutes(option.minutes, lang);
     return {
       "@type": "Offer",
@@ -86,17 +83,6 @@ export default function StructuredData({ lang, page }: { lang: Lang; page?: Page
         unitCode: "MIN",
         unitText: sd.unitText,
       },
-      ...(option.sale ? { priceValidUntil: LAUNCH_UNTIL } : {}),
-      ...(option.sale && off
-        ? {
-            priceSpecification: {
-              "@type": "PriceSpecification",
-              price: String(option.base),
-              priceCurrency: STRUCTURED_DATA_CURRENCY,
-              valueAddedTaxIncluded: true,
-            },
-          }
-        : {}),
     };
   });
 
