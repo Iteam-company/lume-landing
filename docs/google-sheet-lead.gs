@@ -41,8 +41,7 @@ var HEADERS = [
   'Хвилини',
   'Пісня',
   'Сума',
-  'Валюта',
-  'Сценарій у подарунок'
+  'Валюта'
 ];
 
 function doPost(e) {
@@ -87,8 +86,7 @@ function doPost(e) {
       data.minutes || '',
       data.tier ? (data.song ? 'так' : 'ні') : '',
       data.total || '',
-      data.currency || '',
-      data.offer ? 'так' : ''
+      data.currency || ''
     ]);
 
     return ContentService

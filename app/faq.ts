@@ -7,10 +7,9 @@
 
 import { getDictionary } from "./content/dictionaries";
 import type { Lang } from "./content/lang";
-import { formatMinutesAcc, formatPrice } from "./content/format";
+import { formatMinutes, formatPrice } from "./content/format";
 import type { Currency } from "./location/types";
 import {
-  bestPerMinute,
   finalPrice,
   optionsFor,
   perMinute,
@@ -19,28 +18,19 @@ import {
 
 export type QA = { q: string; a: string };
 
-/** «STORY — від X за 1 хвилину до Y за 5 хвилин, Z за хвилину; …». */
+/** Хронометраж, за яким називаємо суму, — як менеджер у чаті. */
+const QUOTE_MINUTES = 2;
+
+/** «STORY — 2 800 ₴ за хвилину, 2 хвилини = 5 600 ₴; …». */
 function priceAnswer(currency: Currency, lang: Lang): string {
   const d = getDictionary(lang).faq;
 
   const lines = TIERS.map((tier) => {
-    const options = optionsFor(tier, currency);
-    const cheapest = options[0];
-    const priciest = options[options.length - 1];
-
-    const range =
-      `${d.priceFrom} ${formatPrice(finalPrice(cheapest), currency, lang)} ` +
-      `${d.priceFor} ${formatMinutesAcc(cheapest.minutes, lang)} ` +
-      `${d.priceTo} ${formatPrice(finalPrice(priciest), currency, lang)} ` +
-      `${d.priceFor} ${formatMinutesAcc(priciest.minutes, lang)}`;
-
-    const rates = options.map(perMinute);
-    const flat = rates.every((r) => r === rates[0]);
-    const rate = flat
-      ? `${formatPrice(rates[0], currency, lang)} ${d.perMinuteWord}`
-      : `${d.priceFrom} ${formatPrice(bestPerMinute(tier, currency), currency, lang)} ${d.perMinuteWord}`;
-
-    return `${tier.name} — ${range}, ${rate}`;
+    const option = optionsFor(tier, currency).find((o) => o.minutes === QUOTE_MINUTES)!;
+    return (
+      `${tier.name} — ${formatPrice(perMinute(option), currency, lang)} ${d.perMinuteWord}, ` +
+      `${formatMinutes(QUOTE_MINUTES, lang)} = ${formatPrice(finalPrice(option), currency, lang)}`
+    );
   });
 
   return lines.join("; ") + ".";

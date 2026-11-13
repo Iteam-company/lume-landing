@@ -7,41 +7,31 @@
            за курсом. Жодних FX-API і жодної конвертації в рантаймі:
            дві валюти живуть незалежно одна від одної.
 
-   Ладдер, знижка та ціна за хвилину рахуються з ставки автоматично.
+   Ладдер і ціна за хвилину рахуються зі ставки автоматично.
+   Акційних цін немає: сайт показує ті самі ціни, що менеджер називає
+   в чаті, — без перекреслених сум, знижок і строків дії.
    Текст тарифів (tagline / features / badge) — у app/content/dictionary,
    тут лише числа й структура.
    ============================================================ */
 
 import type { Currency } from "./location/types";
 
-/** Доки діє стартова ціна. Формат YYYY-MM-DD. */
-export const LAUNCH_UNTIL = "2026-09-30";
-
 export type PlanOption = {
   minutes: number;
-  base: number;
-  sale?: number;
+  price: number;
 };
 
 export type TierSlug = "story" | "signature" | "cinema";
-
-/** Ставка за хвилину для однієї валюти. */
-export type RateSet = {
-  /** Ставка, яку клієнт платить зараз. */
-  rate: number;
-  /** Звичайна ставка до кінця акції. Без неї тариф безакційний
-   *  (без перекресленої ціни й без строку дії). */
-  regularRate?: number;
-};
 
 export type Tier = {
   name: string;
   slug: TierSlug;
   /** Ставки за хвилину по валютах. */
-  rates: Record<Currency, RateSet>;
+  rates: Record<Currency, number>;
   /** Мінімальний хронометраж замовлення. За замовчуванням 1 хвилина. */
   minMinutes?: number;
-  /** Який варіант показати одразу (індекс у options) */
+  /** Який варіант показати одразу (індекс у options). 1 — це 2 хвилини:
+   *  так ціну називає менеджер у чаті. */
   defaultOption?: number;
   featured?: boolean;
   /** Пісня вже входить у тариф і не продається окремо. */
@@ -50,7 +40,7 @@ export type Tier = {
 
 /** Доплата за пісню на замовлення. Ціни задані під ринок, не за курсом. */
 export const SONG_PRICE: Record<Currency, number> = {
-  UAH: 499,
+  UAH: 500,
   EUR: 25,
 };
 
@@ -59,19 +49,11 @@ export function songPrice(currency: Currency): number {
   return SONG_PRICE[currency];
 }
 
-/** Будує варіанти minMinutes..maxMinutes із ставки за хвилину. */
-function ladder(
-  rate: number,
-  regularRate?: number,
-  minMinutes = 1,
-  maxMinutes = 5,
-): PlanOption[] {
-  const count = maxMinutes - minMinutes + 1;
-  return Array.from({ length: count }, (_, i) => {
+/** Будує варіанти minMinutes..maxMinutes зі ставки за хвилину. */
+function ladder(rate: number, minMinutes = 1, maxMinutes = 5): PlanOption[] {
+  return Array.from({ length: maxMinutes - minMinutes + 1 }, (_, i) => {
     const minutes = minMinutes + i;
-    return regularRate
-      ? { minutes, base: regularRate * minutes, sale: rate * minutes }
-      : { minutes, base: rate * minutes };
+    return { minutes, price: rate * minutes };
   });
 }
 
@@ -79,56 +61,34 @@ export const TIERS: Tier[] = [
   {
     name: "STORY",
     slug: "story",
-    defaultOption: 0,
-    // EUR: 65 / звичайна 76 → знижка ~14%
-    // UAH: 2800 / звичайна 3300 → знижка ~15%
-    rates: {
-      EUR: { rate: 65, regularRate: 76 },
-      UAH: { rate: 2800, regularRate: 3300 },
-    },
+    defaultOption: 1,
+    rates: { EUR: 65, UAH: 2800 },
   },
   {
     name: "SIGNATURE",
     slug: "signature",
-    defaultOption: 0,
+    defaultOption: 1,
     featured: true,
-    // EUR: 95 / звичайна 112 → знижка ~15%
-    // UAH: 4200 / звичайна 4900 → знижка ~14%
-    rates: {
-      EUR: { rate: 95, regularRate: 112 },
-      UAH: { rate: 4200, regularRate: 4900 },
-    },
+    rates: { EUR: 95, UAH: 4200 },
   },
   {
     name: "CINEMA",
     slug: "cinema",
-    defaultOption: 0,
+    defaultOption: 1,
     // Пісня входить у тариф
     songIncluded: true,
-    // EUR: 160 / звичайна 192 → знижка ~17%
-    // UAH: 7100 / звичайна 8500 → знижка ~16%
-    rates: {
-      EUR: { rate: 160, regularRate: 192 },
-      UAH: { rate: 7100, regularRate: 8500 },
-    },
+    rates: { EUR: 160, UAH: 8400 },
   },
 ];
 
 /** Варіанти хронометражу тарифу в заданій валюті. */
 export function optionsFor(tier: Tier, currency: Currency): PlanOption[] {
-  const { rate, regularRate } = tier.rates[currency];
-  return ladder(rate, regularRate, tier.minMinutes ?? 1);
+  return ladder(tier.rates[currency], tier.minMinutes ?? 1);
 }
 
 /** Ціна, яку платить клієнт зараз. */
 export function finalPrice(option: PlanOption): number {
-  return option.sale ?? option.base;
-}
-
-/** Знижка у відсотках, округлена до цілого. Null, якщо знижки немає. */
-export function discount(option: PlanOption): number | null {
-  if (!option.sale || option.sale >= option.base) return null;
-  return Math.round((1 - option.sale / option.base) * 100);
+  return option.price;
 }
 
 /** Скільки коштує одна хвилина за цим варіантом. */

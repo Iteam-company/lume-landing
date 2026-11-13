@@ -164,10 +164,6 @@ section[id],header[id]{scroll-margin-top:76px}
 }
 .contact__lead{margin:0 0 18px;font-size:19px;line-height:1.5;max-width:46ch}
 /* соціальний доказ у точці рішення */
-.contact__proof{
-  margin:0 0 34px;font-size:15px;font-weight:600;letter-spacing:.02em;
-  color:var(--wine);opacity:.85;
-}
 .contact__actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;width:100%}
 
 /* Великі кнопки-месенджери: іконка в кружечку, помітний підйом на ховері.
@@ -275,27 +271,6 @@ section[id],header[id]{scroll-margin-top:76px}
   font-weight:500;margin:0 0 26px;
 }
 /* ---------- пропозиція з відліком біля кнопки ---------- */
-.offer{
-  display:inline-grid;justify-items:start;justify-self:start;gap:12px;margin:0 0 28px;
-  padding:20px 24px;border-radius:22px;
-  background:rgba(215,166,162,.22);border:1.4px solid rgba(215,166,162,.7);
-}
-.offer__title{margin:0;font-size:22px;font-weight:800;line-height:1.2;color:var(--wine);letter-spacing:.01em}
-.offer__clock{display:flex;gap:8px;align-items:center}
-.offer__unit{
-  display:grid;justify-items:center;gap:6px;min-width:124px;padding:16px 18px 14px;
-  border-radius:18px;background:var(--wine);color:var(--ivory);
-}
-/* цифри — головне у блоці: вікно коротке, його має бути видно одразу */
-.offer__unit b{font-size:76px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.offer__unit i{font-size:13px;font-style:normal;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
-/* двокрапка стоїть на рівні цифр, а не підписів під ними */
-.offer__sep{
-  font-size:58px;font-weight:800;line-height:1;color:var(--wine);
-  padding-bottom:24px;
-}
-.offer__note{margin:0;font-size:15px;color:rgba(25,24,23,.7)}
-
 .hero__cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .hero__cta-alt{
   font-size:15px;font-weight:600;color:var(--wine);text-decoration:none;
@@ -386,32 +361,6 @@ section[id],header[id]{scroll-margin-top:76px}
 }
 .film--top{top:0}
 .film--bottom{bottom:0}
-
-/* ============================================================
-   НАШІ РОБОТИ
-   ============================================================ */
-.works{padding:110px 0 100px}
-.works__head{text-align:center;margin-bottom:56px}
-.heart-doodle{width:190px;height:78px;color:var(--cream);opacity:.9;margin-bottom:6px}
-.works__head .h2{margin-bottom:0}
-/* посилання на сторінку-кейс: окремий рядок під усією сіткою */
-.works__case-row{display:flex;justify-content:center;margin-top:34px}
-.works__case{
-  display:inline-block;font-size:16px;font-weight:600;color:var(--cream);
-  text-decoration:none;border-bottom:1.5px solid rgba(246,241,233,.4);padding-bottom:2px;
-  transition:border-color .25s;
-}
-.works__case:hover{border-color:var(--cream)}
-/* Кладка «як у Pinterest»: колонки заповнюються згори вниз, тож
-   горизонтальні й вертикальні роботи стикуються без порожнеч.
-   Саме тому це columns, а не grid: у ґріді висоту рядка задає
-   найвища картка, і поруч із вертикальною залишалася діра. */
-.works__grid{columns:3;column-gap:26px}
-.works__grid > *{break-inside:avoid;margin-bottom:26px}
-/* вертикальні роботи — на всю ширину колонки, рівно 9:16, як знято */
-.works__grid .video--9x16{
-  aspect-ratio:9/16;border-width:0;border-radius:var(--radius);
-}
 
 /* ============================================================
    СТУДІЯ ПЕРСОНАЖІВ
@@ -595,7 +544,6 @@ section[id],header[id]{scroll-margin-top:76px}
 .plan--featured{background:var(--maroon);color:var(--cream);box-shadow:0 18px 40px rgba(102,27,43,.28)}
 .plan--featured .plan__name,.plan--featured .plan__dur,.plan--featured .plan__now{color:var(--cream)}
 .plan--featured .plan__list li{color:rgba(255,255,255,.9)}
-.plan--featured .plan__was s{color:rgba(255,255,255,.65)}
 .plan__badge{
   position:absolute;top:-13px;left:28px;
   padding:6px 16px;border-radius:999px;background:var(--gold);color:var(--charcoal);
@@ -670,31 +618,15 @@ section[id],header[id]{scroll-margin-top:76px}
 .plan--featured .opt.is-active{background:var(--cream);border-color:var(--cream);color:var(--maroon-text)}
 
 /* ціна за хвилину */
-.plan__per{font-size:15px;color:rgba(25,24,23,.72)}
-.plan__launch{font-size:13px;color:rgba(25,24,23,.6)}
-.plan--featured .plan__launch{color:rgba(255,255,255,.65)}
+.plan__per{font-size:16px;color:rgba(25,24,23,.72)}
+.plan__per b{font-weight:800;color:var(--charcoal)}
+.plan--featured .plan__per b{color:var(--cream)}
+.plan__now small{margin-left:6px;font-size:16px;font-weight:600;letter-spacing:0;opacity:.65}
 .plan--featured .plan__per{color:rgba(255,255,255,.78)}
-/* min-height тримає списки переваг на одній лінії в усіх картках:
-   у безакційних тарифів немає рядків «стара ціна» і «стартова ціна діє до»,
-   тож без резерву їхній блок ціни на два рядки нижчий. */
-.plan__price{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:22px;min-height:148px}
+.plan__price{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:22px}
 .plan__now{
   font-family:var(--font-sans),sans-serif;font-weight:900;font-size:40px;line-height:1;
   letter-spacing:-1.5px;color:var(--maroon-text);
-}
-.plan__was{display:inline-flex;align-items:center;gap:12px;font-size:30px;font-weight:700}
-/* Стару ціну перекреслюємо власною лінією: у <s> вона тонка й губиться
-   на великому кеглі. */
-.plan__was s{
-  position:relative;text-decoration:none;color:rgba(25,24,23,.55);
-}
-.plan__was s::after{
-  content:"";position:absolute;left:-3px;right:-3px;top:52%;height:3px;
-  background:currentColor;transform:rotate(-5deg);border-radius:2px;
-}
-.plan__off{
-  padding:7px 16px;border-radius:999px;background:var(--rose);color:var(--charcoal);
-  font-size:20px;font-weight:800;font-style:normal;letter-spacing:.01em;line-height:1;
 }
 /* ---------- пісня на замовлення ---------- */
 /* min-height вирівнює картки: варіант із чекбоксом вищий за рядок
@@ -938,8 +870,6 @@ section[id],header[id]{scroll-margin-top:76px}
   .hero__inner{grid-template-columns:1fr;gap:48px}
   .logo{margin-bottom:30px}
   .script-badge{top:-4px;right:0;font-size:30px}
-  .works__grid{columns:2;column-gap:20px}
-  .works__grid > *{margin-bottom:20px}
   .reactions__grid{grid-template-columns:repeat(2,1fr);gap:24px}
   .pricing__grid{grid-template-columns:repeat(2,1fr);gap:28px 20px}
   .pricing__lead{margin:-14px 0 28px}
@@ -955,17 +885,9 @@ section[id],header[id]{scroll-margin-top:76px}
 }
 @media (max-width:620px){
   body{font-size:16px}
-  .works__grid{columns:1}
-  .offer{display:grid;width:100%;padding:16px}
-  .offer__title{font-size:19px}
-  .offer__clock{width:100%;gap:6px}
-  .offer__unit{flex:1 1 0;min-width:0;padding:12px 6px 10px}
-  .offer__unit b{font-size:52px}
-  .offer__sep{font-size:40px;padding-bottom:18px}
   .container,.container--narrow,.container--form{width:min(100% - 32px,var(--wrap))}
   .btn{padding:18px 30px;font-size:15px;width:100%}
   .hero__title{font-size:30px}
-  .works{padding:80px 0 70px}
   .reactions,.process,.numbers,.formsec{padding:70px 0}
   .process__track{grid-template-columns:1fr}
   .numbers__grid{grid-template-columns:1fr;gap:34px}
@@ -1151,8 +1073,6 @@ html:has(dialog[open]){overflow:hidden}
 
 /* ціна — головне число картки */
 .quiz__price{display:grid;gap:2px;margin-top:10px}
-.quiz__price-was{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(25,24,23,.45)}
-.quiz__price-was b{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(102,27,43,.1);color:var(--wine)}
 .quiz__price-now{display:flex;align-items:baseline;gap:6px}
 .quiz__price-now strong{font-size:40px;font-weight:900;line-height:1;letter-spacing:-.02em;color:var(--wine);font-variant-numeric:tabular-nums}
 .quiz__price-now span{font-size:14px;font-weight:600;color:rgba(25,24,23,.6)}
@@ -1180,8 +1100,6 @@ html:has(dialog[open]){overflow:hidden}
 /* тексти на винному тлі */
 .quiz__plan--featured .quiz__plan-name{color:var(--gold)}
 .quiz__plan--featured .quiz__plan-tagline{color:var(--ivory)}
-.quiz__plan--featured .quiz__price-was{color:rgba(246,241,233,.6)}
-.quiz__plan--featured .quiz__price-was b{background:var(--gold);color:var(--charcoal)}
 .quiz__plan--featured .quiz__price-now strong{color:var(--ivory)}
 .quiz__plan--featured .quiz__price-now span{color:rgba(246,241,233,.7)}
 .quiz__plan--featured .quiz__features{border-top-color:rgba(246,241,233,.25)}
@@ -1338,3 +1256,64 @@ html:has(dialog[open]){overflow:hidden}
   .quiz__minute span{font-size:13px}
   .quiz__minute small{justify-self:end;margin:0;font-size:16px;font-weight:700}
 }
+
+/* ============================================================
+   Тематики (ThemeStories)
+   ============================================================ */
+.themes{padding:110px 0 100px;background:var(--cream-2)}
+.themes__head{text-align:center;margin-bottom:34px}
+.themes__head .h2{margin-bottom:14px}
+.themes__lead{max-width:620px;margin:0 auto;font-size:17px;color:rgba(25,24,23,.7)}
+
+.themes__tabs{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:0 auto 34px;
+}
+.themes__tab{
+  display:grid;gap:2px;justify-items:center;padding:12px 22px;border-radius:18px;
+  border:1.5px solid rgba(102,27,43,.18);background:var(--ivory);color:var(--wine);
+  transition:background .25s,border-color .25s,color .25s,transform .25s var(--ease),box-shadow .25s;
+}
+.themes__tab:hover{border-color:var(--wine);transform:translateY(-2px)}
+.themes__tab.is-active{background:var(--wine);border-color:var(--wine);color:var(--ivory);box-shadow:0 12px 28px rgba(102,27,43,.25)}
+.themes__tab:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.themes__tab-tag{font-family:var(--font-cormorant),Georgia,serif;font-style:italic;font-weight:700;font-size:19px;line-height:1.1}
+.themes__tab-title{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+
+.themes__panel[hidden]{display:none}
+.themes__panel:not([hidden]){animation:themes-in .45s var(--ease)}
+@keyframes themes-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.themes__grid{display:grid;gap:22px;margin:0 auto}
+.themes__grid--1{grid-template-columns:1fr;max-width:900px}
+.themes__grid--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.themes__grid--3{display:block;columns:3;column-gap:22px}
+.themes__grid--3 > *{break-inside:avoid;margin-bottom:22px}
+/* вертикальні — рівно 9:16, як знято (правило перенесене з «Наших робіт») */
+.themes__grid--3 .video--9x16{aspect-ratio:9/16;border-width:0;border-radius:var(--radius)}
+.themes__foot{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  max-width:900px;margin:28px auto 0;
+}
+.themes__grid--2 + .themes__foot,.themes__grid--3 + .themes__foot{max-width:none}
+.themes__text{flex:1 1 320px;margin:0;font-size:17px;line-height:1.5;color:rgba(25,24,23,.78)}
+.themes__order{flex:none;padding:18px 34px;font-size:15px}
+
+@media (max-width:760px){
+  .themes{padding:70px 0}
+  /* вкладки — гортаються вбік одним рядком, а не стовпчиком на пів екрана */
+  .themes__tabs{
+    flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;
+    margin:0 -16px 24px;padding:4px 16px;scroll-snap-type:x proximity;
+  }
+  .themes__tabs::-webkit-scrollbar{display:none}
+  .themes__tab{flex:none;scroll-snap-align:start;padding:10px 18px}
+  .themes__grid--2{grid-template-columns:1fr}
+  .themes__grid--3{columns:1}
+  .themes__order{width:100%}
+}
+@media (min-width:761px) and (max-width:960px){.themes__grid--3{columns:2}}
+.themes__case-row{display:flex;justify-content:center;margin:40px 0 0}
+.themes__case{
+  font-size:15px;font-weight:600;color:var(--wine);text-decoration:none;
+  border-bottom:1.5px solid rgba(102,27,43,.35);padding-bottom:2px;transition:border-color .25s;
+}
+.themes__case:hover{border-color:var(--wine)}

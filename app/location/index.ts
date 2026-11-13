@@ -22,4 +22,8 @@ export {
   toVisitorLocation,
 } from "./markets";
 
-export { getVisitorLocation, readGeoHeader } from "./get-visitor-location";
+export {
+  getDisplayCurrency,
+  getVisitorLocation,
+  readGeoHeader,
+} from "./get-visitor-location";

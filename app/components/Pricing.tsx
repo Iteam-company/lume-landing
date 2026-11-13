@@ -38,9 +38,9 @@ export default function Pricing({
                 copy={p.tiers[tier.slug]}
                 labels={{
                   perMinute: p.perMinute,
+                  perMinuteShort: p.perMinuteShort,
                   minutesShort: p.minutesShort,
                   durationAria: p.durationAria,
-                  launchNote: p.launchNote,
                   songAdd: p.songAdd,
                   songIncluded: p.songIncluded,
                   order: p.orderCard,
